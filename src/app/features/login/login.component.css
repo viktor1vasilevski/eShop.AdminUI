@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.bg-dark {
+  background-color: #124c69 !important;
+}
+
+.bg-light {
+  background-color: #ffffff !important;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+}
