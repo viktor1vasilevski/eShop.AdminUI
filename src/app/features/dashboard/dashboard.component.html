@@ -1,27 +1,52 @@
 <div class="d-flex min-vh-100">
   <!-- Sidebar -->
-  <div class="sidebar d-flex flex-column bg-dark text-white">
-    <!-- Top menu items -->
-    <div>
-      <h4 class="p-3 border-bottom">Admin Panel</h4>
-      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      <a routerLink="/categories" routerLinkActive="active">Categories</a>
-      <a routerLink="/subcategories" routerLinkActive="active">Subcategories</a>
-      <a routerLink="/products" routerLinkActive="active">Products</a>
-      <a routerLink="/orders" routerLinkActive="active">Orders</a>
-      <a routerLink="/users" routerLinkActive="active">Users</a>
+  <div class="sidebar bg-dark text-white d-flex flex-column" [class.collapsed]="isCollapsed">
+    <!-- Toggle button -->
+    <button class="btn btn-secondary m-3" (click)="toggleSidebar()">
+      {{ isCollapsed ? '☰' : '×' }}
+    </button>
+
+    <!-- Menu Items -->
+    <div class="flex-grow-1">
+      <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">🏠</span>
+        <span *ngIf="!isCollapsed" class="text">Dashboard</span>
+      </a>
+      <a routerLink="/categories" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">📂</span>
+        <span *ngIf="!isCollapsed" class="text">Categories</span>
+      </a>
+      <a routerLink="/subcategories" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">📁</span>
+        <span *ngIf="!isCollapsed" class="text">Subcategories</span>
+      </a>
+      <a routerLink="/products" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">🛍️</span>
+        <span *ngIf="!isCollapsed" class="text">Products</span>
+      </a>
+      <a routerLink="/orders" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">📦</span>
+        <span *ngIf="!isCollapsed" class="text">Orders</span>
+      </a>
+      <a routerLink="/users" routerLinkActive="active" class="sidebar-link">
+        <span class="icon">👤</span>
+        <span *ngIf="!isCollapsed" class="text">Users</span>
+      </a>
     </div>
 
-    <!-- Logout button at the bottom -->
-    <div class="mt-auto p-3 border-top">
-      <button class="btn btn-danger w-100" (click)="logout()">Logout</button>
+    <!-- Logout Button -->
+    <div class="p-3 border-top">
+      <button class="btn btn-danger w-100 d-flex align-items-center justify-content-center" (click)="logout()">
+        <span class="icon">⏻</span>
+        <span *ngIf="!isCollapsed" class="ms-2">Logout</span>
+      </button>
     </div>
   </div>
 
   <!-- Main Content -->
   <div class="main-content flex-grow-1 p-4 bg-light">
     <h2>Welcome to the Admin Dashboard</h2>
-    <p>This is your overview. Select a section from the menu.</p>
+    <p>Select a section from the menu.</p>
     <router-outlet></router-outlet>
   </div>
 </div>
