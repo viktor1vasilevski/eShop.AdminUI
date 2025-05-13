@@ -37,7 +37,15 @@ export class LoginComponent {
     }
  
     this._adminAuthService.loginAdmin(this.loginForm.value).subscribe({
-      next: (response: any) => response && response.success ? this.router.navigate(['/dashboard']) : this._notificationService.error(response.message),
+      next: (response: any) => {
+        if(response && response.success) {
+          this.router.navigate(['/dashboard']);
+          debugger
+          this._notificationService.success(response.message);
+        } else {
+          this._notificationService.error(response.message)
+        }
+      },
       error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse)
     })
   }

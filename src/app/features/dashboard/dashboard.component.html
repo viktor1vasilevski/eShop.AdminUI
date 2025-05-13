@@ -1,13 +1,21 @@
 <div class="d-flex min-vh-100">
   <!-- Sidebar -->
-  <div class="sidebar bg-dark text-white">
-    <h4 class="p-3 border-bottom">Admin Panel</h4>
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/categories" routerLinkActive="active">Categories</a>
-    <a routerLink="/subcategories" routerLinkActive="active">Subcategories</a>
-    <a routerLink="/products" routerLinkActive="active">Products</a>
-    <a routerLink="/orders" routerLinkActive="active">Orders</a>
-    <a routerLink="/users" routerLinkActive="active">Users</a>
+  <div class="sidebar d-flex flex-column bg-dark text-white">
+    <!-- Top menu items -->
+    <div>
+      <h4 class="p-3 border-bottom">Admin Panel</h4>
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/categories" routerLinkActive="active">Categories</a>
+      <a routerLink="/subcategories" routerLinkActive="active">Subcategories</a>
+      <a routerLink="/products" routerLinkActive="active">Products</a>
+      <a routerLink="/orders" routerLinkActive="active">Orders</a>
+      <a routerLink="/users" routerLinkActive="active">Users</a>
+    </div>
+
+    <!-- Logout button at the bottom -->
+    <div class="mt-auto p-3 border-top">
+      <button class="btn btn-danger w-100" (click)="logout()">Logout</button>
+    </div>
   </div>
 
   <!-- Main Content -->
