@@ -1,43 +1,43 @@
 <div class="d-flex min-vh-100">
   <!-- Sidebar -->
   <div class="sidebar bg-dark text-white d-flex flex-column" [class.collapsed]="isCollapsed">
-    <!-- Toggle button -->
+    <!-- Toggle Button -->
     <button class="btn btn-secondary m-3" (click)="toggleSidebar()">
-      {{ isCollapsed ? '☰' : '×' }}
+      <i class="bi" [ngClass]="isCollapsed ? 'bi-list' : 'bi-x'"></i>
     </button>
 
     <!-- Menu Items -->
     <div class="flex-grow-1">
-      <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">🏠</span>
+      <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Dashboard' : null">
+        <i class="bi bi-speedometer2 icon"></i>
         <span *ngIf="!isCollapsed" class="text">Dashboard</span>
       </a>
-      <a routerLink="/categories" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">📂</span>
+      <a routerLink="/categories" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Categories' : null">
+        <i class="bi bi-folder icon"></i>
         <span *ngIf="!isCollapsed" class="text">Categories</span>
       </a>
-      <a routerLink="/subcategories" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">📁</span>
+      <a routerLink="/subcategories" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Subcategories' : null">
+        <i class="bi bi-folder2-open icon"></i>
         <span *ngIf="!isCollapsed" class="text">Subcategories</span>
       </a>
-      <a routerLink="/products" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">🛍️</span>
+      <a routerLink="/products" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Products' : null">
+        <i class="bi bi-bag icon"></i>
         <span *ngIf="!isCollapsed" class="text">Products</span>
       </a>
-      <a routerLink="/orders" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">📦</span>
+      <a routerLink="/orders" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Orders' : null">
+        <i class="bi bi-box-seam icon"></i>
         <span *ngIf="!isCollapsed" class="text">Orders</span>
       </a>
-      <a routerLink="/users" routerLinkActive="active" class="sidebar-link">
-        <span class="icon">👤</span>
+      <a routerLink="/users" routerLinkActive="active" class="sidebar-link" [attr.title]="isCollapsed ? 'Users' : null">
+        <i class="bi bi-people icon"></i>
         <span *ngIf="!isCollapsed" class="text">Users</span>
       </a>
     </div>
 
-    <!-- Logout Button -->
+    <!-- Logout -->
     <div class="p-3 border-top">
-      <button class="btn btn-danger w-100 d-flex align-items-center justify-content-center" (click)="logout()">
-        <span class="icon">⏻</span>
+      <button class="btn btn-danger w-100 d-flex align-items-center justify-content-center" (click)="logout()" [attr.title]="isCollapsed ? 'Logout' : null">
+        <i class="bi bi-power icon"></i>
         <span *ngIf="!isCollapsed" class="ms-2">Logout</span>
       </button>
     </div>

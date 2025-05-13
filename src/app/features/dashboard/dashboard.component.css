@@ -31,6 +31,15 @@
   margin-left: 10px;
 }
 
-button.btn-danger span.icon {
+button.btn-danger .icon {
   font-size: 1.2rem;
 }
+
+.sidebar-link {
+  cursor: pointer;
+}
+
+button.btn-danger {
+  cursor: pointer;
+}
+
