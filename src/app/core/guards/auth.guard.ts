@@ -8,8 +8,6 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
   //const toastr = inject(ToastrService);
 
-  debugger
-
   const isLoggedIn = authenticationManagerService.isLoggedIn();
   
   if (isLoggedIn) {

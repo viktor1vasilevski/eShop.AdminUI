@@ -18,10 +18,10 @@ export class AuthenticationManagerService {
   
   constructor() { }
 
-  setSession(token: string, role: string, userId: string): void {
+  setSession(token: string, role: string, userId: string | null): void {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.ROLE_KEY, role);
-    localStorage.setItem(this.USER_ID, userId);
+    localStorage.setItem(this.USER_ID, userId ?? 'null');
     this.loggedInSubject.next(true);
   }
   

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AdminAuthService } from '../../core/services/admin-auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { AuthenticationManagerService } from '../../core/services/authentication-manager.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
 
   constructor(private fb: FormBuilder,
     private _adminAuthService: AdminAuthService,
+    private _authenticationManagerService: AuthenticationManagerService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     private router: Router
@@ -39,8 +41,8 @@ export class LoginComponent {
     this._adminAuthService.loginAdmin(this.loginForm.value).subscribe({
       next: (response: any) => {
         if(response && response.success) {
+          this._authenticationManagerService.setSession(response.data.token, response.data.role, null)
           this.router.navigate(['/dashboard']);
-          debugger
           this._notificationService.success(response.message);
         } else {
           this._notificationService.error(response.message)
