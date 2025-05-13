@@ -1,1 +1,19 @@
-<p>dashboard works!</p>
+<div class="d-flex min-vh-100">
+  <!-- Sidebar -->
+  <div class="sidebar bg-dark text-white">
+    <h4 class="p-3 border-bottom">Admin Panel</h4>
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/categories" routerLinkActive="active">Categories</a>
+    <a routerLink="/subcategories" routerLinkActive="active">Subcategories</a>
+    <a routerLink="/products" routerLinkActive="active">Products</a>
+    <a routerLink="/orders" routerLinkActive="active">Orders</a>
+    <a routerLink="/users" routerLinkActive="active">Users</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <h2>Welcome to the Admin Dashboard</h2>
+    <p>This is your overview. Select a section from the menu.</p>
+    <router-outlet></router-outlet>
+  </div>
+</div>
