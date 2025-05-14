@@ -19,7 +19,7 @@ export interface CategoryRequest {
 
 @Component({
   selector: 'app-category-list',
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent, RouterOutlet],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css'
 })
