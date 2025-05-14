@@ -1,13 +1,13 @@
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SortOrder } from '../../core/enums/sort-order.enum';
-import { CategoryService } from '../../core/services/category.service';
-import { NotificationService } from '../../core/services/notification.service';
-import { ErrorHandlerService } from '../../core/services/error-handler.service';
-import { Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { PaginationComponent } from '../../core/components/pagination/pagination.component';
+import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
+import { ErrorHandlerService } from '../../../core/services/error-handler.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { CategoryService } from '../../../core/services/category.service';
+import { Subject } from 'rxjs';
 
 export interface CategoryRequest {
   skip: number;
@@ -18,13 +18,13 @@ export interface CategoryRequest {
 }
 
 @Component({
-  selector: 'app-categories',
+  selector: 'app-category-list',
   imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
-  templateUrl: './categories.component.html',
-  styleUrl: './categories.component.css',
+  templateUrl: './category-list.component.html',
+  styleUrl: './category-list.component.css'
 })
-export class CategoriesComponent implements OnInit {
-  categoryRequest: CategoryRequest = {
+export class CategoryListComponent {
+categoryRequest: CategoryRequest = {
     skip: 0,
     take: 10,
     sortDirection: SortOrder.Descending,

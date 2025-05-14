@@ -10,6 +10,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent)
     },
     { path: 'categories', 
-        loadComponent: () => import('./features/categories/categories.component').then((m) => m.CategoriesComponent)
+        loadComponent: () => import('./features/categories/category-list/category-list.component').then((m) => m.CategoryListComponent)
     },
 ];
