@@ -28,6 +28,13 @@ export const routes: Routes = [
       ).then((m) => m.CategoryCreateComponent),
   },
   {
+    path: 'categories/edit',
+    loadComponent: () =>
+      import(
+        './features/categories/category-edit/category-edit.component'
+      ).then((m) => m.CategoryEditComponent),
+  },
+  {
     path: 'subcategories',
     loadComponent: () =>
       import(
