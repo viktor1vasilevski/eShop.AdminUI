@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
@@ -19,7 +19,7 @@ export interface CategoryRequest {
 
 @Component({
   selector: 'app-category-list',
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent, RouterOutlet],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css'
 })
@@ -43,7 +43,8 @@ categoryRequest: CategoryRequest = {
   constructor(
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
-    private _errorHandlerService: ErrorHandlerService
+    private _errorHandlerService: ErrorHandlerService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -80,6 +81,10 @@ categoryRequest: CategoryRequest = {
     this.currentPage = page;
     this.categoryRequest.skip = (page - 1) * this.categoryRequest.take;
     this.loadCategories();
+  }
+
+  test() {
+    this.router.navigate(['/categories/create'])
   }
 
   onItemsPerPageChange(itemsPerPage: number): void {
