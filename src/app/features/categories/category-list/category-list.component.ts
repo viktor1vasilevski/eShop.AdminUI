@@ -21,10 +21,10 @@ export interface CategoryRequest {
   selector: 'app-category-list',
   imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './category-list.component.html',
-  styleUrl: './category-list.component.css'
+  styleUrl: './category-list.component.css',
 })
 export class CategoryListComponent {
-categoryRequest: CategoryRequest = {
+  categoryRequest: CategoryRequest = {
     skip: 0,
     take: 10,
     sortDirection: SortOrder.Descending,
@@ -45,7 +45,11 @@ categoryRequest: CategoryRequest = {
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     private router: Router
-  ) {}
+  ) {
+    this._categoryService.categoryAddedOrEdited$.subscribe(
+      (status) => status && this.loadCategories()
+    );
+  }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -84,7 +88,7 @@ categoryRequest: CategoryRequest = {
   }
 
   test() {
-    this.router.navigate(['/categories/create'])
+    this.router.navigate(['/categories/create']);
   }
 
   onItemsPerPageChange(itemsPerPage: number): void {
