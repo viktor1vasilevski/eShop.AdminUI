@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { Subject } from 'rxjs';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
-import { errorContext } from 'rxjs/internal/util/errorContext';
 import { CategoryService } from '../../../core/services/category.service';
 
 export interface SubategoryRequest {
@@ -69,24 +68,24 @@ export class SubcategoryListComponent implements OnInit {
             this._notificationService.error(response.message);
           }
         },
-        error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse)
+        error: (errorResponse: any) =>
+          this._errorHandlerService.handleErrors(errorResponse),
       });
   }
 
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        if(response && response.success && response.data) {
+        if (response && response.success && response.data) {
           this.categoriesDropdownList = response.data;
         } else {
           this._notificationService.error(response.message);
         }
       },
-      error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse),
-    })
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
   }
-
-  addSubcategory() {}
 
   editSubcategory(id: any) {}
 

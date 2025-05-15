@@ -20,8 +20,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './category-create.component.css',
 })
 export class CategoryCreateComponent {
-  categoryName: string = '';
-
   createCategoryForm: FormGroup;
 
   constructor(

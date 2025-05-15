@@ -98,10 +98,6 @@ export class CategoryListComponent {
     this.loadCategories();
   }
 
-  addCategory() {
-    this.router.navigate(['/categories/create']);
-  }
-
   onItemsPerPageChange(itemsPerPage: number): void {
     this.categoryRequest.take = itemsPerPage;
     this.categoryRequest.skip = 0;

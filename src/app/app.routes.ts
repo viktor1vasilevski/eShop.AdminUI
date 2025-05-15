@@ -42,6 +42,14 @@ export const routes: Routes = [
       ).then((m) => m.SubcategoryListComponent),
   },
   {
+    path: 'subcategories/create',
+    loadComponent: () =>
+      import(
+        './features/subcategories/subcategory-create/subcategory-create.component'
+      ).then((m) => m.SubcategoryCreateComponent
+    ),
+  },
+  {
     path: 'products',
     loadComponent: () =>
       import('./features/products/product-list/product-list.component').then(
