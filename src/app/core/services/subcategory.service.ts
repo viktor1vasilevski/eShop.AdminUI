@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DataService } from './data.service';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SubcategoryService {
+  private baseUrl = 'https://localhost:7270/api';
+
   private subcategoryAddedOrEditedSource = new BehaviorSubject<boolean>(false);
   subcategoryAddedOrEdited$ =
     this.subcategoryAddedOrEditedSource.asObservable();
 
   constructor(private _dataApiService: DataService) {}
+
+  getSubcategories(request: any): Observable<any> {
+    const params = new HttpParams()
+      .set('name', request.name)
+      .set('categoryId', request.categoryId)
+      .set('skip', request.skip.toString())
+      .set('take', request.take.toString())
+      .set('sortDirection', request.sortDirection)
+      .set('sortBy', request.sortBy);
+
+    const url = `${this.baseUrl}/subcategory/get`;
+    return this._dataApiService.getAll<any>(url, params);
+  }
 }

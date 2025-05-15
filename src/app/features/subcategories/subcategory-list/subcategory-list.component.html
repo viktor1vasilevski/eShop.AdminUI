@@ -7,6 +7,16 @@
     </button>
   </div>
 
+    <!-- Info Alert -->
+  <div class="alert alert-info text-center" role="alert">
+    All inputs are created and modified by the admin.<br />
+    <span class="fw-bold">Note:</span> The "UNCATEGORIZED" subcategory is
+    designated for products that the admin is currently uncertain about
+    categorizing. As such, it is neither editable nor deletable, and
+    subcategories created under the "UNCATEGORIZED" category will not be visible
+    when making changes to products.
+  </div>
+
   <!-- Filter Section -->
   <div class="card mb-3 shadow-sm">
     <div class="card-body p-3">
@@ -22,9 +32,26 @@
               (input)="onFilterChange()"
               class="form-control"
               name="search"
-              placeholder="Search categories by name"
+              placeholder="Search subcategories by name"
             />
           </div>
+        </div>
+        <div class="col-md-4">
+          <select
+            [(ngModel)]="subcategoryRequest.categoryId"
+            (change)="onFilterChange()"
+            class="form-select"
+            name="category"
+            aria-label="Filter by category"
+          >
+            <option value="">All categories</option>
+            <option
+              *ngFor="let category of categoriesDropdownList"
+              [value]="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </select>
         </div>
       </form>
     </div>
@@ -48,6 +75,7 @@
           <thead class="table-dark">
             <tr>
               <th scope="col">Subcategory Name</th>
+              <th scope="col">Category Name</th>
               <th scope="col">Created At</th>
               <th scope="col">Last Modified At</th>
               <th scope="col" class="text-end">Actions</th>
@@ -56,14 +84,15 @@
           <tbody>
             <tr *ngIf="subcategories.length === 0">
               <td colspan="6" class="text-center text-muted">
-                No categories found.
+                No subcategories found.
               </td>
             </tr>
             <tr
-              *ngFor="let subcategory of subcategories; let i = index"
+              *ngFor="let subcategory of subcategories"
               [class.uncategorized]="subcategory.name === 'UNCATEGORIZED'"
             >
               <td>{{ subcategory.name }}</td>
+              <td>{{ subcategory.category }}</td>
               <td>{{ subcategory.created | date : "dd/MM/yyyy HH:mm" }}</td>
               <td>
                 {{

@@ -5,6 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { Subject } from 'rxjs';
+import { SubcategoryService } from '../../../core/services/subcategory.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { ErrorHandlerService } from '../../../core/services/error-handler.service';
+import { errorContext } from 'rxjs/internal/util/errorContext';
+import { CategoryService } from '../../../core/services/category.service';
 
 export interface SubategoryRequest {
   skip: number;
@@ -31,6 +36,15 @@ export class SubcategoryListComponent implements OnInit {
     categoryId: '',
   };
 
+  categoriesDropdownList: any[] = [];
+
+  constructor(
+    private _subcategoryService: SubcategoryService,
+    private _categoryService: CategoryService,
+    private _notificationService: NotificationService,
+    private _errorHandlerService: ErrorHandlerService
+  ) {}
+
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
 
@@ -41,9 +55,36 @@ export class SubcategoryListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSubcategories();
+    this.loadCategoriesDropdownList();
   }
 
-  loadSubcategories() {}
+  loadSubcategories() {
+    this._subcategoryService
+      .getSubcategories(this.subcategoryRequest)
+      .subscribe({
+        next: (response: any) => {
+          if (response && response.success && response.data) {
+            this.subcategories = response.data;
+          } else {
+            this._notificationService.error(response.message);
+          }
+        },
+        error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse)
+      });
+  }
+
+  loadCategoriesDropdownList() {
+    this._categoryService.getCategoriesDropdownList().subscribe({
+      next: (response: any) => {
+        if(response && response.success && response.data) {
+          this.categoriesDropdownList = response.data;
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse),
+    })
+  }
 
   addSubcategory() {}
 
