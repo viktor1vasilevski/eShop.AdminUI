@@ -10,10 +10,11 @@ import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-category-create',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   standalone: true,
   templateUrl: './category-create.component.html',
   styleUrl: './category-create.component.css',
