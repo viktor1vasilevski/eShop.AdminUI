@@ -1,13 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 
 export interface CategoryRequest {
   skip: number;
@@ -52,7 +52,18 @@ export class CategoryListComponent {
   }
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {});
+
     this.loadCategories();
+
+    this.nameChangeSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(() => {
+        this.categoryRequest.skip = 0;
+        this.loadCategories();
+      });
   }
 
   loadCategories() {
