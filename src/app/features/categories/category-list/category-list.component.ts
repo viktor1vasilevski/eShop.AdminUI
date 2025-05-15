@@ -87,7 +87,7 @@ export class CategoryListComponent {
     this.loadCategories();
   }
 
-  test() {
+  addCategory() {
     this.router.navigate(['/categories/create']);
   }
 
@@ -96,5 +96,9 @@ export class CategoryListComponent {
     this.categoryRequest.skip = 0;
     this.currentPage = 1;
     this.loadCategories();
+  }
+
+  editCategory(id: any) {
+    this.router.navigate([`categories/edit/${id}`]);
   }
 }

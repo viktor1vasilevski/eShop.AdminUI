@@ -28,7 +28,7 @@ export const routes: Routes = [
       ).then((m) => m.CategoryCreateComponent),
   },
   {
-    path: 'categories/edit',
+    path: 'categories/edit/:id',
     loadComponent: () =>
       import(
         './features/categories/category-edit/category-edit.component'

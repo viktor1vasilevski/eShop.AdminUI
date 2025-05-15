@@ -38,7 +38,7 @@
       style="background-color: #495057"
     >
       <span><i class="bi bi-folder me-2"></i>Category List</span>
-      <button class="btn btn-light btn-sm" (click)="test()">
+      <button class="btn btn-light btn-sm" (click)="addCategory()">
         <i class="bi bi-plus-lg me-1"></i> Add Category
       </button>
     </div>
@@ -76,7 +76,7 @@
                 }}
               </td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-info me-2" routerLink="/categories/edit">
+                <button class="btn btn-sm btn-outline-info me-2" (click)="editCategory(category.id)">
                   <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger">
