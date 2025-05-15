@@ -33,6 +33,13 @@ export class CategoryService {
     );
   }
 
+  editCategory(id: string, request: any): Observable<any> {
+    return this._dataApiService.put<any, any>(
+      `${this.baseUrl}/category/edit/${id}`,
+      request
+    );
+  }
+
   getCategoryById(id: string): Observable<any> {
     const url = `${this.baseUrl}/category/get/${id}`;
     return this._dataApiService.getById<any>(url);

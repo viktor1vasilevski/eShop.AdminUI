@@ -52,9 +52,25 @@ export class CategoryEditComponent implements OnInit {
   }
 
   onSubmit() {
-    // Call your API here
-    console.log('Category Created:', this.categoryName);
-    this.router.navigate(['/categories']);
+    if(!this.editCategoryForm.valid){
+      this._notificationService.info("Invalid form");
+      return;
+    }
+
+    this._categoryService.editCategory(this.selectedCategoryId, this.editCategoryForm.value).subscribe({
+      next:(response: any) => {
+        if(response && response.success) {
+          this._categoryService.notifyCategoryAddedOrEdited();
+          this._notificationService.success(response.message);
+          this.router.navigate(['/categories']);
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) => {
+        this._errorHandlerService.handleErrors(errorResponse);
+      }
+    })
   }
 
   cancel() {

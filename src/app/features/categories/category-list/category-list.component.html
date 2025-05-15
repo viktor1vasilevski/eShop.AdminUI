@@ -48,7 +48,6 @@
         <table class="table mb-0 table-hover align-middle">
           <thead class="table-dark">
             <tr>
-              <th scope="col">#</th>
               <th scope="col">Category Name</th>
               <th scope="col">Created At</th>
               <th scope="col">Last Modified At</th>
@@ -65,7 +64,6 @@
               *ngFor="let category of categories; let i = index"
               [class.uncategorized]="category.name === 'UNCATEGORIZED'"
             >
-              <th scope="row">{{ i + 1 }}</th>
               <td>{{ category.name }}</td>
               <td>{{ category.created | date: 'dd/MM/yyyy HH:mm' }}</td>
               <td>
