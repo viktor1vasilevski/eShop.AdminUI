@@ -38,8 +38,8 @@ export const routes: Routes = [
     path: 'subcategories',
     loadComponent: () =>
       import(
-        './features/subcategories/subcategories/subcategories.component'
-      ).then((m) => m.SubcategoriesComponent),
+        './features/subcategories/subcategory-list/subcategory-list.component'
+      ).then((m) => m.SubcategoryListComponent),
   },
   {
     path: 'products',
