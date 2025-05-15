@@ -45,6 +45,11 @@ export class CategoryService {
     return this._dataApiService.getById<any>(url);
   }
 
+  getCategoriesDropdownList(): Observable<any> {
+    const url = `${this.baseUrl}/category/getCategoriesDropdownList`;
+    return this._dataApiService.getAll<any>(url);
+  }
+
   notifyCategoryAddedOrEdited() {
     this.categoryAddedOrEditedSource.next(true);
   }
