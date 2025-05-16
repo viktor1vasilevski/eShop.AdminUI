@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AdminAuthService } from '../../core/services/admin-auth.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -11,15 +17,17 @@ import { AuthenticationManagerService } from '../../core/services/authentication
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
-
+  isSubmitting = false;
   loginForm: FormGroup;
-  passwordPattern = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{4,}$';
+  passwordPattern =
+    '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{4,}$';
   @ViewChild('passwordInput') passwordInput!: ElementRef;
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private _adminAuthService: AdminAuthService,
     private _authenticationManagerService: AuthenticationManagerService,
     private _notificationService: NotificationService,
@@ -27,29 +35,39 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(5)]],
-    password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
+      username: ['', [Validators.required, Validators.minLength(5)]],
+      password: [
+        '',
+        [Validators.required, Validators.pattern(this.passwordPattern)],
+      ],
     });
   }
 
   onLogin() {
     if (!this.loginForm.valid) {
-      this._notificationService.info("Invalid form");
+      this._notificationService.info('Invalid form');
       return;
     }
- 
+    this.isSubmitting = true;
     this._adminAuthService.login(this.loginForm.value).subscribe({
       next: (response: any) => {
-        if(response && response.success) {
-          this._authenticationManagerService.setSession(response.data.token, response.data.role, null)
+        if (response && response.success) {
+          this._authenticationManagerService.setSession(
+            response.data.token,
+            response.data.role,
+            null
+          );
           this.router.navigate(['/dashboard']);
           this._notificationService.success(response.message);
         } else {
-          this._notificationService.error(response.message)
+          this._notificationService.error(response.message);
+          this.isSubmitting = false;
         }
       },
-      error: (errorResponse: any) => this._errorHandlerService.handleErrors(errorResponse)
-    })
+      error: (errorResponse: any) => {
+        this._errorHandlerService.handleErrors(errorResponse);
+        this.isSubmitting = false;
+      },
+    });
   }
-
 }

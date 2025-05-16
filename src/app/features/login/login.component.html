@@ -3,45 +3,76 @@
   <div class="flex-grow-1 bg-dark d-none d-md-block"></div>
 
   <!-- 1/4 of the screen - form section with a lighter background -->
-  <div class="d-flex align-items-center justify-content-center w-25 p-4 bg-light">
+  <div
+    class="d-flex align-items-center justify-content-center w-25 p-4 bg-light"
+  >
     <div class="w-100 p-4 rounded-3">
       <h4 class="text-dark text-center mb-4">Login</h4>
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <!-- Username -->
         <div class="form-group mb-3">
-                            <label for="username" class="form-label fw-semibold">Username</label>
-                            <input type="text" id="username" class="form-control rounded-3" formControlName="username"
-                                placeholder="Enter your username" />
-                            <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
-                                class="text-danger mt-1">
-                                <small *ngIf="loginForm.get('username')?.errors?.['required']">Username is
-                                    required.</small>
-                                <small *ngIf="loginForm.get('username')?.errors?.['minlength']">Username must be at
-                                    least 5 characters.</small>
-                            </div>
-                        </div>
+          <label for="username" class="form-label fw-semibold">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control rounded-3"
+            formControlName="username"
+            placeholder="Enter your username"
+          />
+          <div
+            *ngIf="
+              loginForm.get('username')?.invalid &&
+              loginForm.get('username')?.touched
+            "
+            class="text-danger mt-1"
+          >
+            <small *ngIf="loginForm.get('username')?.errors?.['required']"
+              >Username is required.</small
+            >
+            <small *ngIf="loginForm.get('username')?.errors?.['minlength']"
+              >Username must be at least 5 characters.</small
+            >
+          </div>
+        </div>
 
-                        <!-- Password -->
-                        <div class="form-group mb-3">
-                            <label for="password" class="form-label fw-semibold">Password</label>
-                            <input type="password" id="password" #passwordInput class="form-control rounded-3"
-                                formControlName="password" placeholder="Enter your password" />
-                            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-                                class="text-danger mt-1">
-                                <small *ngIf="loginForm.get('password')?.errors?.['required']">Password is
-                                    required.</small>
-                                <small *ngIf="loginForm.get('password')?.errors?.['pattern']">
-                                    Password must contain at least 4 characters, including at least one uppercase letter, one lowercase letter, one numeric digit, and one special character.
-                                </small>
-                            </div>
-                        </div>
+        <!-- Password -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label fw-semibold">Password</label>
+          <input
+            type="password"
+            id="password"
+            #passwordInput
+            class="form-control rounded-3"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+          <div
+            *ngIf="
+              loginForm.get('password')?.invalid &&
+              loginForm.get('password')?.touched
+            "
+            class="text-danger mt-1"
+          >
+            <small *ngIf="loginForm.get('password')?.errors?.['required']"
+              >Password is required.</small
+            >
+            <small *ngIf="loginForm.get('password')?.errors?.['pattern']">
+              Password must contain at least 4 characters, including at least
+              one uppercase letter, one lowercase letter, one numeric digit, and
+              one special character.
+            </small>
+          </div>
+        </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold"
-                            [disabled]="loginForm.invalid">
-                            Login
-                        </button>
-                    </form>
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary w-100 rounded-3 fw-bold"
+          [disabled]="loginForm.invalid || isSubmitting"
+        >
+          Login
+        </button>
+      </form>
     </div>
   </div>
 </div>
