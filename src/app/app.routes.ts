@@ -6,6 +6,7 @@ import { subcategoryRoutes } from './features/subcategories/subcategories.routes
 import { productRoutes } from './features/products/products.routes';
 import { orderRoutes } from './features/orders/orders.routes';
 import { userRoutes } from './features/users/users.routes';
+import { UnauthorizedComponent } from './features/unauthorized/unauthorized.component';
 
 const protectedRoutes = [
   ...categoryRoutes,
@@ -16,7 +17,7 @@ const protectedRoutes = [
 ].map((route) => ({ ...route, canActivate: [authGuard] }));
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [authGuard] },
+  { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   {
@@ -25,7 +26,11 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
-      canActivate: [authGuard]
+    canActivate: [authGuard],
+  },
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
   },
   ...protectedRoutes,
 ];

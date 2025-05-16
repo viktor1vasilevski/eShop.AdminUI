@@ -38,7 +38,7 @@ export class LoginComponent {
       return;
     }
  
-    this._adminAuthService.loginAdmin(this.loginForm.value).subscribe({
+    this._adminAuthService.login(this.loginForm.value).subscribe({
       next: (response: any) => {
         if(response && response.success) {
           this._authenticationManagerService.setSession(response.data.token, response.data.role, null)
