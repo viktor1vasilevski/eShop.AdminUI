@@ -22,6 +22,7 @@ import { AuthenticationManagerService } from '../../core/services/authentication
 export class LoginComponent {
   isSubmitting = false;
   loginForm: FormGroup;
+  showPassword = false;
   passwordPattern =
     '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{4,}$';
   @ViewChild('passwordInput') passwordInput!: ElementRef;
@@ -41,6 +42,10 @@ export class LoginComponent {
         [Validators.required, Validators.pattern(this.passwordPattern)],
       ],
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onLogin() {

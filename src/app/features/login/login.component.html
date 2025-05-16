@@ -38,14 +38,27 @@
         <!-- Password -->
         <div class="form-group mb-3">
           <label for="password" class="form-label fw-semibold">Password</label>
-          <input
-            type="password"
-            id="password"
-            #passwordInput
-            class="form-control rounded-3"
-            formControlName="password"
-            placeholder="Enter your password"
-          />
+
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              class="form-control rounded-start-3"
+              formControlName="password"
+              placeholder="Enter your password"
+            />
+            <span
+              class="input-group-text bg-white rounded-end-3"
+              style="cursor: pointer"
+              (click)="togglePasswordVisibility()"
+            >
+              <i
+                class="bi"
+                [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+              ></i>
+            </span>
+          </div>
+
           <div
             *ngIf="
               loginForm.get('password')?.invalid &&
@@ -53,9 +66,9 @@
             "
             class="text-danger mt-1"
           >
-            <small *ngIf="loginForm.get('password')?.errors?.['required']"
-              >Password is required.</small
-            >
+            <small *ngIf="loginForm.get('password')?.errors?.['required']">
+              Password is required.
+            </small>
             <small *ngIf="loginForm.get('password')?.errors?.['pattern']">
               Password must contain at least 4 characters, including at least
               one uppercase letter, one lowercase letter, one numeric digit, and
