@@ -1,6 +1,19 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
+import { categoryRoutes } from './features/categories/categories.routes';
+import { subcategoryRoutes } from './features/subcategories/subcategories.routes';
+import { productRoutes } from './features/products/products.routes';
+import { orderRoutes } from './features/orders/orders.routes';
+import { userRoutes } from './features/users/users.routes';
+
+const protectedRoutes = [
+  ...categoryRoutes,
+  ...subcategoryRoutes,
+  ...productRoutes,
+  ...orderRoutes,
+  ...userRoutes,
+].map((route) => ({ ...route, canActivate: [authGuard] }));
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
@@ -12,62 +25,7 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
+      canActivate: [authGuard]
   },
-  {
-    path: 'categories',
-    loadComponent: () =>
-      import(
-        './features/categories/category-list/category-list.component'
-      ).then((m) => m.CategoryListComponent),
-  },
-  {
-    path: 'categories/create',
-    loadComponent: () =>
-      import(
-        './features/categories/category-create/category-create.component'
-      ).then((m) => m.CategoryCreateComponent),
-  },
-  {
-    path: 'categories/edit/:id',
-    loadComponent: () =>
-      import(
-        './features/categories/category-edit/category-edit.component'
-      ).then((m) => m.CategoryEditComponent),
-  },
-  {
-    path: 'subcategories',
-    loadComponent: () =>
-      import(
-        './features/subcategories/subcategory-list/subcategory-list.component'
-      ).then((m) => m.SubcategoryListComponent),
-  },
-  {
-    path: 'subcategories/create',
-    loadComponent: () =>
-      import(
-        './features/subcategories/subcategory-create/subcategory-create.component'
-      ).then((m) => m.SubcategoryCreateComponent
-    ),
-  },
-  {
-    path: 'products',
-    loadComponent: () =>
-      import('./features/products/product-list/product-list.component').then(
-        (m) => m.ProductListComponent
-      ),
-  },
-  {
-    path: 'orders',
-    loadComponent: () =>
-      import('./features/orders/order-list/order-list.component').then(
-        (m) => m.OrderListComponent
-      ),
-  },
-  {
-    path: 'users',
-    loadComponent: () =>
-      import('./features/users/user-list/user-list.component').then(
-        (m) => m.UserListComponent
-      ),
-  },
+  ...protectedRoutes,
 ];
