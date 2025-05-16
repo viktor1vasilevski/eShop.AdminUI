@@ -9,6 +9,13 @@ import { userRoutes } from './features/users/users.routes';
 import { UnauthorizedComponent } from './features/unauthorized/unauthorized.component';
 
 const protectedRoutes = [
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./features/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+  },
   ...categoryRoutes,
   ...subcategoryRoutes,
   ...productRoutes,
@@ -19,15 +26,6 @@ const protectedRoutes = [
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-
-  {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent
-      ),
-    canActivate: [authGuard],
-  },
   {
     path: 'unauthorized',
     component: UnauthorizedComponent,
