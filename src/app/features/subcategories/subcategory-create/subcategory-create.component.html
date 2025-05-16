@@ -11,10 +11,11 @@
   <div class="card shadow-sm">
     <div class="card-body p-4">
       <form [formGroup]="createSubcategoryForm" (ngSubmit)="onSubmit()">
-
         <!-- Subcategory Name -->
         <div class="mb-3">
-          <label for="subcategoryName" class="form-label">Subcategory Name</label>
+          <label for="subcategoryName" class="form-label"
+            >Subcategory Name</label
+          >
           <div class="input-group">
             <span class="input-group-text bg-light">
               <i class="bi bi-folder-plus"></i>
@@ -35,10 +36,14 @@
             "
             class="text-danger mt-1"
           >
-            <small *ngIf="createSubcategoryForm.get('name')?.errors?.['required']">
+            <small
+              *ngIf="createSubcategoryForm.get('name')?.errors?.['required']"
+            >
               Subcategory name is required.
             </small>
-            <small *ngIf="createSubcategoryForm.get('name')?.errors?.['minlength']">
+            <small
+              *ngIf="createSubcategoryForm.get('name')?.errors?.['minlength']"
+            >
               Subcategory name must be at least 3 characters.
             </small>
           </div>
@@ -53,11 +58,15 @@
             formControlName="categoryId"
             required
           >
-            <option value="" disabled selected>Select a category</option>
-            <option *ngFor="let category of categoriesDropdownList" [value]="category.id">
+            <option value="" disabled>Select a category</option>
+            <option
+              *ngFor="let category of categoriesDropdownList"
+              [value]="category.id"
+            >
               {{ category.name }}
             </option>
           </select>
+
           <div
             *ngIf="
               createSubcategoryForm.get('categoryId')?.invalid &&

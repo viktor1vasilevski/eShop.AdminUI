@@ -8,7 +8,6 @@ export class AuthenticationManagerService {
 
   private readonly TOKEN_KEY = 'auth_token';
   private readonly ROLE_KEY = 'user_role';
-  private readonly USER_ID = 'user_id';
 
   private loggedInSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   loggedIn$ = this.loggedInSubject.asObservable();
@@ -18,10 +17,9 @@ export class AuthenticationManagerService {
   
   constructor() { }
 
-  setSession(token: string, role: string, userId: string | null): void {
+  setSession(token: string, role: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.ROLE_KEY, role);
-    localStorage.setItem(this.USER_ID, userId ?? 'null');
     this.loggedInSubject.next(true);
   }
   
@@ -33,14 +31,9 @@ export class AuthenticationManagerService {
     return localStorage.getItem(this.ROLE_KEY);
   }
 
-  getUserId(): string | null {
-    return localStorage.getItem(this.USER_ID);
-  }
-
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.ROLE_KEY);
-    localStorage.removeItem(this.USER_ID);
     this.loggedInSubject.next(false);
   }
 

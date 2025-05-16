@@ -30,6 +30,7 @@ export class SubcategoryCreateComponent implements OnInit {
   ) {
     this.createSubcategoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
+      categoryId: ['', Validators.required],
     });
   }
 

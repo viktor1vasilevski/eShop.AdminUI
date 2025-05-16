@@ -59,8 +59,7 @@ export class LoginComponent {
         if (response && response.success) {
           this._authenticationManagerService.setSession(
             response.data.token,
-            response.data.role,
-            null
+            response.data.role
           );
           this.router.navigate(['/dashboard']);
           this._notificationService.success(response.message);
