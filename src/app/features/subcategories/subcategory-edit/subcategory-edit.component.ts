@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -66,24 +65,20 @@ export class SubcategoryEditComponent implements OnInit {
             this._notificationService.info(response.message);
           }
         },
-        error: (errorResponse: any) => {
-          this._errorHandlerService.handleErrors(errorResponse);
-        },
+        error: (errorResponse: any) =>
+          this._errorHandlerService.handleErrors(errorResponse),
       });
   }
 
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this.categoriesDropdownList = response.data;
-        } else {
-          this._notificationService.info(response.message);
-        }
+        response && response.success && response.data
+          ? (this.categoriesDropdownList = response.data)
+          : this._notificationService.info(response.message);
       },
-      error: (errorResponse: any) => {
-        this._errorHandlerService.handleErrors(errorResponse);
-      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
     });
   }
 
