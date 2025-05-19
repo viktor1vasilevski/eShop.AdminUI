@@ -1,1 +1,77 @@
-<p>subcategory-edit works!</p>
+<div class="main-content p-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Edit Subcategory</h4>
+    <button
+      class="btn btn-outline-secondary"
+      (click)="router.navigate(['/subcategories'])"
+    >
+      <i class="bi bi-x-lg me-2"></i> Cancel
+    </button>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <form [formGroup]="editSubcategoryForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="subcategoryName" class="form-label"
+            >Subcategory Name</label
+          >
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-folder-plus"></i>
+            </span>
+            <input
+              type="text"
+              id="subcategoryName"
+              class="form-control"
+              name="subcategoryName"
+              formControlName="name"
+              required
+              placeholder="Enter subcategory name"
+            />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="categorySelect" class="form-label">Category</label>
+          <select
+            id="categorySelect"
+            class="form-select"
+            formControlName="categoryId"
+            required
+          >
+            <option value="" disabled>Select a category</option>
+            <option
+              *ngFor="let category of categoriesDropdownList"
+              [value]="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </select>
+
+          <div
+            *ngIf="
+              editSubcategoryForm.get('categoryId')?.invalid &&
+              editSubcategoryForm.get('categoryId')?.touched
+            "
+            class="text-danger mt-1"
+          >
+            <small>Category is required.</small>
+          </div>
+        </div>
+        <!-- Optional: You could add a dropdown to select the parent category here -->
+
+        <div class="d-flex justify-content-end mt-4">
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="editSubcategoryForm.invalid"
+          >
+            <i class="bi bi-check-lg me-2"></i> Save Subcategory
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

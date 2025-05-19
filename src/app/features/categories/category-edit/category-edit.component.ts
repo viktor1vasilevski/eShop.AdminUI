@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -20,57 +25,58 @@ export class CategoryEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private router: Router,
+    public router: Router,
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
   ) {
     this.editCategoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3)]]
+    });
+
+    this.route.params.subscribe((params) => {
+      this.selectedCategoryId = params['id'];
     });
   }
 
-
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.selectedCategoryId = params['id'];  
-      this._categoryService.getCategoryById(this.selectedCategoryId).subscribe({
-        next: (response: any) => {
-          if(response && response.success) {
-            this.editCategoryForm.patchValue({
-              name: response.data?.name
-            })
-          } else {
-            this._notificationService.info(response.message);
-          }
-        },
-        error: (errorResponse: any) => 
-          this._errorHandlerService.handleErrors(errorResponse)
-      })
-
+    this._categoryService.getCategoryById(this.selectedCategoryId).subscribe({
+      next: (response: any) => {
+        if (response && response.success) {
+          this.editCategoryForm.patchValue({
+            name: response.data?.name,
+          });
+        } else {
+          this._notificationService.info(response.message);
+        }
+      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
     });
   }
 
   onSubmit() {
-    if(!this.editCategoryForm.valid){
-      this._notificationService.info("Invalid form");
+    if (!this.editCategoryForm.valid) {
+      this._notificationService.info('Invalid form');
       return;
     }
 
-    this._categoryService.editCategory(this.selectedCategoryId, this.editCategoryForm.value).subscribe({
-      next:(response: any) => {
-        if(response && response.success) {
-          this._categoryService.notifyCategoryAddedOrEdited();
-          this._notificationService.success(response.message);
-          this.router.navigate(['/categories']);
-        } else {
-          this._notificationService.error(response.message);
-        }
-      },
-      error: (errorResponse: any) => {
-        this._errorHandlerService.handleErrors(errorResponse);
-      }
-    })
+    this._categoryService
+      .editCategory(this.selectedCategoryId, this.editCategoryForm.value)
+      .subscribe({
+        next: (response: any) => {
+          if (response && response.success) {
+            this._categoryService.notifyCategoryAddedOrEdited();
+            this._notificationService.success(response.message);
+            this.router.navigate(['/categories']);
+          } else {
+            this._notificationService.error(response.message);
+          }
+        },
+        error: (errorResponse: any) => {
+          this._errorHandlerService.handleErrors(errorResponse);
+        },
+      });
   }
 
   cancel() {

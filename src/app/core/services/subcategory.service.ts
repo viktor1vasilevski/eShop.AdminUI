@@ -35,6 +35,11 @@ export class SubcategoryService {
     );
   }
 
+  getSubcategoryById(id: string): Observable<any> {
+    const url = `${this.baseUrl}/subcategory/get/${id}`;
+    return this._dataApiService.getById<any>(url);
+  }
+
   notifySubcategoryAddedOrEdited() {
     this.subcategoryAddedOrEditedSource.next(true);
   }
