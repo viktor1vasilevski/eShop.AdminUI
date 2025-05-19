@@ -8,6 +8,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
+declare var bootstrap: any;
 
 export interface CategoryRequest {
   skip: number;
@@ -39,12 +40,13 @@ export class CategoryListComponent {
   totalPages: number[] = [];
   categories: any[] = [];
   currentPage: number = 1;
+  categoryToDelete: any = null;
 
   constructor(
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
-    private router: Router
+    public router: Router
   ) {
     this._categoryService.categoryAddedOrEdited$.subscribe(
       (status) => status && this.loadCategories()
@@ -83,6 +85,31 @@ export class CategoryListComponent {
     });
   }
 
+  showDeleteCategoryModal(category: any) {
+    this.categoryToDelete = category;
+    const modal = document.getElementById('deleteConfirmationModal');
+    if (modal) {
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
+
+  deleteCategory() {
+    this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
+      next: (response: any) => {
+        if (response == null) {
+          this._notificationService.success('Category successfully deleted.');
+          this.closeModal();
+          this.loadCategories();
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
+  }
+
   calculateTotalPages(): void {
     const pages = Math.ceil(this.totalCount / this.categoryRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
@@ -105,7 +132,16 @@ export class CategoryListComponent {
     this.loadCategories();
   }
 
-  editCategory(id: any) {
-    this.router.navigate([`categories/edit/${id}`]);
+  closeModal(): void {
+    const deleteModalElement = document.getElementById(
+      'deleteConfirmationModal'
+    );
+    if (deleteModalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+    this.categoryToDelete = null;
   }
 }
