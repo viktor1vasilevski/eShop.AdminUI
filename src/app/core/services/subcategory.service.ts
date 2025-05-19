@@ -27,4 +27,15 @@ export class SubcategoryService {
     const url = `${this.baseUrl}/subcategory/get`;
     return this._dataApiService.getAll<any>(url, params);
   }
+
+  createSubcategory(request: any): Observable<any> {
+    return this._dataApiService.create<any, any>(
+      `${this.baseUrl}/subcategory/create`,
+      request
+    );
+  }
+
+  notifySubcategoryAddedOrEdited() {
+    this.subcategoryAddedOrEditedSource.next(true);
+  }
 }

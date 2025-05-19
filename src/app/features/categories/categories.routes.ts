@@ -18,8 +18,8 @@ export const categoryRoutes: Routes = [
   {
     path: 'categories/edit/:id',
     loadComponent: () =>
-      import(
-        './category-edit/category-edit.component'
-      ).then((m) => m.CategoryEditComponent),
+      import('./category-edit/category-edit.component').then(
+        (m) => m.CategoryEditComponent
+      ),
   },
 ];

@@ -15,4 +15,11 @@ export const subcategoryRoutes: Routes = [
         (m) => m.SubcategoryCreateComponent
       ),
   },
+  {
+    path: 'subcategories/edit/:id',
+    loadComponent: () =>
+      import('./subcategory-edit/subcategory-edit.component').then(
+        (m) => m.SubcategoryEditComponent
+      ),
+  },
 ];

@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
@@ -41,8 +41,13 @@ export class SubcategoryListComponent implements OnInit {
     private _subcategoryService: SubcategoryService,
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
-    private _errorHandlerService: ErrorHandlerService
-  ) {}
+    private _errorHandlerService: ErrorHandlerService,
+    public router: Router
+  ) {
+    this._subcategoryService.subcategoryAddedOrEdited$.subscribe(
+      (status) => status && this.loadSubcategories()
+    );
+  }
 
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
@@ -53,8 +58,19 @@ export class SubcategoryListComponent implements OnInit {
   currentPage: number = 1;
 
   ngOnInit(): void {
-    this.loadSubcategories();
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {});
+
     this.loadCategoriesDropdownList();
+    this.loadSubcategories();
+
+    this.nameChangeSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(() => {
+        this.subcategoryRequest.skip = 0;
+        this.loadSubcategories();
+      });
   }
 
   loadSubcategories() {
@@ -62,11 +78,9 @@ export class SubcategoryListComponent implements OnInit {
       .getSubcategories(this.subcategoryRequest)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success && response.data) {
-            this.subcategories = response.data;
-          } else {
-            this._notificationService.error(response.message);
-          }
+          response && response.success && response.data
+            ? (this.subcategories = response.data)
+            : this._notificationService.error(response.message);
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),
@@ -76,15 +90,24 @@ export class SubcategoryListComponent implements OnInit {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        if (response && response.success && response.data) {
-          this.categoriesDropdownList = response.data;
-        } else {
-          this._notificationService.error(response.message);
-        }
+        response && response.success && response.data
+          ? (this.categoriesDropdownList = response.data)
+          : this._notificationService.error(response.message);
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
     });
+  }
+
+  onCategoryChange(event: any) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValue = selectElement.value;
+    this.subcategoryRequest.categoryId = selectedValue;
+    this.loadSubcategories();
+  }
+
+  onFilterChange(): void {
+    this.nameChangeSubject.next(this.subcategoryRequest.name);
   }
 
   editSubcategory(id: any) {}
@@ -100,9 +123,5 @@ export class SubcategoryListComponent implements OnInit {
     this.subcategoryRequest.skip = 0;
     this.currentPage = 1;
     this.loadSubcategories();
-  }
-
-  onFilterChange(): void {
-    this.nameChangeSubject.next(this.subcategoryRequest.name);
   }
 }
