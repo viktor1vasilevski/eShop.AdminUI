@@ -24,20 +24,32 @@ export class SubcategoryService {
       .set('sortDirection', request.sortDirection)
       .set('sortBy', request.sortBy);
 
-    const url = `${this.baseUrl}/subcategory/get`;
+    const url = `${this.baseUrl}/subcategory`;
     return this._dataApiService.getAll<any>(url, params);
   }
 
   createSubcategory(request: any): Observable<any> {
     return this._dataApiService.create<any, any>(
-      `${this.baseUrl}/subcategory/create`,
+      `${this.baseUrl}/subcategory`,
+      request
+    );
+  }
+
+  editSubcategory(id: string, request: any): Observable<any> {
+    return this._dataApiService.put<any, any>(
+      `${this.baseUrl}/subcategory/${id}`,
       request
     );
   }
 
   getSubcategoryById(id: string): Observable<any> {
-    const url = `${this.baseUrl}/subcategory/get/${id}`;
+    const url = `${this.baseUrl}/subcategory/${id}`;
     return this._dataApiService.getById<any>(url);
+  }
+
+  deleteSubcategory(id: string): Observable<any> {
+    const url = `${this.baseUrl}/subcategory/${id}`;
+    return this._dataApiService.delete<any>(url);
   }
 
   notifySubcategoryAddedOrEdited() {

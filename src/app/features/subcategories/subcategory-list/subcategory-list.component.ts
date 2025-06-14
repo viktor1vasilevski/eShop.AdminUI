@@ -9,6 +9,7 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
+declare var bootstrap: any;
 
 export interface SubategoryRequest {
   skip: number;
@@ -36,6 +37,7 @@ export class SubcategoryListComponent implements OnInit {
   };
 
   categoriesDropdownList: any[] = [];
+  subcategoryToDelete: any = null;
 
   constructor(
     private _subcategoryService: SubcategoryService,
@@ -99,11 +101,51 @@ export class SubcategoryListComponent implements OnInit {
     });
   }
 
+  deleteSubcategory() {
+    this._subcategoryService
+      .deleteSubcategory(this.subcategoryToDelete.id)
+      .subscribe({
+        next: (response: any) => {
+          if (response && response.success) {
+            this._notificationService.success(response.message);
+            this.loadSubcategories();
+          } else {
+            this._notificationService.error(response.message);
+          }
+        },
+        error: (errorResponse: any) =>
+          this._errorHandlerService.handleErrors(errorResponse),
+      });
+    this.closeModal();
+  }
+
   onCategoryChange(event: any) {
     const selectElement = event.target as HTMLSelectElement;
     const selectedValue = selectElement.value;
     this.subcategoryRequest.categoryId = selectedValue;
     this.loadSubcategories();
+  }
+
+  closeModal(): void {
+    const deleteModalElement = document.getElementById(
+      'deleteConfirmationModal'
+    );
+    if (deleteModalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+    this.subcategoryToDelete = null;
+  }
+
+  showDeleteSubcategoryModal(subcategory: any) {
+    this.subcategoryToDelete = subcategory;
+    const modal = document.getElementById('deleteConfirmationModal');
+    if (modal) {
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
   }
 
   onFilterChange(): void {

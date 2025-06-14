@@ -51,7 +51,6 @@ export class SubcategoryEditComponent implements OnInit {
   }
 
   loadSubcategoryById() {
-    debugger;
     this._subcategoryService
       .getSubcategoryById(this.selectedSubcategoryId)
       .subscribe({
@@ -82,5 +81,30 @@ export class SubcategoryEditComponent implements OnInit {
     });
   }
 
-  onSubmit() {}
+  onSubmit() {
+    if (!this.editSubcategoryForm.valid) {
+      this._notificationService.info('Invalid form');
+      return;
+    }
+
+    this._subcategoryService
+      .editSubcategory(
+        this.selectedSubcategoryId,
+        this.editSubcategoryForm.value
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response && response.success) {
+            this._subcategoryService.notifySubcategoryAddedOrEdited();
+            this._notificationService.success(response.message);
+            this.router.navigate(['/subcategories']);
+          } else {
+            this._notificationService.error(response.message);
+          }
+        },
+        error: (errorResponse: any) => {
+          this._errorHandlerService.handleErrors(errorResponse);
+        }
+      });
+  }
 }

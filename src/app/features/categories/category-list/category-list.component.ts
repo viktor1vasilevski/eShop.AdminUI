@@ -97,9 +97,8 @@ export class CategoryListComponent {
   deleteCategory() {
     this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
       next: (response: any) => {
-        if (response == null) {
-          this._notificationService.success('Category successfully deleted.');
-          this.closeModal();
+        if (response && response.success) {
+          this._notificationService.success(response.message);
           this.loadCategories();
         } else {
           this._notificationService.error(response.message);
@@ -108,6 +107,7 @@ export class CategoryListComponent {
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
     });
+    this.closeModal();
   }
 
   calculateTotalPages(): void {

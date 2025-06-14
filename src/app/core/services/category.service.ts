@@ -22,31 +22,31 @@ export class CategoryService {
       .set('sortBy', request.sortBy)
       .set('name', request.name);
 
-    const url = `${this.baseUrl}/category/get`;
+    const url = `${this.baseUrl}/category`;
     return this._dataApiService.getAll<any>(url, params);
   }
 
   createCategory(request: any): Observable<any> {
     return this._dataApiService.create<any, any>(
-      `${this.baseUrl}/category/create`,
+      `${this.baseUrl}/category`,
       request
     );
   }
 
   editCategory(id: string, request: any): Observable<any> {
     return this._dataApiService.put<any, any>(
-      `${this.baseUrl}/category/edit/${id}`,
+      `${this.baseUrl}/category/${id}`,
       request
     );
   }
 
   getCategoryById(id: string): Observable<any> {
-    const url = `${this.baseUrl}/category/get/${id}`;
+    const url = `${this.baseUrl}/category/${id}`;
     return this._dataApiService.getById<any>(url);
   }
 
   deleteCategory(id: string): Observable<any> {
-    const url = `${this.baseUrl}/category/delete/${id}`;
+    const url = `${this.baseUrl}/category/${id}`;
     return this._dataApiService.delete<any>(url);
   }
 
