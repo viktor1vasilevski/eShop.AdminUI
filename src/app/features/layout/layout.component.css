@@ -1,0 +1,81 @@
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #212529;
+  display: flex;
+  flex-direction: column;
+  transition: none;
+  box-sizing: border-box;
+}
+
+.sidebar-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #495057;
+}
+
+.sidebar .icon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar .text {
+  margin-left: 10px;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+
+button.btn-danger {
+  cursor: pointer;
+  margin-top: auto;
+  width: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-x: auto;
+  padding: 1.5rem;
+  min-width: 0;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  padding: 12px 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background-color: #dc3545; /* Bootstrap danger color */
+}

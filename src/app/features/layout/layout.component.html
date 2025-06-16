@@ -1,0 +1,30 @@
+<div class="d-flex min-vh-100">
+  <!-- Sidebar -->
+  <div class="sidebar bg-dark text-white d-flex flex-column">
+    <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
+      <i class="bi bi-folder icon"></i>
+      <span class="text">Dashboard</span>
+    </a>
+    <a routerLink="/categories" routerLinkActive="active" class="sidebar-link">
+      <i class="bi bi-folder icon"></i>
+      <span class="text">Categories</span>
+    </a>
+    <a
+      routerLink="/subcategories"
+      routerLinkActive="active"
+      class="sidebar-link"
+    >
+      <i class="bi bi-folder2-open icon"></i>
+      <span class="text">Subcategories</span>
+    </a>
+    <button class="sidebar-link btn-logout" (click)="logout()">
+      <i class="bi bi-box-arrow-right icon"></i>
+      <span class="text">Logout</span>
+    </button>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content flex-grow-1 p-4 bg-light">
+    <router-outlet></router-outlet>
+  </div>
+</div>
