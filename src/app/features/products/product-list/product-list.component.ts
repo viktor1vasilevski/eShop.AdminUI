@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { ProductService } from '../../../core/services/product.service';
+import { SubcategoryService } from '../../../core/services/subcategory.service';
 
 export interface ProductRequest {
   skip: number;
@@ -30,15 +31,18 @@ export class ProductListComponent implements OnInit {
   };
 
   products: any[] = [];
+  subcategoriesDropdownList: any[] = [];
   totalCount: number = 0;
   totalPages: number[] = [];
   currentPage: number = 1;
   productToDelete: any = null;
   constructor(public router: Router,
-    private _productService: ProductService
+    private _productService: ProductService,
+    private _subcategoryService: SubcategoryService
   ) {}
 
   ngOnInit(): void {
+    this.loadSubcategoriesDropdownList();
     this.loadProducts();
   }
 
@@ -47,6 +51,18 @@ export class ProductListComponent implements OnInit {
       next: (response: any) => {
         console.log(response);
         
+      },
+      error: (errorResponse: any) => {
+        console.log(errorResponse);
+        
+      }
+    })
+  }
+
+  loadSubcategoriesDropdownList(){
+    this._subcategoryService.getSubcategoriesDropdownList().subscribe({
+      next: (response: any) => {
+        this.subcategoriesDropdownList = response.data;
       },
       error: (errorResponse: any) => {
         console.log(errorResponse);

@@ -52,6 +52,11 @@ export class SubcategoryService {
     return this._dataApiService.delete<any>(url);
   }
 
+  getSubcategoriesDropdownList(): Observable<any> {
+    const url = `${this.baseUrl}/subcategory/dropdownList`;
+    return this._dataApiService.getAll<any>(url);
+  }
+
   notifySubcategoryAddedOrEdited() {
     this.subcategoryAddedOrEditedSource.next(true);
   }

@@ -22,4 +22,13 @@ export class ProductService {
     const url = `${this.baseUrl}/product`;
     return this._dataApiService.getAll<any>(url, params);
   }
+
+  createProduct(request: any): Observable<any> {
+    return this._dataApiService.create<any, any>(
+      `${this.baseUrl}/product`,
+      request
+    );
+  }
+
+
 }

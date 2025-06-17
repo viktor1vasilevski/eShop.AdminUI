@@ -1,0 +1,163 @@
+<div class="main-content p-4">
+  <!-- Create Form -->
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">Create Product</h4>
+      </div>
+
+      <form [formGroup]="createProductForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <!-- Left Column -->
+          <div class="col-md-6">
+            <!-- Product Name -->
+            <div class="mb-3">
+              <label for="productBrand" class="form-label">Product Brand</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-box-seam"></i>
+                </span>
+                <input
+                  type="text"
+                  id="productBrand"
+                  class="form-control"
+                  formControlName="brand"
+                  placeholder="Enter product brand"
+                  required
+                />
+              </div>
+              <div
+                *ngIf="
+                  createProductForm.get('brand')?.invalid &&
+                  createProductForm.get('brand')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small
+                  *ngIf="createProductForm.get('brand')?.errors?.['required']"
+                >
+                  Product name is required.
+                </small>
+                <small
+                  *ngIf="createProductForm.get('brand')?.errors?.['minlength']"
+                >
+                  Product name must be at least 3 characters.
+                </small>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="mb-3">
+              <label for="productPrice" class="form-label">Price</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-currency-dollar"></i>
+                </span>
+                <input
+                  type="number"
+                  id="productPrice"
+                  class="form-control"
+                  formControlName="price"
+                  placeholder="Enter product price"
+                  required
+                />
+              </div>
+              <div
+                *ngIf="
+                  createProductForm.get('price')?.invalid &&
+                  createProductForm.get('price')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small>Price is required and must be a valid number.</small>
+              </div>
+            </div>
+            <!-- Quantity -->
+            <div class="mb-3">
+              <label for="productQuantity" class="form-label">Quantity</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-currency-dollar"></i>
+                </span>
+                <input
+                  type="number"
+                  id="productQuantity"
+                  class="form-control"
+                  formControlName="quantity"
+                  placeholder="Enter product quantity"
+                  required
+                />
+              </div>
+              <div
+                *ngIf="
+                  createProductForm.get('quantity')?.invalid &&
+                  createProductForm.get('quantity')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small>Quantity is required and must be a valid number.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="col-md-6">
+            <!-- Subcategory Dropdown -->
+            <div class="mb-3">
+              <label for="subcategorySelect" class="form-label"
+                >Subcategory</label
+              >
+              <select
+                id="subcategorySelect"
+                class="form-select"
+                formControlName="subcategoryId"
+                required
+              >
+                <option value="" disabled>Select a subcategory</option>
+                <option
+                  *ngFor="let subcategory of subcategoriesDropdownList"
+                  [value]="subcategory.id"
+                >
+                  {{ subcategory.name }}
+                </option>
+              </select>
+              <div
+                *ngIf="
+                  createProductForm.get('subcategoryId')?.invalid &&
+                  createProductForm.get('subcategoryId')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small>Subcategory is required.</small>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="productDescription" class="form-label"
+                >Description</label
+              >
+              <textarea
+                id="productDescription"
+                class="form-control"
+                formControlName="description"
+                rows="3"
+                placeholder="Enter product description (optional)"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="createProductForm.invalid"
+          >
+            <i class="bi bi-check-lg me-2"></i> Create Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

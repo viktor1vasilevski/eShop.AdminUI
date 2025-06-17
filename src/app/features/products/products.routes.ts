@@ -8,4 +8,11 @@ export const productRoutes: Routes = [
         (m) => m.ProductListComponent
       ),
   },
+  {
+    path: 'products/create',
+    loadComponent: () =>
+      import('./product-create/product-create.component').then(
+        (m) => m.ProductCreateComponent
+      ),
+  },
 ];
