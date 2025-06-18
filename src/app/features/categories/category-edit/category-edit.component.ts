@@ -18,7 +18,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 })
 export class CategoryEditComponent implements OnInit {
   categoryName: string = '';
-
+  isSubmitting = false;
   editCategoryForm: FormGroup;
   selectedCategoryId: string = '';
 
@@ -60,7 +60,7 @@ export class CategoryEditComponent implements OnInit {
       this._notificationService.info('Invalid form');
       return;
     }
-
+    this.isSubmitting = true;
     this._categoryService
       .editCategory(this.selectedCategoryId, this.editCategoryForm.value)
       .subscribe({
@@ -70,10 +70,12 @@ export class CategoryEditComponent implements OnInit {
             this._notificationService.success(response.message);
             this.router.navigate(['/categories']);
           } else {
+            this.isSubmitting = false;
             this._notificationService.error(response.message);
           }
         },
         error: (errorResponse: any) => {
+          this.isSubmitting = false;
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });

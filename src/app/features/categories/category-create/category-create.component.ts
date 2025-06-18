@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -21,7 +20,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CategoryCreateComponent {
   createCategoryForm: FormGroup;
-
+  isSubmitting = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -39,7 +38,7 @@ export class CategoryCreateComponent {
       this._notificationService.info('Invalid form');
       return;
     }
-
+    this.isSubmitting = true;
     this._categoryService
       .createCategory(this.createCategoryForm.value)
       .subscribe({
@@ -49,11 +48,14 @@ export class CategoryCreateComponent {
             this._categoryService.notifyCategoryAddedOrEdited();
             this.router.navigate(['/categories']);
           } else {
+            this.isSubmitting = true;
             this._notificationService.error(response.message);
           }
         },
-        error: (errorResponse: any) =>
-          this._errorHandlerService.handleErrors(errorResponse),
+        error: (errorResponse: any) => {
+          this.isSubmitting = true;
+          this._errorHandlerService.handleErrors(errorResponse);
+        },
       });
   }
 }

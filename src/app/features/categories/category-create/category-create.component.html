@@ -50,7 +50,7 @@
           <button
             class="btn btn-primary"
             type="submit"
-            [disabled]="createCategoryForm.invalid"
+            [disabled]="createCategoryForm.invalid || isSubmitting"
           >
             <i class="bi bi-check-lg me-2"></i> Create Category
           </button>
