@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DataService } from './data.service';
 
 @Injectable({
@@ -8,12 +8,18 @@ import { DataService } from './data.service';
 })
 export class ProductService {
   private baseUrl = 'https://localhost:7270/api';
+
+  private productAddedOrEditedSource = new BehaviorSubject<boolean>(false);
+  productAddedOrEdited$ = this.productAddedOrEditedSource.asObservable();
   constructor(private _dataApiService: DataService) {}
 
   getProducts(request: any): Observable<any> {
     const params = new HttpParams()
-      .set('brand', request.name)
-      .set('subcategoryId', request.categoryId)
+      .set('brand', request.brand)
+      .set('categoryId', request.categoryId)
+      .set('subcategoryId', request.subcategoryId)
+      .set('unitPrice', request.unitPrice)
+      .set('unitQuantity', request.unitQuantity)
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
       .set('sortDirection', request.sortDirection)
@@ -30,5 +36,7 @@ export class ProductService {
     );
   }
 
-
+  notifyProductAddedOrEdited() {
+    this.productAddedOrEditedSource.next(true);
+  }
 }

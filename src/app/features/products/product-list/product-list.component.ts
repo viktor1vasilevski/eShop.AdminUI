@@ -6,13 +6,20 @@ import { PaginationComponent } from '../../../core/components/pagination/paginat
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 
 export interface ProductRequest {
+  brand: string;
+  categoryId: string,
+  description: string,
+  unitPrice: number,
+  unitQuantity: number,
+  subcategoryId: string,
   skip: number;
   take: number;
   sortDirection: SortOrder;
   sortBy: string;
-  brand: string;
 }
 
 @Component({
@@ -23,11 +30,16 @@ export interface ProductRequest {
 })
 export class ProductListComponent implements OnInit {
   productRequest: ProductRequest = {
+    brand: '',
+    categoryId: '',
+    subcategoryId: '',
+    description: '',
+    unitPrice: 0,
+    unitQuantity: 0,
     skip: 0,
     take: 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
-    brand: '',
   };
 
   products: any[] = [];
@@ -38,18 +50,26 @@ export class ProductListComponent implements OnInit {
   productToDelete: any = null;
   constructor(public router: Router,
     private _productService: ProductService,
-    private _subcategoryService: SubcategoryService
+    private _subcategoryService: SubcategoryService,
+    private _notificationService: NotificationService,
+    private _errorHandlerService: ErrorHandlerService
   ) {}
 
   ngOnInit(): void {
-    this.loadSubcategoriesDropdownList();
+    //this.loadSubcategoriesDropdownList();
     this.loadProducts();
   }
 
   loadProducts(){
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
-        console.log(response);
+        if(response && response.data){
+          this.products = response.data;
+          console.log(this.products);
+          
+        } else {
+          this._notificationService.error(response.message)
+        }
         
       },
       error: (errorResponse: any) => {
