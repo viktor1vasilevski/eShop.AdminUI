@@ -21,6 +21,7 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 export class SubcategoryCreateComponent implements OnInit {
   createSubcategoryForm: FormGroup;
   categoriesDropdownList: any[] = [];
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -45,7 +46,7 @@ export class SubcategoryCreateComponent implements OnInit {
       this._notificationService.info('Invalid form');
       return;
     }
-
+    this.isSubmitting = true;
     this._subcategoryService
       .createSubcategory(this.createSubcategoryForm.value)
       .subscribe({
@@ -55,11 +56,14 @@ export class SubcategoryCreateComponent implements OnInit {
             this._subcategoryService.notifySubcategoryAddedOrEdited();
             this.router.navigate(['/subcategories']);
           } else {
+            this.isSubmitting = false;
             this._notificationService.error(response.message);
           }
         },
-        error: (errorResponse: any) =>
-          this._errorHandlerService.handleErrors(errorResponse),
+        error: (errorResponse: any) => {
+          this.isSubmitting = false;
+          this._errorHandlerService.handleErrors(errorResponse);
+        },
       });
   }
 

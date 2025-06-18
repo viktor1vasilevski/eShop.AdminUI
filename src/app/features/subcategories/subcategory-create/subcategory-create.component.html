@@ -84,7 +84,7 @@
           <button
             class="btn btn-primary"
             type="submit"
-            [disabled]="createSubcategoryForm.invalid"
+            [disabled]="createSubcategoryForm.invalid || isSubmitting"
           >
             <i class="bi bi-check-lg me-2"></i> Create Subcategory
           </button>

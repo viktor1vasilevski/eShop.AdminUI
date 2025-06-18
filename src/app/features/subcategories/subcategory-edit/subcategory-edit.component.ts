@@ -20,7 +20,7 @@ import { CategoryService } from '../../../core/services/category.service';
 })
 export class SubcategoryEditComponent implements OnInit {
   subcategoryName: string = '';
-
+  isSubmitting = false;
   editSubcategoryForm: FormGroup;
   selectedSubcategoryId: string = '';
   editCategoryForm: any;
@@ -86,7 +86,7 @@ export class SubcategoryEditComponent implements OnInit {
       this._notificationService.info('Invalid form');
       return;
     }
-
+    this.isSubmitting = true;
     this._subcategoryService
       .editSubcategory(
         this.selectedSubcategoryId,
@@ -99,12 +99,14 @@ export class SubcategoryEditComponent implements OnInit {
             this._notificationService.success(response.message);
             this.router.navigate(['/subcategories']);
           } else {
+            this.isSubmitting = false;
             this._notificationService.error(response.message);
           }
         },
         error: (errorResponse: any) => {
+          this.isSubmitting = false;
           this._errorHandlerService.handleErrors(errorResponse);
-        }
+        },
       });
   }
 }

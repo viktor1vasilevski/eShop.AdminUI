@@ -37,7 +37,7 @@
           <button
             class="btn btn-primary"
             type="submit"
-            [disabled]="editCategoryForm.invalid"
+            [disabled]="editCategoryForm.invalid || isSubmitting"
           >
             <i class="bi bi-check-lg me-2"></i> Save Category
           </button>
