@@ -5,14 +5,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 
 @Component({
   selector: 'app-category-edit',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './category-edit.component.html',
   styleUrl: './category-edit.component.css',
 })

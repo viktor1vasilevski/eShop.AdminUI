@@ -1,6 +1,4 @@
 <div class="main-content p-4">
-  <!-- Page Header -->
-
   <!-- Edit Form -->
   <div class="card shadow-sm">
     <div class="card-body p-4">
@@ -56,7 +54,14 @@
         </div>
         <!-- Optional: You could add a dropdown to select the parent category here -->
 
-        <div class="d-flex justify-content-end mt-4">
+        <div class="d-flex justify-content-end mt-4 gap-2">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            [routerLink]="['/subcategories']"
+          >
+            <i class="bi bi-x-lg me-2"></i> Cancel
+          </button>
           <button
             class="btn btn-primary"
             type="submit"

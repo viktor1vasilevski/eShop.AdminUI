@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
@@ -14,7 +14,7 @@ import { CategoryService } from '../../../core/services/category.service';
 
 @Component({
   selector: 'app-subcategory-edit',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './subcategory-edit.component.html',
   styleUrl: './subcategory-edit.component.css',
 })
