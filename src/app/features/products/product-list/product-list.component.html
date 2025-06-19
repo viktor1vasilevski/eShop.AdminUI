@@ -50,7 +50,7 @@
               <th scope="col">Subcategory</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
-<th
+              <th
                 *ngIf="products.length !== 0"
                 (click)="toggleSortOrder('created')"
                 style="cursor: pointer"
@@ -110,13 +110,21 @@
               </td>
               <td class="text-end">
                 <button
+                  class="btn btn-sm btn-outline-secondary me-2"
+                  title="View details"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button
                   class="btn btn-sm btn-outline-info me-2"
                   (click)="router.navigate(['products/edit', product.id])"
+                  title="Edit"
                 >
                   <i class="bi bi-pencil"></i>
                 </button>
                 <button
                   class="btn btn-sm btn-outline-danger"
+                  title="Delete"
                   (click)="showDeleteProductModal(product)"
                 >
                   <i class="bi bi-trash"></i>

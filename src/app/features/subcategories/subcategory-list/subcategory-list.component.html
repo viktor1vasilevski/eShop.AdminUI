@@ -132,12 +132,14 @@
                   (click)="
                     router.navigate(['subcategories/edit', subcategory.id])
                   "
+                  title="Edit"
                 >
                   <i class="bi bi-pencil"></i>
                 </button>
                 <button
                   class="btn btn-sm btn-outline-danger"
                   (click)="showDeleteSubcategoryModal(subcategory)"
+                  title="Delete"
                 >
                   <i class="bi bi-trash"></i>
                 </button>
