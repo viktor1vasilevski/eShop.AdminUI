@@ -2,3 +2,8 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+.white-arrow {
+  color: white !important;
+}
+

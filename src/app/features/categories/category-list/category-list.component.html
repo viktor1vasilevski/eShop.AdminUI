@@ -45,8 +45,42 @@
           <thead class="table-dark">
             <tr>
               <th scope="col">Category</th>
-              <th scope="col">Created At</th>
-              <th scope="col">Last Modified At</th>
+              <th
+                *ngIf="categories.length !== 0"
+                (click)="toggleSortOrder('created')"
+                style="cursor: pointer"
+              >
+                Created At
+                <i
+                  [ngClass]="[
+                    'bi',
+                    categoryRequest.sortBy === 'created'
+                      ? categoryRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
+
+              <th
+                *ngIf="categories.length !== 0"
+                (click)="toggleSortOrder('lastmodified')"
+                style="cursor: pointer"
+              >
+                Last Modified At
+                <i
+                  [ngClass]="[
+                    'bi',
+                    categoryRequest.sortBy === 'lastmodified'
+                      ? categoryRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
+
               <th scope="col" class="text-end">Actions</th>
             </tr>
           </thead>

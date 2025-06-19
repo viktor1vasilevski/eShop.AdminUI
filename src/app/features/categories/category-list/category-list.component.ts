@@ -94,6 +94,21 @@ export class CategoryListComponent {
     }
   }
 
+  
+  toggleSortOrder(sortedBy: string) {
+    if (this.categoryRequest.sortBy === sortedBy) {
+      this.categoryRequest.sortDirection =
+        this.categoryRequest.sortDirection === SortOrder.Ascending
+          ? SortOrder.Descending
+          : SortOrder.Ascending;
+    } else {
+      this.categoryRequest.sortBy = sortedBy;
+      this.categoryRequest.sortDirection = SortOrder.Ascending;
+    }
+
+    this.loadCategories();
+  }
+
   deleteCategory() {
     this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
       next: (response: any) => {
