@@ -105,6 +105,15 @@ export class ProductListComponent implements OnInit {
   }
   onFilterChange() {}
 
+  toggleSortOrder(sortedBy: string) {
+    this.productRequest.sortDirection =
+      this.productRequest.sortDirection === SortOrder.Ascending
+        ? SortOrder.Descending
+        : SortOrder.Ascending;
+    this.productRequest.sortBy = sortedBy;
+    this.loadProducts();
+  }
+
   showDeleteProductModal(product: any) {
     this.productToDelete = product;
     const modal = document.getElementById('deleteConfirmationModal');

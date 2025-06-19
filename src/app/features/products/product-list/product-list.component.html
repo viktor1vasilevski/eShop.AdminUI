@@ -50,7 +50,24 @@
               <th scope="col">Subcategory</th>
               <th scope="col">Price</th>
               <th scope="col">Quantity</th>
-              <th scope="col">Created At</th>
+              <th
+                *ngIf="products.length !== 0"
+                (click)="toggleSortOrder('created')"
+                style="cursor: pointer"
+              >
+                Created At
+                <i
+                  *ngIf="
+                    products.length !== 0 && productRequest.sortBy == 'created'
+                  "
+                  [ngClass]="[
+                    productRequest.sortDirection === 'asc'
+                      ? 'bi bi-arrow-up'
+                      : 'bi bi-arrow-down',
+                    'white-arrow'
+                  ]"
+                ></i>
+              </th>
               <th scope="col">Last Modified At</th>
               <th scope="col" class="text-end">Actions</th>
             </tr>
