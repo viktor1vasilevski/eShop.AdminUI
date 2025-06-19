@@ -68,8 +68,41 @@
             <tr>
               <th scope="col">Subcategory Name</th>
               <th scope="col">Category Name</th>
-              <th scope="col">Created At</th>
-              <th scope="col">Last Modified At</th>
+              <th
+                *ngIf="subcategories.length !== 0"
+                (click)="toggleSortOrder('created')"
+                style="cursor: pointer"
+              >
+                Created At
+                <i
+                  [ngClass]="[
+                    'bi',
+                    subcategoryRequest.sortBy === 'created'
+                      ? subcategoryRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
+
+              <th
+                *ngIf="subcategories.length !== 0"
+                (click)="toggleSortOrder('lastmodified')"
+                style="cursor: pointer"
+              >
+                Last Modified At
+                <i
+                  [ngClass]="[
+                    'bi',
+                    subcategoryRequest.sortBy === 'lastmodified'
+                      ? subcategoryRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
               <th scope="col" class="text-end">Actions</th>
             </tr>
           </thead>

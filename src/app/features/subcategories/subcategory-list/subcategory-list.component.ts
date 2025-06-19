@@ -166,4 +166,18 @@ export class SubcategoryListComponent implements OnInit {
     this.currentPage = 1;
     this.loadSubcategories();
   }
+
+  toggleSortOrder(sortedBy: string) {
+    if (this.subcategoryRequest.sortBy === sortedBy) {
+      this.subcategoryRequest.sortDirection =
+        this.subcategoryRequest.sortDirection === SortOrder.Ascending
+          ? SortOrder.Descending
+          : SortOrder.Ascending;
+    } else {
+      this.subcategoryRequest.sortBy = sortedBy;
+      this.subcategoryRequest.sortDirection = SortOrder.Ascending;
+    }
+
+    this.loadSubcategories();
+  }
 }
