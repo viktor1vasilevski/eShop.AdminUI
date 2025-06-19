@@ -51,9 +51,8 @@ export class ProductCreateComponent implements OnInit {
       next: (response: any) => {
         this.subcategoriesDropdownList = response.data;
       },
-      error: (errorResponse: any) => {
-        console.log(errorResponse);
-      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
     });
   }
 
@@ -76,7 +75,7 @@ export class ProductCreateComponent implements OnInit {
       error: (errorResponse: any) => {
         this.isSubmitting = false;
         this._errorHandlerService.handleErrors(errorResponse);
-      }
+      },
     });
   }
 }

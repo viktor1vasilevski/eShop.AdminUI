@@ -8,14 +8,15 @@ import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
+declare var bootstrap: any;
 
 export interface ProductRequest {
   brand: string;
-  categoryId: string,
-  description: string,
-  unitPrice: number,
-  unitQuantity: number,
-  subcategoryId: string,
+  categoryId: string;
+  description: string;
+  unitPrice: number;
+  unitQuantity: number;
+  subcategoryId: string;
   skip: number;
   take: number;
   sortDirection: SortOrder;
@@ -48,7 +49,8 @@ export class ProductListComponent implements OnInit {
   totalPages: number[] = [];
   currentPage: number = 1;
   productToDelete: any = null;
-  constructor(public router: Router,
+  constructor(
+    public router: Router,
     private _productService: ProductService,
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
@@ -60,35 +62,28 @@ export class ProductListComponent implements OnInit {
     this.loadProducts();
   }
 
-  loadProducts(){
+  loadProducts() {
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
-        if(response && response.data){
+        if (response && response.data) {
           this.products = response.data;
-          console.log(this.products);
-          
         } else {
-          this._notificationService.error(response.message)
+          this._notificationService.error(response.message);
         }
-        
       },
-      error: (errorResponse: any) => {
-        console.log(errorResponse);
-        
-      }
-    })
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
   }
 
-  loadSubcategoriesDropdownList(){
+  loadSubcategoriesDropdownList() {
     this._subcategoryService.getSubcategoriesDropdownList().subscribe({
       next: (response: any) => {
         this.subcategoriesDropdownList = response.data;
       },
-      error: (errorResponse: any) => {
-        console.log(errorResponse);
-        
-      }
-    })
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
   }
 
   calculateTotalPages(): void {
@@ -99,18 +94,52 @@ export class ProductListComponent implements OnInit {
   changePage(page: number): void {
     this.currentPage = page;
     this.productRequest.skip = (page - 1) * this.productRequest.take;
-    //this.loadCategories();
+    this.loadProducts();
   }
 
   onItemsPerPageChange(itemsPerPage: number): void {
     this.productRequest.take = itemsPerPage;
     this.productRequest.skip = 0;
     this.currentPage = 1;
-    //this.loadProducts();
+    this.loadProducts();
   }
   onFilterChange() {}
 
-  showDeleteProductModal(product: any) {}
+  showDeleteProductModal(product: any) {
+    this.productToDelete = product;
+    const modal = document.getElementById('deleteConfirmationModal');
+    if (modal) {
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
 
-  deleteProduct() {}
+  deleteProduct() {
+    this._productService.deleteProduct(this.productToDelete.id).subscribe({
+      next: (response: any) => {
+        if (response && response.success) {
+          this._notificationService.success(response.message);
+          this.loadProducts();
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
+    this.closeModal();
+  }
+
+  closeModal(): void {
+    const deleteModalElement = document.getElementById(
+      'deleteConfirmationModal'
+    );
+    if (deleteModalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+    this.productToDelete = null;
+  }
 }
