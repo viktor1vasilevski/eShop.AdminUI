@@ -48,12 +48,12 @@ export class CategoryCreateComponent {
             this._categoryService.notifyCategoryAddedOrEdited();
             this.router.navigate(['/categories']);
           } else {
-            this.isSubmitting = true;
+            this.isSubmitting = false;
             this._notificationService.error(response.message);
           }
         },
         error: (errorResponse: any) => {
-          this.isSubmitting = true;
+          this.isSubmitting = false;
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });

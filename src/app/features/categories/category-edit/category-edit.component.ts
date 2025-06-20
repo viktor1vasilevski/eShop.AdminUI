@@ -9,10 +9,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-category-edit',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: './category-edit.component.html',
   styleUrl: './category-edit.component.css',
 })
@@ -79,9 +80,5 @@ export class CategoryEditComponent implements OnInit {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
-  }
-
-  cancel() {
-    this.router.navigate(['/categories']);
   }
 }
