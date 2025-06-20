@@ -5,23 +5,56 @@
     inactive status and will not be visible to users.
   </div>
 
-  <!-- Filter Section -->
   <div class="card mb-3 shadow-sm">
     <div class="card-body p-3">
       <form class="row g-2 align-items-center">
+        <!-- Brand Filter -->
         <div class="col-md-6">
           <div class="input-group">
-            <span class="input-group-text bg-light">
-              <i class="bi bi-search"></i>
-            </span>
-            <input
-              type="text"
-              [(ngModel)]="productRequest.brand"
-              (input)="onFilterChange()"
-              class="form-control"
-              name="search"
-              placeholder="Search products by name"
-            />
+            <div class="col-md-4">
+              <label for="brandFilter" class="form-label">Brand</label>
+              <input
+                type="text"
+                [(ngModel)]="productRequest.brand"
+                (input)="onFilterChange()"
+                class="form-control"
+                name="brand"
+                placeholder="Search products by brand"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="categoryFilter" class="form-label">Category</label>
+          <select
+            id="categoryFilter"
+            class="form-select"
+            (change)="onDropdownItemChange($event, 'category')"
+          >
+            <option value="" [disabled]="true">Filter by category</option>
+            <option value="">All</option>
+            <option
+              *ngFor="let category of categoriesDropdownList"
+              [value]="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+        <!-- Category Filter -->
+        <div class="col-md-6">
+          <div class="input-group">
+            <div class="col-md-4">
+              <label for="categoryFilter" class="form-label">Category</label>
+              <input
+                type="text"
+                [(ngModel)]="productRequest.brand"
+                (input)="onFilterChange()"
+                class="form-control"
+                name="category"
+                placeholder="Search products by category"
+              />
+            </div>
           </div>
         </div>
       </form>

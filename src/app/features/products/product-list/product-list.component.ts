@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
@@ -8,6 +8,8 @@ import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { CategoryService } from '../../../core/services/category.service';
 declare var bootstrap: any;
 
 export interface ProductRequest {
@@ -25,7 +27,13 @@ export interface ProductRequest {
 
 @Component({
   selector: 'app-product-list',
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    PaginationComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
@@ -42,9 +50,10 @@ export class ProductListComponent implements OnInit {
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
   };
-
+  private filterChangeSubject = new Subject<string>();
   products: any[] = [];
   subcategoriesDropdownList: any[] = [];
+  categoriesDropdownList: any[] = [];
   totalCount: number = 0;
   totalPages: number[] = [];
   currentPage: number = 1;
@@ -52,6 +61,7 @@ export class ProductListComponent implements OnInit {
   constructor(
     public router: Router,
     private _productService: ProductService,
+    private _categoryService: CategoryService,
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
@@ -59,7 +69,15 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     //this.loadSubcategoriesDropdownList();
+    this.loadCategoriesDropdownList();
     this.loadProducts();
+
+    this.filterChangeSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(() => {
+        this.productRequest.skip = 0;
+        this.loadProducts();
+      });
   }
 
   loadProducts() {
@@ -76,7 +94,21 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  loadSubcategoriesDropdownList() {
+  loadCategoriesDropdownList(): void {
+    this._categoryService.getCategoriesDropdownList().subscribe({
+      next: (response: any) => {
+        if (response && response.success && response.data) {
+          this.categoriesDropdownList = response.data;
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
+  }
+
+  loadSubcategoriesDropdownList(): void {
     this._subcategoryService.getSubcategoriesDropdownList().subscribe({
       next: (response: any) => {
         this.subcategoriesDropdownList = response.data;
@@ -103,7 +135,10 @@ export class ProductListComponent implements OnInit {
     this.currentPage = 1;
     this.loadProducts();
   }
-  onFilterChange() {}
+
+  onFilterChange(): void {
+    this.filterChangeSubject.next(JSON.stringify(this.productRequest));
+  }
 
   toggleSortOrder(sortedBy: string) {
     if (this.productRequest.sortBy === sortedBy) {
@@ -116,6 +151,18 @@ export class ProductListComponent implements OnInit {
       this.productRequest.sortDirection = SortOrder.Ascending;
     }
 
+    this.loadProducts();
+  }
+
+  onDropdownItemChange(event: any, type: string) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValue = selectElement.value;
+
+    type == 'category'
+      ? (this.productRequest.categoryId = selectedValue)
+      : (this.productRequest.subcategoryId = selectedValue);
+
+    this.productRequest.skip = 0;
     this.loadProducts();
   }
 
