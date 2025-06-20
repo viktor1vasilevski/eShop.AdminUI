@@ -84,18 +84,25 @@
 
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table mb-0 table-hover align-middle">
+        <table
+          class="table mb-0 table-hover align-middle"
+          style="table-layout: fixed; width: 100%"
+        >
+          <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 10%" />
+          </colgroup>
           <thead class="table-dark">
             <tr>
               <th scope="col">Subcategory</th>
               <th scope="col">Category</th>
-              <th
-                *ngIf="subcategories.length !== 0"
-                (click)="toggleSortOrder('created')"
-                style="cursor: pointer"
-              >
+              <th (click)="toggleSortOrder('created')" style="cursor: pointer">
                 Created At
                 <i
+                  *ngIf="subcategories.length > 0"
                   [ngClass]="[
                     'bi',
                     subcategoryRequest.sortBy === 'created'
@@ -106,14 +113,13 @@
                   ]"
                 ></i>
               </th>
-
               <th
-                *ngIf="subcategories.length !== 0"
                 (click)="toggleSortOrder('lastmodified')"
                 style="cursor: pointer"
               >
                 Last Modified At
                 <i
+                  *ngIf="subcategories.length > 0"
                   [ngClass]="[
                     'bi',
                     subcategoryRequest.sortBy === 'lastmodified'
@@ -129,7 +135,7 @@
           </thead>
           <tbody>
             <tr *ngIf="subcategories.length === 0">
-              <td colspan="6" class="text-center text-muted">
+              <td colspan="5" class="text-center text-muted">
                 No subcategories found.
               </td>
             </tr>
@@ -137,8 +143,8 @@
               *ngFor="let subcategory of subcategories"
               [class.uncategorized]="subcategory.name === 'UNCATEGORIZED'"
             >
-              <td>{{ subcategory.name }}</td>
-              <td>{{ subcategory.category }}</td>
+              <td class="text-truncate">{{ subcategory.name }}</td>
+              <td class="text-truncate">{{ subcategory.category }}</td>
               <td>{{ subcategory.created | date : "dd/MM/yyyy HH:mm" }}</td>
               <td>
                 {{

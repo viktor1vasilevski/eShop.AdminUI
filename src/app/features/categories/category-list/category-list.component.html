@@ -57,17 +57,22 @@
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table mb-0 table-hover align-middle">
+        <table
+          class="table mb-0 table-hover align-middle"
+          style="table-layout: fixed; width: 100%"
+        >
+          <colgroup>
+            <col style="width: 30%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 30%" />
+          </colgroup>
           <thead class="table-dark">
             <tr>
               <th scope="col">Category</th>
-              <th
-                *ngIf="categories.length !== 0"
-                (click)="toggleSortOrder('created')"
-                style="cursor: pointer"
-              >
+              <th  (click)="toggleSortOrder('created')" style="cursor: pointer">
                 Created At
-                <i
+                <i *ngIf="categories.length > 0"
                   [ngClass]="[
                     'bi',
                     categoryRequest.sortBy === 'created'
@@ -78,14 +83,12 @@
                   ]"
                 ></i>
               </th>
-
               <th
-                *ngIf="categories.length !== 0"
                 (click)="toggleSortOrder('lastmodified')"
                 style="cursor: pointer"
               >
                 Last Modified At
-                <i
+                <i *ngIf="categories.length > 0"
                   [ngClass]="[
                     'bi',
                     categoryRequest.sortBy === 'lastmodified'
@@ -96,21 +99,20 @@
                   ]"
                 ></i>
               </th>
-
               <th scope="col" class="text-end">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngIf="categories.length === 0">
-              <td colspan="6" class="text-center text-muted">
+              <td colspan="4" class="text-center text-muted">
                 No categories found.
               </td>
             </tr>
             <tr
-              *ngFor="let category of categories; let i = index"
+              *ngFor="let category of categories"
               [class.uncategorized]="category.name === 'UNCATEGORIZED'"
             >
-              <td>{{ category.name }}</td>
+              <td class="text-truncate">{{ category.name }}</td>
               <td>{{ category.created | date : "dd/MM/yyyy HH:mm" }}</td>
               <td>
                 {{
