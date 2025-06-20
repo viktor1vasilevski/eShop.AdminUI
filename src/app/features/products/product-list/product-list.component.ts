@@ -106,11 +106,16 @@ export class ProductListComponent implements OnInit {
   onFilterChange() {}
 
   toggleSortOrder(sortedBy: string) {
-    this.productRequest.sortDirection =
-      this.productRequest.sortDirection === SortOrder.Ascending
-        ? SortOrder.Descending
-        : SortOrder.Ascending;
-    this.productRequest.sortBy = sortedBy;
+    if (this.productRequest.sortBy === sortedBy) {
+      this.productRequest.sortDirection =
+        this.productRequest.sortDirection === SortOrder.Ascending
+          ? SortOrder.Descending
+          : SortOrder.Ascending;
+    } else {
+      this.productRequest.sortBy = sortedBy;
+      this.productRequest.sortDirection = SortOrder.Ascending;
+    }
+
     this.loadProducts();
   }
 

@@ -48,8 +48,40 @@
               <th scope="col">Brand</th>
               <th scope="col">Category</th>
               <th scope="col">Subcategory</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
+              <th
+                *ngIf="products.length !== 0"
+                (click)="toggleSortOrder('unitprice')"
+                style="cursor: pointer"
+              >
+                Price
+                <i
+                  [ngClass]="[
+                    'bi',
+                    productRequest.sortBy === 'unitprice'
+                      ? productRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
+              <th
+                *ngIf="products.length !== 0"
+                (click)="toggleSortOrder('unitquantity')"
+                style="cursor: pointer"
+              >
+                Quantity
+                <i
+                  [ngClass]="[
+                    'bi',
+                    productRequest.sortBy === 'unitquantity'
+                      ? productRequest.sortDirection === 'asc'
+                        ? 'bi-arrow-up white-arrow'
+                        : 'bi-arrow-down white-arrow'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </th>
               <th
                 *ngIf="products.length !== 0"
                 (click)="toggleSortOrder('created')"
