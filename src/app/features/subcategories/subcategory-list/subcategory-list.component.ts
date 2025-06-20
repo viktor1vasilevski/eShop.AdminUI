@@ -119,12 +119,13 @@ export class SubcategoryListComponent implements OnInit {
     this.closeModal();
   }
 
-  onCategoryChange(event: any) {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedValue = selectElement.value;
-    this.subcategoryRequest.categoryId = selectedValue;
-    this.loadSubcategories();
-  }
+onCategoryChange(event: any): void {
+  const selectedValue = (event.target as HTMLSelectElement).value;
+  this.subcategoryRequest.categoryId = selectedValue;
+  this.subcategoryRequest.skip = 0; // Reset pagination
+  this.loadSubcategories();
+}
+
 
   closeModal(): void {
     const deleteModalElement = document.getElementById(
@@ -181,9 +182,12 @@ export class SubcategoryListComponent implements OnInit {
     this.loadSubcategories();
   }
 
-  clearFilters(): void {
-    this.subcategoryRequest.name = '';
-    this.subcategoryRequest.categoryId = ''
-    this.loadSubcategories();
-  }
+clearFilters(): void {
+  this.subcategoryRequest.name = '';
+  this.subcategoryRequest.categoryId = '';
+  this.subcategoryRequest.skip = 0; // Reset pagination
+  this.onFilterChange(); // Emit updated name for debounce filtering (if required)
+  this.loadSubcategories(); // Fetch updated list
+}
+
 }

@@ -25,11 +25,11 @@
         </button>
       </div>
 
-      <form class="row g-3 align-items-end">
+      <form class="row g-2">
         <!-- Subcategory Search Input with Icon -->
-        <div class="col-md-5">
+        <div class="col-md-6 col-lg-4">
           <label for="subcategorySearch" class="form-label">
-            Subcategory Name
+            Search Subcategories
           </label>
           <div class="input-group">
             <span class="input-group-text bg-light">
@@ -53,8 +53,9 @@
           <select
             id="categoryFilter"
             class="form-select"
+            [(ngModel)]="subcategoryRequest.categoryId"
             (change)="onCategoryChange($event)"
-            name="category"
+            name="categoryId"
             aria-label="Filter by category"
           >
             <option value="">All categories</option>
