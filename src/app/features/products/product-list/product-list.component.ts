@@ -203,4 +203,13 @@ export class ProductListComponent implements OnInit {
     }
     this.productToDelete = null;
   }
+
+  clearFilters(): void {
+  this.productRequest.brand = '';
+  this.productRequest.categoryId = '';
+  this.productRequest.subcategoryId = '';
+  this.productRequest.skip = 0;
+  this.onFilterChange();
+  this.loadProducts();
+}
 }

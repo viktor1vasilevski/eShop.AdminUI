@@ -122,7 +122,7 @@ export class SubcategoryListComponent implements OnInit {
 onCategoryChange(event: any): void {
   const selectedValue = (event.target as HTMLSelectElement).value;
   this.subcategoryRequest.categoryId = selectedValue;
-  this.subcategoryRequest.skip = 0; // Reset pagination
+  this.subcategoryRequest.skip = 0;
   this.loadSubcategories();
 }
 
@@ -185,9 +185,9 @@ onCategoryChange(event: any): void {
 clearFilters(): void {
   this.subcategoryRequest.name = '';
   this.subcategoryRequest.categoryId = '';
-  this.subcategoryRequest.skip = 0; // Reset pagination
-  this.onFilterChange(); // Emit updated name for debounce filtering (if required)
-  this.loadSubcategories(); // Fetch updated list
+  this.subcategoryRequest.skip = 0;
+  this.onFilterChange();
+  this.loadSubcategories();
 }
 
 }

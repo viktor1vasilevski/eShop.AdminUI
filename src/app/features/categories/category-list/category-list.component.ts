@@ -148,6 +148,7 @@ export class CategoryListComponent {
 
   clearFilters(): void {
     this.categoryRequest.name = '';
+    this.categoryRequest.skip = 0;
     this.loadCategories();
   }
 
