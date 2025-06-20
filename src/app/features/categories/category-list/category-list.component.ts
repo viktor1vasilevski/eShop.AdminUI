@@ -94,7 +94,6 @@ export class CategoryListComponent {
     }
   }
 
-  
   toggleSortOrder(sortedBy: string) {
     if (this.categoryRequest.sortBy === sortedBy) {
       this.categoryRequest.sortDirection =
@@ -144,6 +143,11 @@ export class CategoryListComponent {
     this.categoryRequest.take = itemsPerPage;
     this.categoryRequest.skip = 0;
     this.currentPage = 1;
+    this.loadCategories();
+  }
+
+  clearFilters(): void {
+    this.categoryRequest.name = '';
     this.loadCategories();
   }
 

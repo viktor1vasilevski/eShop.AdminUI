@@ -43,11 +43,11 @@ export class ProductCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadSubcategoriesDropdownList();
+    this.loadSubcategoriesWithCategoriesDropdownList();
   }
 
-  loadSubcategoriesDropdownList() {
-    this._subcategoryService.getSubcategoriesDropdownList().subscribe({
+  loadSubcategoriesWithCategoriesDropdownList() {
+    this._subcategoryService.getSubcategoriesWithCategoriesDropdownList().subscribe({
       next: (response: any) => {
         this.subcategoriesDropdownList = response.data;
       },

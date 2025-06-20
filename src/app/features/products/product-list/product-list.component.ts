@@ -68,7 +68,7 @@ export class ProductListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.loadSubcategoriesDropdownList();
+    this.loadSubcategoriesDropdownList();
     this.loadCategoriesDropdownList();
     this.loadProducts();
 

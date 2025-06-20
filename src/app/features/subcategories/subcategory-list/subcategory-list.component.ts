@@ -180,4 +180,10 @@ export class SubcategoryListComponent implements OnInit {
 
     this.loadSubcategories();
   }
+
+  clearFilters(): void {
+    this.subcategoryRequest.name = '';
+    this.subcategoryRequest.categoryId = ''
+    this.loadSubcategories();
+  }
 }

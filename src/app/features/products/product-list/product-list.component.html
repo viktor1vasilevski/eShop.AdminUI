@@ -7,24 +7,31 @@
 
   <div class="card mb-3 shadow-sm">
     <div class="card-body p-3">
-      <form class="row g-2 align-items-center">
+      <!-- Section Header -->
+      <h5 class="mb-3">Filters</h5>
+
+      <form class="row g-3 align-items-end">
         <!-- Brand Filter -->
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <label for="brandFilter" class="form-label">Brand</label>
           <div class="input-group">
-            <div class="col-md-4">
-              <label for="brandFilter" class="form-label">Brand</label>
-              <input
-                type="text"
-                [(ngModel)]="productRequest.brand"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="brand"
-                placeholder="Search products by brand"
-              />
-            </div>
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="productRequest.brand"
+              (input)="onFilterChange()"
+              class="form-control"
+              name="brand"
+              id="brandFilter"
+              placeholder="Search products by brand"
+            />
           </div>
         </div>
-        <div class="col-md-3">
+
+        <!-- Category Filter -->
+        <div class="col-md-4">
           <label for="categoryFilter" class="form-label">Category</label>
           <select
             id="categoryFilter"
@@ -41,21 +48,24 @@
             </option>
           </select>
         </div>
-        <!-- Category Filter -->
-        <div class="col-md-6">
-          <div class="input-group">
-            <div class="col-md-4">
-              <label for="categoryFilter" class="form-label">Category</label>
-              <input
-                type="text"
-                [(ngModel)]="productRequest.brand"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="category"
-                placeholder="Search products by category"
-              />
-            </div>
-          </div>
+
+        <!-- Subcategory Filter -->
+        <div class="col-md-4">
+          <label for="subcategoryFilter" class="form-label">Subcategory</label>
+          <select
+            id="subcategoryFilter"
+            class="form-select"
+            (change)="onDropdownItemChange($event, 'subcategory')"
+          >
+            <option value="" [disabled]="true">Filter by subcategory</option>
+            <option value="">All</option>
+            <option
+              *ngFor="let subcategory of subcategoriesDropdownList"
+              [value]="subcategory.id"
+            >
+              {{ subcategory.name }}
+            </option>
+          </select>
         </div>
       </form>
     </div>
