@@ -52,6 +52,7 @@ export class ProductListComponent implements OnInit {
   };
   private filterChangeSubject = new Subject<string>();
   products: any[] = [];
+  productDetails: any;
   subcategoriesDropdownList: any[] = [];
   categoriesDropdownList: any[] = [];
   totalCount: number = 0;
@@ -116,6 +117,18 @@ export class ProductListComponent implements OnInit {
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
     });
+  }
+
+  viewProductDetails(product: any): void {
+    this.productDetails = product;
+    console.log(this.productDetails);
+    
+    const modal = document.getElementById('viewProductDetailsModal');
+    if (modal) {
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+    
   }
 
   calculateTotalPages(): void {
@@ -205,11 +218,11 @@ export class ProductListComponent implements OnInit {
   }
 
   clearFilters(): void {
-  this.productRequest.brand = '';
-  this.productRequest.categoryId = '';
-  this.productRequest.subcategoryId = '';
-  this.productRequest.skip = 0;
-  this.onFilterChange();
-  this.loadProducts();
-}
+    this.productRequest.brand = '';
+    this.productRequest.categoryId = '';
+    this.productRequest.subcategoryId = '';
+    this.productRequest.skip = 0;
+    this.onFilterChange();
+    this.loadProducts();
+  }
 }

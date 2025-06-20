@@ -215,6 +215,7 @@
               <td class="text-end">
                 <button
                   class="btn btn-sm btn-outline-secondary me-2"
+                  (click)="viewProductDetails(product)"
                   title="View details"
                 >
                   <i class="bi bi-eye"></i>
@@ -295,6 +296,98 @@
             (click)="deleteProduct()"
           >
             Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="viewProductDetailsModal"
+    tabindex="-1"
+    aria-labelledby="viewProductDetailsModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewProductDetailsModalLabel">
+            Product Details
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Brand:</div>
+              <div class="col-sm-8">{{ productDetails?.brand || "-" }}</div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Description:</div>
+              <div class="col-sm-8">
+                {{ productDetails?.description || "-" }}
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Unit Price:</div>
+              <div class="col-sm-8">{{ productDetails?.unitPrice || "-" }}</div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Unit Quantity:</div>
+              <div class="col-sm-8">
+                {{ productDetails?.unitQuantity || "-" }}
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Subcategory:</div>
+              <div class="col-sm-8">
+                {{ productDetails?.subcategory || "-" }}
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Category:</div>
+              <div class="col-sm-8">{{ productDetails?.category || "-" }}</div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-sm-4 fw-bold">Created At:</div>
+              <div class="col-sm-8">
+                {{ productDetails?.created | date : "dd/MM/yyyy HH:mm" }}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4 fw-bold">Last Modified:</div>
+              <div class="col-sm-8">
+                {{
+                  productDetails?.lastModified
+                    ? (productDetails?.lastModified | date : "dd/MM/yyyy HH:mm")
+                    : "-"
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
           </button>
         </div>
       </div>
