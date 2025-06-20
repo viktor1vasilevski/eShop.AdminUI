@@ -26,6 +26,7 @@
               name="brand"
               id="brandFilter"
               placeholder="Search products by brand"
+              autocomplete="off"
             />
           </div>
         </div>
@@ -85,19 +86,39 @@
 
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table mb-0 table-hover align-middle">
+        <table
+          class="table mb-0 table-hover align-middle"
+          style="table-layout: fixed; width: 100%"
+        >
+          <colgroup>
+            <col style="width: 15%" />
+            <!-- Brand -->
+            <col style="width: 15%" />
+            <!-- Category -->
+            <col style="width: 15%" />
+            <!-- Subcategory -->
+            <col style="width: 10%" />
+            <!-- Price -->
+            <col style="width: 10%" />
+            <!-- Quantity -->
+            <col style="width: 15%" />
+            <!-- Created At -->
+            <col style="width: 15%" />
+            <!-- Last Modified At -->
+            <col style="width: 10%" />
+            <!-- Actions -->
+          </colgroup>
           <thead class="table-dark">
             <tr>
               <th scope="col">Brand</th>
               <th scope="col">Category</th>
               <th scope="col">Subcategory</th>
               <th
-                *ngIf="products.length !== 0"
                 (click)="toggleSortOrder('unitprice')"
                 style="cursor: pointer"
               >
                 Price
-                <i
+                <i *ngIf="products.length > 0"
                   [ngClass]="[
                     'bi',
                     productRequest.sortBy === 'unitprice'
@@ -109,12 +130,11 @@
                 ></i>
               </th>
               <th
-                *ngIf="products.length !== 0"
                 (click)="toggleSortOrder('unitquantity')"
                 style="cursor: pointer"
               >
                 Quantity
-                <i
+                <i *ngIf="products.length > 0"
                   [ngClass]="[
                     'bi',
                     productRequest.sortBy === 'unitquantity'
@@ -125,13 +145,10 @@
                   ]"
                 ></i>
               </th>
-              <th
-                *ngIf="products.length !== 0"
-                (click)="toggleSortOrder('created')"
-                style="cursor: pointer"
-              >
+              <th (click)="toggleSortOrder('created')" style="cursor: pointer">
                 Created At
                 <i
+                  *ngIf="products.length > 0"
                   [ngClass]="[
                     'bi',
                     productRequest.sortBy === 'created'
@@ -144,12 +161,11 @@
               </th>
 
               <th
-                *ngIf="products.length !== 0"
                 (click)="toggleSortOrder('lastmodified')"
                 style="cursor: pointer"
               >
                 Last Modified At
-                <i
+                <i *ngIf="products.length > 0"
                   [ngClass]="[
                     'bi',
                     productRequest.sortBy === 'lastmodified'
@@ -165,14 +181,14 @@
           </thead>
           <tbody>
             <tr *ngIf="products.length === 0">
-              <td colspan="6" class="text-center text-muted">
+              <td colspan="8" class="text-center text-muted">
                 No products found.
               </td>
             </tr>
             <tr *ngFor="let product of products; let i = index">
-              <td>{{ product.brand }}</td>
-              <td>{{ product.category }}</td>
-              <td>{{ product.subcategory }}</td>
+              <td class="text-truncate">{{ product.brand }}</td>
+              <td class="text-truncate">{{ product.category }}</td>
+              <td class="text-truncate">{{ product.subcategory }}</td>
               <td>{{ product.unitPrice | currency }}</td>
               <td>{{ product.unitQuantity }}</td>
               <td>{{ product.created | date : "dd/MM/yyyy HH:mm" }}</td>
