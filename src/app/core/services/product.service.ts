@@ -15,7 +15,7 @@ export class ProductService {
 
   getProducts(request: any): Observable<any> {
     const params = new HttpParams()
-      .set('brand', request.brand)
+      .set('name', request.name)
       .set('categoryId', request.categoryId)
       .set('subcategoryId', request.subcategoryId)
       .set('unitPrice', request.unitPrice)
@@ -37,6 +37,13 @@ export class ProductService {
   createProduct(request: any): Observable<any> {
     return this._dataApiService.create<any, any>(
       `${this.baseUrl}/product`,
+      request
+    );
+  }
+
+  editProduct(id: string, request: any): Observable<any> {
+    return this._dataApiService.put<any, any>(
+      `${this.baseUrl}/product/${id}`,
       request
     );
   }

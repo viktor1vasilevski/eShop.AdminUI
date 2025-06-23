@@ -13,7 +13,7 @@ import { CategoryService } from '../../../core/services/category.service';
 declare var bootstrap: any;
 
 export interface ProductRequest {
-  brand: string;
+  name: string;
   categoryId: string;
   description: string;
   unitPrice: number;
@@ -39,7 +39,7 @@ export interface ProductRequest {
 })
 export class ProductListComponent implements OnInit {
   productRequest: ProductRequest = {
-    brand: '',
+    name: '',
     categoryId: '',
     subcategoryId: '',
     description: '',
@@ -66,12 +66,16 @@ export class ProductListComponent implements OnInit {
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
-  ) {}
+  ) {
+    this._productService.productAddedOrEdited$.subscribe(
+      (status) => status && this.loadProducts()
+    );
+  }
 
   ngOnInit(): void {
+    this.loadProducts();
     this.loadSubcategoriesDropdownList();
     this.loadCategoriesDropdownList();
-    this.loadProducts();
 
     this.filterChangeSubject
       .pipe(debounceTime(400), distinctUntilChanged())
@@ -121,14 +125,11 @@ export class ProductListComponent implements OnInit {
 
   viewProductDetails(product: any): void {
     this.productDetails = product;
-    console.log(this.productDetails);
-    
     const modal = document.getElementById('viewProductDetailsModal');
     if (modal) {
       const bootstrapModal = new bootstrap.Modal(modal);
       bootstrapModal.show();
     }
-    
   }
 
   calculateTotalPages(): void {
@@ -218,7 +219,7 @@ export class ProductListComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.productRequest.brand = '';
+    this.productRequest.name = '';
     this.productRequest.categoryId = '';
     this.productRequest.subcategoryId = '';
     this.productRequest.skip = 0;

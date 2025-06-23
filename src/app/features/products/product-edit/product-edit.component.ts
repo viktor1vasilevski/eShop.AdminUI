@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -27,6 +27,7 @@ export class ProductEditComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    public router: Router,
     private _productService: ProductService,
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
@@ -59,7 +60,7 @@ export class ProductEditComponent implements OnInit {
             price: response.data?.unitPrice,
             quantity: response.data?.unitQuantity,
             description: response.data?.description,
-            subcategoryId: response.data?.subcategoryId
+            subcategoryId: response.data?.subcategoryId,
           });
         } else {
           this._notificationService.error(response.message);
@@ -86,5 +87,30 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
-  onSubmit() {}
+  onSubmit() {
+    debugger
+    if (!this.editProductForm.valid) {
+      this._notificationService.info('Invalid form');
+      return;
+    }
+    this.isSubmitting = true;
+    this._productService
+      .editProduct(this.selectedProductId, this.editProductForm.value)
+      .subscribe({
+        next: (response: any) => {
+          if (response && response.success) {
+            this._productService.notifyProductAddedOrEdited();
+            this._notificationService.success(response.message);
+            this.router.navigate(['/products']);
+          } else {
+            this.isSubmitting = false;
+            this._notificationService.error(response.message);
+          }
+        },
+        error: (errorResponse: any) => {
+          this.isSubmitting = false;
+          this._errorHandlerService.handleErrors(errorResponse);
+        },
+      });
+  }
 }

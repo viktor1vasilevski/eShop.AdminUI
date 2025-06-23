@@ -19,21 +19,21 @@
         </button>
       </div>
       <form class="row g-3 align-items-end">
-        <!-- Brand Filter -->
+        <!-- Name Filter -->
         <div class="col-md-4">
-          <label for="brandFilter" class="form-label">Brand</label>
+          <label for="nameFilter" class="form-label">Name</label>
           <div class="input-group">
             <span class="input-group-text bg-light">
               <i class="bi bi-search"></i>
             </span>
             <input
               type="text"
-              [(ngModel)]="productRequest.brand"
+              [(ngModel)]="productRequest.name"
               (input)="onFilterChange()"
               class="form-control"
-              name="brand"
-              id="brandFilter"
-              placeholder="Search products by brand"
+              name="name"
+              id="nameFilter"
+              placeholder="Search products by name"
               autocomplete="off"
             />
           </div>
@@ -102,7 +102,7 @@
         >
           <colgroup>
             <col style="width: 15%" />
-            <!-- Brand -->
+            <!-- Name -->
             <col style="width: 15%" />
             <!-- Category -->
             <col style="width: 15%" />
@@ -120,7 +120,7 @@
           </colgroup>
           <thead class="table-dark">
             <tr>
-              <th scope="col">Brand</th>
+              <th scope="col">Name</th>
               <th scope="col">Category</th>
               <th scope="col">Subcategory</th>
               <th
@@ -199,7 +199,7 @@
               </td>
             </tr>
             <tr *ngFor="let product of products; let i = index">
-              <td class="text-truncate">{{ product.brand }}</td>
+              <td class="text-truncate">{{ product.name }}</td>
               <td class="text-truncate">{{ product.category }}</td>
               <td class="text-truncate">{{ product.subcategory }}</td>
               <td>{{ product.unitPrice | currency }}</td>
