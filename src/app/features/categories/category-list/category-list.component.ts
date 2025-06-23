@@ -71,6 +71,7 @@ export class CategoryListComponent {
   loadCategories() {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
+        debugger
         if (response && response.success && response.data) {
           this.categories = response.data;
           this.totalCount =
@@ -80,8 +81,12 @@ export class CategoryListComponent {
           this._notificationService.error(response.message || '');
         }
       },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
+      error: (errorResponse: any) => {
+        debugger
+        this._errorHandlerService.handleErrors(errorResponse);
+      }
+        
+
     });
   }
 
