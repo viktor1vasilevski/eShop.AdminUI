@@ -7,6 +7,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ProductService } from '../../../core/services/product.service';
+import { SubcategoryService } from '../../../core/services/subcategory.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 
 @Component({
   selector: 'app-product-edit',
@@ -20,8 +24,13 @@ export class ProductEditComponent implements OnInit {
   isSubmitting = false;
   selectedProductId: string = '';
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private route: ActivatedRoute,
+    private _productService: ProductService,
+    private _subcategoryService: SubcategoryService,
+    private _notificationService: NotificationService,
+    private _errorHandlerService: ErrorHandlerService
   ) {
     this.editProductForm = this.fb.group({
       brand: ['', [Validators.required, Validators.minLength(3)]],
@@ -32,18 +41,49 @@ export class ProductEditComponent implements OnInit {
     });
 
     this.route.params.subscribe((params) => {
-      debugger
       this.selectedProductId = params['id'];
-      console.log(this.selectedProductId);
-      
     });
   }
 
-
   ngOnInit(): void {
-    debugger
-    console.log(this.selectedProductId);
-    
+    this.loadProductById();
+    this.loadSubcategoriesDropdownList();
+  }
+
+  loadProductById(): void {
+    this._productService.getProductById(this.selectedProductId).subscribe({
+      next: (response: any) => {
+        if (response && response.success) {
+          this.editProductForm.patchValue({
+            brand: response.data?.brand,
+            price: response.data?.unitPrice,
+            quantity: response.data?.unitQuantity,
+            description: response.data?.description,
+            subcategoryId: response.data?.subcategoryId
+          });
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) => {
+        this._errorHandlerService.handleErrors(errorResponse);
+      },
+    });
+  }
+
+  loadSubcategoriesDropdownList(): void {
+    this._subcategoryService.getSubcategoriesDropdownList().subscribe({
+      next: (response: any) => {
+        if (response && response.success && response.data) {
+          this.subcategoriesDropdownList = response.data;
+        } else {
+          this._notificationService.error(response.message);
+        }
+      },
+      error: (errorResponse: any) => {
+        this._errorHandlerService.handleErrors(errorResponse);
+      },
+    });
   }
 
   onSubmit() {}

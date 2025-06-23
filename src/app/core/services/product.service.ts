@@ -29,6 +29,11 @@ export class ProductService {
     return this._dataApiService.getAll<any>(url, params);
   }
 
+  getProductById(id: string): Observable<any> {
+    const url = `${this.baseUrl}/product/${id}`;
+    return this._dataApiService.getById<any>(url);
+  }
+
   createProduct(request: any): Observable<any> {
     return this._dataApiService.create<any, any>(
       `${this.baseUrl}/product`,
