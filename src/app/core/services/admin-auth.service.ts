@@ -16,7 +16,7 @@ export class AdminAuthService {
   ) {}
 
   login(request: any) {
-    return this._http.post<any>(`${this.baseUrl}/adminAuth/login`, request);
+    return this._http.post<any>(`${this.baseUrl}/auth/admin/login`, request);
   }
 
   logout() {

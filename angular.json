@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Admin.eShopUI": {
+    "eShop.AdminUI": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/admin.e-shop-ui",
+            "outputPath": "dist/e-shop-ui.admin-ui",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -62,10 +62,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Admin.eShopUI:build:production"
+              "buildTarget": "eShop.AdminUI:build:production"
             },
             "development": {
-              "buildTarget": "Admin.eShopUI:build:development"
+              "buildTarget": "eShop.AdminUI:build:development"
             }
           },
           "defaultConfiguration": "development"
