@@ -7,10 +7,11 @@ import { productRoutes } from './features/products/products.routes';
 import { orderRoutes } from './features/orders/orders.routes';
 import { userRoutes } from './features/users/users.routes';
 import { LayoutComponent } from './features/layout/layout.component';
+import { UnauthorizedComponent } from './features/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-
+  { path: 'unauthorized', component: UnauthorizedComponent },
   {
     path: '',
     component: LayoutComponent,
