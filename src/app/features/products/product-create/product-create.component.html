@@ -10,38 +10,38 @@
         <div class="row">
           <!-- Left Column -->
           <div class="col-md-6">
-            <!-- Product Brand -->
+            <!-- Product Name -->
             <div class="mb-3">
-              <label for="productBrand" class="form-label">Product Brand</label>
+              <label for="productName" class="form-label">Product Name</label>
               <div class="input-group">
                 <span class="input-group-text bg-light">
                   <i class="bi bi-box-seam"></i>
                 </span>
                 <input
                   type="text"
-                  id="productBrand"
+                  id="productName"
                   class="form-control"
-                  formControlName="brand"
-                  placeholder="Enter product brand"
+                  formControlName="name"
+                  placeholder="Enter product name"
                   required
                 />
               </div>
               <div
                 *ngIf="
-                  createProductForm.get('brand')?.invalid &&
-                  createProductForm.get('brand')?.touched
+                  createProductForm.get('name')?.invalid &&
+                  createProductForm.get('name')?.touched
                 "
                 class="text-danger mt-1"
               >
                 <small
-                  *ngIf="createProductForm.get('brand')?.errors?.['required']"
+                  *ngIf="createProductForm.get('name')?.errors?.['required']"
                 >
-                  Product brand is required.
+                  Product name is required.
                 </small>
                 <small
-                  *ngIf="createProductForm.get('brand')?.errors?.['minlength']"
+                  *ngIf="createProductForm.get('name')?.errors?.['minlength']"
                 >
-                  Product brand must be at least 3 characters.
+                  Product name must be at least 3 characters.
                 </small>
               </div>
             </div>

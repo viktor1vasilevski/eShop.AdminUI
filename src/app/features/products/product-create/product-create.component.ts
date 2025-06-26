@@ -34,7 +34,7 @@ export class ProductCreateComponent implements OnInit {
     private _productService: ProductService
   ) {
     this.createProductForm = this.fb.group({
-      brand: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       subcategoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
