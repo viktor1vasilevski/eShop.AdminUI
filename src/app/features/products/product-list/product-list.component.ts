@@ -136,7 +136,6 @@ export class ProductListComponent implements OnInit {
   }
 
   calculateTotalPages(): void {
-    debugger;
     const pages = Math.ceil(this.totalCount / this.productRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
   }

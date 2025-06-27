@@ -65,7 +65,6 @@ export class ProductCreateComponent implements OnInit {
       this._notificationService.info('Invalid form');
       return;
     }
-    debugger
     this.isSubmitting = true;
     this._productService.createProduct(this.createProductForm.value).subscribe({
       next: (response: any) => {

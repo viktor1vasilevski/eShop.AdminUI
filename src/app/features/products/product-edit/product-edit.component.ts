@@ -88,7 +88,6 @@ export class ProductEditComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger
     if (!this.editProductForm.valid) {
       this._notificationService.info('Invalid form');
       return;

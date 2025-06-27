@@ -127,7 +127,6 @@ export class SubcategoryListComponent implements OnInit {
   }
 
   calculateTotalPages(): void {
-    debugger;
     const pages = Math.ceil(this.totalCount / this.subcategoryRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
   }
