@@ -90,6 +90,9 @@ export class ProductListComponent implements OnInit {
       next: (response: any) => {
         if (response && response.data) {
           this.products = response.data;
+          this.totalCount =
+            typeof response?.totalCount === 'number' ? response.totalCount : 0;
+          this.calculateTotalPages();
         } else {
           this._notificationService.error(response.message);
         }
@@ -133,6 +136,7 @@ export class ProductListComponent implements OnInit {
   }
 
   calculateTotalPages(): void {
+    debugger;
     const pages = Math.ceil(this.totalCount / this.productRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
   }

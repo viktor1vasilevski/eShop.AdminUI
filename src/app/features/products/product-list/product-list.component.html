@@ -242,14 +242,10 @@
 
       <!-- Pagination Component -->
       <div class="p-3" *ngIf="products.length !== 0">
-        <app-pagination
-          [currentPage]="currentPage"
-          [totalPages]="totalPages"
-          [itemsPerPage]="productRequest.take"
-          (pageChange)="changePage($event)"
-          (itemsPerPageChange)="onItemsPerPageChange($event)"
-        >
-        </app-pagination>
+                    <app-pagination *ngIf="products.length !== 0" [currentPage]="currentPage" [totalPages]="totalPages"
+                        [itemsPerPage]="productRequest.take" (pageChange)="changePage($event)"
+                        (itemsPerPageChange)="onItemsPerPageChange($event)">
+                    </app-pagination>
       </div>
     </div>
   </div>

@@ -80,9 +80,16 @@ export class SubcategoryListComponent implements OnInit {
       .getSubcategories(this.subcategoryRequest)
       .subscribe({
         next: (response: any) => {
-          response && response.success && response.data
-            ? (this.subcategories = response.data)
-            : this._notificationService.error(response.message);
+          if (response && response.success) {
+            this.subcategories = response.data;
+            this.totalCount =
+              typeof response?.totalCount === 'number'
+                ? response.totalCount
+                : 0;
+            this.calculateTotalPages();
+          } else {
+            this._notificationService.error(response.message);
+          }
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),
@@ -119,13 +126,18 @@ export class SubcategoryListComponent implements OnInit {
     this.closeModal();
   }
 
-onCategoryChange(event: any): void {
-  const selectedValue = (event.target as HTMLSelectElement).value;
-  this.subcategoryRequest.categoryId = selectedValue;
-  this.subcategoryRequest.skip = 0;
-  this.loadSubcategories();
-}
+  calculateTotalPages(): void {
+    debugger;
+    const pages = Math.ceil(this.totalCount / this.subcategoryRequest.take);
+    this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
+  }
 
+  onCategoryChange(event: any): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.subcategoryRequest.categoryId = selectedValue;
+    this.subcategoryRequest.skip = 0;
+    this.loadSubcategories();
+  }
 
   closeModal(): void {
     const deleteModalElement = document.getElementById(
@@ -182,12 +194,11 @@ onCategoryChange(event: any): void {
     this.loadSubcategories();
   }
 
-clearFilters(): void {
-  this.subcategoryRequest.name = '';
-  this.subcategoryRequest.categoryId = '';
-  this.subcategoryRequest.skip = 0;
-  this.onFilterChange();
-  this.loadSubcategories();
-}
-
+  clearFilters(): void {
+    this.subcategoryRequest.name = '';
+    this.subcategoryRequest.categoryId = '';
+    this.subcategoryRequest.skip = 0;
+    this.onFilterChange();
+    this.loadSubcategories();
+  }
 }
