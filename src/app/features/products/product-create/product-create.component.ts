@@ -23,6 +23,7 @@ export class ProductCreateComponent implements OnInit {
   createProductForm: FormGroup;
   subcategoriesDropdownList: any[] = [];
   isSubmitting = false;
+  imagePreviewUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -39,6 +40,7 @@ export class ProductCreateComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
+      image: ['', Validators.required]
     });
   }
 
@@ -47,13 +49,15 @@ export class ProductCreateComponent implements OnInit {
   }
 
   loadSubcategoriesWithCategoriesDropdownList() {
-    this._subcategoryService.getSubcategoriesWithCategoriesDropdownList().subscribe({
-      next: (response: any) => {
-        this.subcategoriesDropdownList = response.data;
-      },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
-    });
+    this._subcategoryService
+      .getSubcategoriesWithCategoriesDropdownList()
+      .subscribe({
+        next: (response: any) => {
+          this.subcategoriesDropdownList = response.data;
+        },
+        error: (errorResponse: any) =>
+          this._errorHandlerService.handleErrors(errorResponse),
+      });
   }
 
   onSubmit() {
@@ -61,6 +65,7 @@ export class ProductCreateComponent implements OnInit {
       this._notificationService.info('Invalid form');
       return;
     }
+    debugger
     this.isSubmitting = true;
     this._productService.createProduct(this.createProductForm.value).subscribe({
       next: (response: any) => {
@@ -77,5 +82,20 @@ export class ProductCreateComponent implements OnInit {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.createProductForm.patchValue({ image: base64String });
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 }
