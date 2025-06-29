@@ -23,6 +23,7 @@ export class ProductEditComponent implements OnInit {
   subcategoriesDropdownList: any[] = [];
   isSubmitting = false;
   selectedProductId: string = '';
+  imagePreviewUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -34,11 +35,12 @@ export class ProductEditComponent implements OnInit {
     private _errorHandlerService: ErrorHandlerService
   ) {
     this.editProductForm = this.fb.group({
-      brand: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       subcategoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
+      image: ['', [Validators.required]],
     });
 
     this.route.params.subscribe((params) => {
@@ -56,12 +58,14 @@ export class ProductEditComponent implements OnInit {
       next: (response: any) => {
         if (response && response.success) {
           this.editProductForm.patchValue({
-            brand: response.data?.brand,
+            name: response.data?.name,
             price: response.data?.unitPrice,
             quantity: response.data?.unitQuantity,
             description: response.data?.description,
             subcategoryId: response.data?.subcategoryId,
+            image: response.data.image,
           });
+          this.imagePreviewUrl = response.data.image;
         } else {
           this._notificationService.error(response.message);
         }
@@ -111,5 +115,19 @@ export class ProductEditComponent implements OnInit {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
+  }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.editProductForm.patchValue({ image: base64String });
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 }
