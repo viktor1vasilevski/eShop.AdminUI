@@ -1,4 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -7,7 +13,13 @@ import { PaginationComponent } from '../../../core/components/pagination/paginat
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  Subject,
+  Subscription,
+} from 'rxjs';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
@@ -24,7 +36,7 @@ export interface CategoryRequest {
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
 })
-export class CategoryListComponent {
+export class CategoryListComponent implements OnInit, OnDestroy {
   categoryRequest: CategoryRequest = {
     skip: 0,
     take: 10,
@@ -35,6 +47,7 @@ export class CategoryListComponent {
 
   @ViewChild('categoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
+  private categoryAddedOrEditedSubscription: Subscription;
 
   totalCount: number = 0;
   totalPages: number[] = [];
@@ -48,9 +61,10 @@ export class CategoryListComponent {
     private _errorHandlerService: ErrorHandlerService,
     public router: Router
   ) {
-    this._categoryService.categoryAddedOrEdited$.subscribe(
-      (status) => status && this.loadCategories()
-    );
+    this.categoryAddedOrEditedSubscription =
+      this._categoryService.categoryAddedOrEdited$.subscribe(
+        (status) => status && this.loadCategories()
+      );
   }
 
   ngOnInit(): void {
@@ -68,6 +82,10 @@ export class CategoryListComponent {
       });
   }
 
+  ngOnDestroy() {
+    this.categoryAddedOrEditedSubscription.unsubscribe();
+  }
+
   loadCategories() {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
@@ -82,9 +100,7 @@ export class CategoryListComponent {
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
-      }
-        
-
+      },
     });
   }
 

@@ -1,10 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
-import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
@@ -26,7 +38,9 @@ export interface SubategoryRequest {
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
 })
-export class SubcategoryListComponent implements OnInit {
+export class SubcategoryListComponent implements OnInit, OnDestroy {
+  private subcategoryAddedOrEditedSubscription: Subscription;
+
   subcategoryRequest: SubategoryRequest = {
     skip: 0,
     take: 10,
@@ -46,9 +60,10 @@ export class SubcategoryListComponent implements OnInit {
     private _errorHandlerService: ErrorHandlerService,
     public router: Router
   ) {
-    this._subcategoryService.subcategoryAddedOrEdited$.subscribe(
-      (status) => status && this.loadSubcategories()
-    );
+    this.subcategoryAddedOrEditedSubscription =
+      this._subcategoryService.subcategoryAddedOrEdited$.subscribe(
+        (status) => status && this.loadSubcategories()
+      );
   }
 
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
@@ -73,6 +88,10 @@ export class SubcategoryListComponent implements OnInit {
         this.subcategoryRequest.skip = 0;
         this.loadSubcategories();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subcategoryAddedOrEditedSubscription.unsubscribe();
   }
 
   loadSubcategories() {

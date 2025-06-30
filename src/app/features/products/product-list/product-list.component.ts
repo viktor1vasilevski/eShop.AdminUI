@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
@@ -8,7 +8,12 @@ import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
 declare var bootstrap: any;
 
@@ -37,7 +42,7 @@ export interface ProductRequest {
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
   productRequest: ProductRequest = {
     name: '',
     categoryId: '',
@@ -51,6 +56,7 @@ export class ProductListComponent implements OnInit {
     sortBy: 'created',
   };
   private filterChangeSubject = new Subject<string>();
+  private productAddedOrEditedSubscription: Subscription;
   products: any[] = [];
   productDetails: any;
   subcategoriesDropdownList: any[] = [];
@@ -67,9 +73,10 @@ export class ProductListComponent implements OnInit {
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
   ) {
-    this._productService.productAddedOrEdited$.subscribe(
-      (status) => status && this.loadProducts()
-    );
+    this.productAddedOrEditedSubscription =
+      this._productService.productAddedOrEdited$.subscribe(
+        (status) => status && this.loadProducts()
+      );
   }
 
   ngOnInit(): void {
@@ -83,6 +90,10 @@ export class ProductListComponent implements OnInit {
         this.productRequest.skip = 0;
         this.loadProducts();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.productAddedOrEditedSubscription.unsubscribe();
   }
 
   loadProducts() {
