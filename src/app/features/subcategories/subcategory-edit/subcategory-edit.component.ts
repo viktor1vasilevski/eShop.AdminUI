@@ -39,14 +39,14 @@ export class SubcategoryEditComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       categoryId: ['', [Validators.required]],
     });
-
-    this.route.params.subscribe((params) => {
-      this.selectedSubcategoryId = params['id'];
-    });
   }
 
   ngOnInit(): void {
-    this.loadSubcategoryById();
+    this.route.params.subscribe((params) => {
+      this.selectedSubcategoryId = params['id'];
+      this.loadSubcategoryById();
+    });
+
     this.loadCategoriesDropdownList();
   }
 

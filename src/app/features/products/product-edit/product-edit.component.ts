@@ -42,14 +42,13 @@ export class ProductEditComponent implements OnInit {
       quantity: ['', [Validators.required, Validators.min(1)]],
       image: ['', [Validators.required]],
     });
-
-    this.route.params.subscribe((params) => {
-      this.selectedProductId = params['id'];
-    });
   }
 
   ngOnInit(): void {
-    this.loadProductById();
+    this.route.params.subscribe((params) => {
+      this.selectedProductId = params['id'];
+      this.loadProductById();
+    });
     this.loadSubcategoriesDropdownList();
   }
 

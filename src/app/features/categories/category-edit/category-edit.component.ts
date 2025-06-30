@@ -32,15 +32,18 @@ export class CategoryEditComponent implements OnInit {
     private _errorHandlerService: ErrorHandlerService
   ) {
     this.editCategoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]]
-    });
-
-    this.route.params.subscribe((params) => {
-      this.selectedCategoryId = params['id'];
+      name: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.selectedCategoryId = params['id'];
+      this.loadCategoryById();
+    });
+  }
+
+  loadCategoryById() {
     this._categoryService.getCategoryById(this.selectedCategoryId).subscribe({
       next: (response: any) => {
         if (response && response.success) {
