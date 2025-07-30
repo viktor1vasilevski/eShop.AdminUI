@@ -12,6 +12,7 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthenticationManagerService } from '../../core/services/authentication-manager.service';
+import { NotificationType } from '../../core/enums/notification-type.enum';
 
 @Component({
   selector: 'app-login',
@@ -50,23 +51,19 @@ export class LoginComponent {
 
   onLogin() {
     if (!this.loginForm.valid) {
-      this._notificationService.info('Invalid form');
+      this._notificationService.notify(NotificationType.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;
     this._adminAuthService.login(this.loginForm.value).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this._authenticationManagerService.setSession(
-            response.data.token,
-            response.data.role
-          );
-          this.router.navigate(['/dashboard']);
-          this._notificationService.success(response.message);
-        } else {
-          this._notificationService.error(response.message);
-          this.isSubmitting = false;
-        }
+        this._authenticationManagerService.setSession(
+          response.data.token,
+          response.data.role
+        );
+        this.router.navigate(['/dashboard']);
+        this._notificationService.notify(response.notificationType, response.message);
+        this.isSubmitting = false;
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
