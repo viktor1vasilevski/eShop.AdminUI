@@ -9,9 +9,6 @@ import { HttpParams } from '@angular/common/http';
 export class CategoryService {
   private baseUrl = 'https://localhost:7270/api';
 
-  private categoryAddedOrEditedSource = new BehaviorSubject<boolean>(false);
-  categoryAddedOrEdited$ = this.categoryAddedOrEditedSource.asObservable();
-
   constructor(private _dataApiService: DataService) {}
 
   getCategories(request: any): Observable<any> {
@@ -53,9 +50,5 @@ export class CategoryService {
   getCategoriesDropdownList(): Observable<any> {
     const url = `${this.baseUrl}/category/getCategoriesDropdownList`;
     return this._dataApiService.getAll<any>(url);
-  }
-
-  notifyCategoryAddedOrEdited() {
-    this.categoryAddedOrEditedSource.next(true);
   }
 }

@@ -33,11 +33,9 @@ export class CategoryCreateComponent {
     });
   }
 
-  
-
   onSubmit() {
     if (!this.createCategoryForm.valid) {
-      this._notificationService.info('Invalid form');
+      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -45,14 +43,9 @@ export class CategoryCreateComponent {
       .createCategory(this.createCategoryForm.value)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._notificationService.success(response.message);
-            this._categoryService.notifyCategoryAddedOrEdited();
-            this.router.navigate(['/categories']);
-          } else {
-            this.isSubmitting = false;
-            this._notificationService.error(response.message);
-          }
+          this.isSubmitting = false;
+          this.router.navigate(['/categories']);
+          this._notificationService.notify(response.notificationType, response.message);
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;

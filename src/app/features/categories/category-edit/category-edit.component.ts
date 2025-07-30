@@ -46,13 +46,9 @@ export class CategoryEditComponent implements OnInit {
   loadCategoryById() {
     this._categoryService.getCategoryById(this.selectedCategoryId).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this.editCategoryForm.patchValue({
-            name: response.data?.name,
-          });
-        } else {
-          this._notificationService.info(response.message);
-        }
+        this.editCategoryForm.patchValue({
+          name: response.data?.name,
+        });
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -61,7 +57,7 @@ export class CategoryEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.editCategoryForm.valid) {
-      this._notificationService.info('Invalid form');
+      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -69,14 +65,13 @@ export class CategoryEditComponent implements OnInit {
       .editCategory(this.selectedCategoryId, this.editCategoryForm.value)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._categoryService.notifyCategoryAddedOrEdited();
-            this._notificationService.success(response.message);
-            this.router.navigate(['/categories']);
-          } else {
-            this.isSubmitting = false;
-            this._notificationService.error(response.message);
-          }
+          debugger
+          this.isSubmitting = false;
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
+          this.router.navigate(['/categories']);
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;

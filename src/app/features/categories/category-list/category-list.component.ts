@@ -36,7 +36,7 @@ export interface CategoryRequest {
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
 })
-export class CategoryListComponent implements OnInit, OnDestroy {
+export class CategoryListComponent implements OnInit {
   categoryRequest: CategoryRequest = {
     skip: 0,
     take: 10,
@@ -47,7 +47,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   @ViewChild('categoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
-  private categoryAddedOrEditedSubscription: Subscription;
 
   totalCount: number = 0;
   totalPages: number[] = [];
@@ -61,10 +60,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private _errorHandlerService: ErrorHandlerService,
     public router: Router
   ) {
-    this.categoryAddedOrEditedSubscription =
-      this._categoryService.categoryAddedOrEdited$.subscribe(
-        (status) => status && this.loadCategories()
-      );
   }
 
   ngOnInit(): void {
@@ -82,21 +77,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.categoryAddedOrEditedSubscription.unsubscribe();
-  }
-
   loadCategories() {
+    debugger;
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
-        if (response && response.success && response.data) {
-          this.categories = response.data;
-          this.totalCount =
-            typeof response?.totalCount === 'number' ? response.totalCount : 0;
-          this.calculateTotalPages();
-        } else {
-          this._notificationService.error(response.message || '');
-        }
+        this.categories = response.data;
+        this.totalCount =
+          typeof response?.totalCount === 'number' ? response.totalCount : 0;
+        this.calculateTotalPages();
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
@@ -130,12 +118,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   deleteCategory() {
     this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this._notificationService.success(response.message);
-          this.loadCategories();
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.loadCategories();
+        this._notificationService.notify(response.notificationType, response.message)
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
