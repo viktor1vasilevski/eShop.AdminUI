@@ -11,6 +11,7 @@ import { UnauthorizedComponent } from './features/unauthorized/unauthorized.comp
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'unauthorized', component: UnauthorizedComponent },
   {
     path: '',
@@ -31,6 +32,4 @@ export const routes: Routes = [
       },
     ],
   },
-
-  //{ path: '**', redirectTo: 'login' },
 ];
