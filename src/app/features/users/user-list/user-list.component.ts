@@ -5,6 +5,7 @@ import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { UsersService } from '../../../core/services/users.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationType } from '../../../core/enums/notification-type.enum';
 
 export interface SubategoryRequest {
   skip: number;
@@ -45,10 +46,10 @@ export class UserListComponent implements OnInit {
   loadUsers() {
     this._userService.getUsers().subscribe({
       next: (response: any) => {
-        if(response && response.success && response.data){
+        if(response && response.data){
           this.users = response.data;
         } else {
-          this._notificationService.error(response.message);
+          this._notificationService.notify(NotificationType.Info, response.message);
         }
       },
       error: (errorResponse: any) => {
