@@ -21,6 +21,7 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
+import { NotificationType } from '../../../core/enums/notification-type.enum';
 declare var bootstrap: any;
 
 export interface SubategoryRequest {
@@ -38,9 +39,7 @@ export interface SubategoryRequest {
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
 })
-export class SubcategoryListComponent implements OnInit, OnDestroy {
-  private subcategoryAddedOrEditedSubscription: Subscription;
-
+export class SubcategoryListComponent implements OnInit {
   subcategoryRequest: SubategoryRequest = {
     skip: 0,
     take: 10,
@@ -59,12 +58,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     public router: Router
-  ) {
-    this.subcategoryAddedOrEditedSubscription =
-      this._subcategoryService.subcategoryAddedOrEdited$.subscribe(
-        (status) => status && this.loadSubcategories()
-      );
-  }
+  ) {}
 
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
@@ -90,25 +84,15 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.subcategoryAddedOrEditedSubscription.unsubscribe();
-  }
-
   loadSubcategories() {
     this._subcategoryService
       .getSubcategories(this.subcategoryRequest)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this.subcategories = response.data;
-            this.totalCount =
-              typeof response?.totalCount === 'number'
-                ? response.totalCount
-                : 0;
-            this.calculateTotalPages();
-          } else {
-            this._notificationService.error(response.message);
-          }
+          this.subcategories = response.data;
+          this.totalCount =
+            typeof response?.totalCount === 'number' ? response.totalCount : 0;
+          this.calculateTotalPages();
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),
@@ -120,7 +104,10 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         response && response.success && response.data
           ? (this.categoriesDropdownList = response.data)
-          : this._notificationService.error(response.message);
+          : this._notificationService.notify(
+              NotificationType.Info,
+              response.message
+            );
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -132,12 +119,11 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
       .deleteSubcategory(this.subcategoryToDelete.id)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._notificationService.success(response.message);
-            this.loadSubcategories();
-          } else {
-            this._notificationService.error(response.message);
-          }
+          this.loadSubcategories();
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),

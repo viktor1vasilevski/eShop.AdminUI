@@ -11,6 +11,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../../core/services/category.service';
+import { NotificationType } from '../../../core/enums/notification-type.enum';
 
 @Component({
   selector: 'app-subcategory-edit',
@@ -55,14 +56,10 @@ export class SubcategoryEditComponent implements OnInit {
       .getSubcategoryById(this.selectedSubcategoryId)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this.editSubcategoryForm.patchValue({
-              name: response.data?.name,
-              categoryId: response.data?.categoryId,
-            });
-          } else {
-            this._notificationService.info(response.message);
-          }
+          this.editSubcategoryForm.patchValue({
+            name: response.data?.name,
+            categoryId: response.data?.categoryId,
+          });
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),
@@ -72,9 +69,7 @@ export class SubcategoryEditComponent implements OnInit {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        response && response.success && response.data
-          ? (this.categoriesDropdownList = response.data)
-          : this._notificationService.info(response.message);
+        this.categoriesDropdownList = response.data;
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -83,7 +78,7 @@ export class SubcategoryEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.editSubcategoryForm.valid) {
-      this._notificationService.info('Invalid form');
+      this._notificationService.notify(NotificationType.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -94,14 +89,12 @@ export class SubcategoryEditComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._subcategoryService.notifySubcategoryAddedOrEdited();
-            this._notificationService.success(response.message);
-            this.router.navigate(['/subcategories']);
-          } else {
-            this.isSubmitting = false;
-            this._notificationService.error(response.message);
-          }
+          this.isSubmitting = false;
+          this.router.navigate(['/subcategories']);
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;

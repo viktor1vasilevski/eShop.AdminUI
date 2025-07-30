@@ -9,10 +9,6 @@ import { HttpParams } from '@angular/common/http';
 export class SubcategoryService {
   private baseUrl = 'https://localhost:7270/api';
 
-  private subcategoryAddedOrEditedSource = new BehaviorSubject<boolean>(false);
-  subcategoryAddedOrEdited$ =
-    this.subcategoryAddedOrEditedSource.asObservable();
-
   constructor(private _dataApiService: DataService) {}
 
   getSubcategories(request: any): Observable<any> {
@@ -60,9 +56,5 @@ export class SubcategoryService {
   getSubcategoriesWithCategoriesDropdownList(): Observable<any> {
     const url = `${this.baseUrl}/subcategory/dropdownListWithCategories`;
     return this._dataApiService.getAll<any>(url);
-  }
-
-  notifySubcategoryAddedOrEdited() {
-    this.subcategoryAddedOrEditedSource.next(true);
   }
 }

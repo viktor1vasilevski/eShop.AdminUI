@@ -43,7 +43,7 @@ export class SubcategoryCreateComponent implements OnInit {
 
   onSubmit() {
     if (!this.createSubcategoryForm.valid) {
-      this._notificationService.info('Invalid form');
+      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -51,14 +51,12 @@ export class SubcategoryCreateComponent implements OnInit {
       .createSubcategory(this.createSubcategoryForm.value)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._notificationService.success(response.message);
-            this._subcategoryService.notifySubcategoryAddedOrEdited();
-            this.router.navigate(['/subcategories']);
-          } else {
-            this.isSubmitting = false;
-            this._notificationService.error(response.message);
-          }
+          this.isSubmitting = false;
+          this.router.navigate(['/subcategories']);
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;
@@ -70,9 +68,7 @@ export class SubcategoryCreateComponent implements OnInit {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        response && response.success && response.data
-          ? (this.categoriesDropdownList = response.data)
-          : this._notificationService.error(response.message);
+        this.categoriesDropdownList = response.data;
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
