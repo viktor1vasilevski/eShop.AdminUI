@@ -55,19 +55,15 @@ export class ProductEditComponent implements OnInit {
   loadProductById(): void {
     this._productService.getProductById(this.selectedProductId).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this.editProductForm.patchValue({
-            name: response.data?.name,
-            price: response.data?.unitPrice,
-            quantity: response.data?.unitQuantity,
-            description: response.data?.description,
-            subcategoryId: response.data?.subcategoryId,
-            image: response.data.image,
-          });
-          this.imagePreviewUrl = response.data.image;
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.editProductForm.patchValue({
+          name: response.data?.name,
+          price: response.data?.unitPrice,
+          quantity: response.data?.unitQuantity,
+          description: response.data?.description,
+          subcategoryId: response.data?.subcategoryId,
+          image: response.data.image,
+        });
+        this.imagePreviewUrl = response.data.image;
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
@@ -78,11 +74,7 @@ export class ProductEditComponent implements OnInit {
   loadSubcategoriesDropdownList(): void {
     this._subcategoryService.getSubcategoriesDropdownList().subscribe({
       next: (response: any) => {
-        if (response && response.success && response.data) {
-          this.subcategoriesDropdownList = response.data;
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.subcategoriesDropdownList = response.data;
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
@@ -92,7 +84,7 @@ export class ProductEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.editProductForm.valid) {
-      this._notificationService.info('Invalid form');
+      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -100,14 +92,12 @@ export class ProductEditComponent implements OnInit {
       .editProduct(this.selectedProductId, this.editProductForm.value)
       .subscribe({
         next: (response: any) => {
-          if (response && response.success) {
-            this._productService.notifyProductAddedOrEdited();
-            this._notificationService.success(response.message);
-            this.router.navigate(['/products']);
-          } else {
-            this.isSubmitting = false;
-            this._notificationService.error(response.message);
-          }
+          this.isSubmitting = false;
+          this.router.navigate(['/products']);
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;

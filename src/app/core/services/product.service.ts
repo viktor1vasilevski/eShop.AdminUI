@@ -9,8 +9,6 @@ import { DataService } from './data.service';
 export class ProductService {
   private baseUrl = 'https://localhost:7270/api';
 
-  private productAddedOrEditedSource = new BehaviorSubject<boolean>(false);
-  productAddedOrEdited$ = this.productAddedOrEditedSource.asObservable();
   constructor(private _dataApiService: DataService) {}
 
   getProducts(request: any): Observable<any> {
@@ -51,9 +49,5 @@ export class ProductService {
   deleteProduct(id: string): Observable<any> {
     const url = `${this.baseUrl}/product/${id}`;
     return this._dataApiService.delete<any>(url);
-  }
-
-  notifyProductAddedOrEdited() {
-    this.productAddedOrEditedSource.next(true);
   }
 }

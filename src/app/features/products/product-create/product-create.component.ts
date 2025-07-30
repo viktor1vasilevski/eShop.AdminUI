@@ -40,7 +40,7 @@ export class ProductCreateComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
-      image: ['', Validators.required]
+      image: ['', Validators.required],
     });
   }
 
@@ -62,19 +62,18 @@ export class ProductCreateComponent implements OnInit {
 
   onSubmit() {
     if (!this.createProductForm.valid) {
-      this._notificationService.info('Invalid form');
+      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
     this._productService.createProduct(this.createProductForm.value).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this._productService.notifyProductAddedOrEdited();
-          this.router.navigate(['/products']);
-        } else {
-          this.isSubmitting = false;
-          this._notificationService.error(response.message);
-        }
+        this.router.navigate(['/products']);
+        this.isSubmitting = false;
+        this._notificationService.notify(
+          response.notificationType,
+          response.message
+        );
       },
       error: (errorResponse: any) => {
         this.isSubmitting = false;

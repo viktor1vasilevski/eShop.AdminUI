@@ -42,7 +42,7 @@ export interface ProductRequest {
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
-export class ProductListComponent implements OnInit, OnDestroy {
+export class ProductListComponent implements OnInit {
   productRequest: ProductRequest = {
     name: '',
     categoryId: '',
@@ -56,7 +56,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     sortBy: 'created',
   };
   private filterChangeSubject = new Subject<string>();
-  private productAddedOrEditedSubscription: Subscription;
+
   products: any[] = [];
   productDetails: any;
   subcategoriesDropdownList: any[] = [];
@@ -72,12 +72,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
-  ) {
-    this.productAddedOrEditedSubscription =
-      this._productService.productAddedOrEdited$.subscribe(
-        (status) => status && this.loadProducts()
-      );
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -92,21 +87,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.productAddedOrEditedSubscription.unsubscribe();
-  }
-
   loadProducts() {
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
-        if (response && response.data) {
-          this.products = response.data;
-          this.totalCount =
-            typeof response?.totalCount === 'number' ? response.totalCount : 0;
-          this.calculateTotalPages();
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.products = response.data;
+        this.totalCount =
+          typeof response?.totalCount === 'number' ? response.totalCount : 0;
+        this.calculateTotalPages();
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -116,11 +103,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   loadCategoriesDropdownList(): void {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        if (response && response.success && response.data) {
-          this.categoriesDropdownList = response.data;
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.categoriesDropdownList = response.data;
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -206,12 +189,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   deleteProduct() {
     this._productService.deleteProduct(this.productToDelete.id).subscribe({
       next: (response: any) => {
-        if (response && response.success) {
-          this._notificationService.success(response.message);
-          this.loadProducts();
-        } else {
-          this._notificationService.error(response.message);
-        }
+        this.loadProducts();
+        this._notificationService.notify(
+          response.notificationType,
+          response.message
+        );
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
