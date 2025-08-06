@@ -7,7 +7,7 @@ import { DataService } from './data.service';
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = 'https://localhost:7270/api';
+  private baseUrl = 'https://localhost:44344/api';
 
   constructor(private _dataApiService: DataService) {}
 

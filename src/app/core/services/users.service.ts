@@ -7,7 +7,7 @@ import { HttpParams } from '@angular/common/http';
   providedIn: 'root',
 })
 export class UsersService {
-  private baseUrl = 'https://localhost:7270/api';
+  private baseUrl = 'https://localhost:44344/api';
 
   constructor(private _dataApiService: DataService) {}
 

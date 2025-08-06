@@ -7,7 +7,7 @@ import { HttpParams } from '@angular/common/http';
   providedIn: 'root',
 })
 export class SubcategoryService {
-  private baseUrl = 'https://localhost:7270/api';
+  private baseUrl = 'https://localhost:44344/api';
 
   constructor(private _dataApiService: DataService) {}
 

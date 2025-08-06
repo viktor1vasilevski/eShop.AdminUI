@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AdminAuthService {
-  private baseUrl = 'https://localhost:7270/api';
+  private baseUrl = 'https://localhost:44344/api';
 
   constructor(
     private _http: HttpClient,
