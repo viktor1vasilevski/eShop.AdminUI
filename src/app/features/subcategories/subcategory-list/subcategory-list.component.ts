@@ -39,7 +39,7 @@ export interface SubategoryRequest {
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
 })
-export class SubcategoryListComponent implements OnInit {
+export class SubcategoryListComponent implements OnInit, OnDestroy {
   subcategoryRequest: SubategoryRequest = {
     skip: 0,
     take: 10,
@@ -62,11 +62,16 @@ export class SubcategoryListComponent implements OnInit {
 
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
+  private nameChangeSubscription!: Subscription;
 
   totalCount: number = 0;
   totalPages: number[] = [];
   subcategories: any[] = [];
   currentPage: number = 1;
+
+  ngOnDestroy(): void {
+    this.nameChangeSubscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.router.events
@@ -76,7 +81,7 @@ export class SubcategoryListComponent implements OnInit {
     this.loadCategoriesDropdownList();
     this.loadSubcategories();
 
-    this.nameChangeSubject
+    this.nameChangeSubscription = this.nameChangeSubject
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(() => {
         this.subcategoryRequest.skip = 0;
@@ -102,7 +107,7 @@ export class SubcategoryListComponent implements OnInit {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        response && response.success && response.data
+        response && response.data
           ? (this.categoriesDropdownList = response.data)
           : this._notificationService.notify(
               NotificationType.Info,
