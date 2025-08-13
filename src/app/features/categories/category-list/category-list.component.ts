@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -13,13 +7,7 @@ import { PaginationComponent } from '../../../core/components/pagination/paginat
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  Subject,
-  Subscription,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
@@ -28,6 +16,7 @@ export interface CategoryRequest {
   sortDirection: SortOrder;
   sortBy: string;
   name: string;
+  isActive: boolean | null;
 }
 
 @Component({
@@ -43,10 +32,10 @@ export class CategoryListComponent implements OnInit {
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     name: '',
+    isActive: null,
   };
 
-  @ViewChild('categoryNameInput') categoryNameInput!: ElementRef;
-  private nameChangeSubject = new Subject<string>();
+  private filterChangeSubject = new Subject<string>();
 
   totalCount: number = 0;
   totalPages: number[] = [];
@@ -59,8 +48,7 @@ export class CategoryListComponent implements OnInit {
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     public router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.router.events
@@ -69,7 +57,7 @@ export class CategoryListComponent implements OnInit {
 
     this.loadCategories();
 
-    this.nameChangeSubject
+    this.filterChangeSubject
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(() => {
         this.categoryRequest.skip = 0;
@@ -82,11 +70,14 @@ export class CategoryListComponent implements OnInit {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
         this.categories = response.data;
+        console.log(this.categories);
+
         this.totalCount =
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();
       },
       error: (errorResponse: any) => {
+        debugger;
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
@@ -119,7 +110,10 @@ export class CategoryListComponent implements OnInit {
     this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
       next: (response: any) => {
         this.loadCategories();
-        this._notificationService.notify(response.notificationType, response.message)
+        this._notificationService.notify(
+          response.notificationType,
+          response.message
+        );
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -133,7 +127,7 @@ export class CategoryListComponent implements OnInit {
   }
 
   onFilterChange(): void {
-    this.nameChangeSubject.next(this.categoryRequest.name);
+    this.filterChangeSubject.next(JSON.stringify(this.categoryRequest));
   }
 
   changePage(page: number): void {

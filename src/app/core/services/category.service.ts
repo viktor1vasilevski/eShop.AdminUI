@@ -12,12 +12,16 @@ export class CategoryService {
   constructor(private _dataApiService: DataService) {}
 
   getCategories(request: any): Observable<any> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
       .set('sortDirection', request.sortDirection)
       .set('sortBy', request.sortBy)
       .set('name', request.name);
+
+    if (request.isActive !== null && request.isActive !== undefined) {
+      params = params.set('isActive', request.isActive.toString());
+    }
 
     const url = `${this.baseUrl}/category`;
     return this._dataApiService.getAll<any>(url, params);

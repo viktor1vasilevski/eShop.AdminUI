@@ -10,6 +10,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { CommonModule } from '@angular/common';
+import { NotificationType } from '../../../core/enums/notification-type.enum';
 
 @Component({
   selector: 'app-category-create',
@@ -29,13 +30,14 @@ export class CategoryCreateComponent {
     private _categoryService: CategoryService
   ) {
     this.createCategoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      isActive: [false],
     });
   }
 
   onSubmit() {
     if (!this.createCategoryForm.valid) {
-      //this._notificationService.info('Invalid form');
+      this._notificationService.notify(NotificationType.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -45,7 +47,10 @@ export class CategoryCreateComponent {
         next: (response: any) => {
           this.isSubmitting = false;
           this.router.navigate(['/categories']);
-          this._notificationService.notify(response.notificationType, response.message);
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;
