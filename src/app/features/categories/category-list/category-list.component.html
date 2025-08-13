@@ -122,9 +122,20 @@
               [class.uncategorized]="category.name === 'UNCATEGORIZED'"
             >
               <td class="text-truncate">{{ category.name }}</td>
-              <td class="text-truncate">
+              <td class="text-truncate status-column">
+                <span
+                  class="rounded-circle me-1"
+                  [ngStyle]="{
+                    'width.px': 10,
+                    'height.px': 10,
+                    'background-color': category.isActive ? 'green' : 'red',
+                    display: 'inline-block'
+                  }"
+                >
+                </span>
                 {{ category.isActive ? "Active" : "Inactive" }}
               </td>
+
               <td>{{ category.created | date : "dd/MM/yyyy HH:mm" }}</td>
               <td>
                 {{
