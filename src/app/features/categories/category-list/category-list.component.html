@@ -32,20 +32,6 @@
             />
           </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <label for="isActiveFilter" class="form-label">Active Status</label>
-          <select
-            id="isActiveFilter"
-            [(ngModel)]="categoryRequest.isActive"
-            (change)="onFilterChange()"
-            class="form-select"
-            name="isActive"
-          >
-            <option [ngValue]="null">All</option>
-            <option [ngValue]="true">Active</option>
-            <option [ngValue]="false">Inactive</option>
-          </select>
-        </div>
       </form>
     </div>
   </div>
@@ -67,16 +53,14 @@
           style="table-layout: fixed; width: 100%"
         >
           <colgroup>
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
+            <col style="width: 30%" />
+            <col style="width: 30%" />
+            <col style="width: 30%" />
+            <col style="width: 10%" />
           </colgroup>
           <thead class="table-dark">
             <tr>
               <th scope="col">Category</th>
-              <th scope="col">Status</th>
               <th (click)="toggleSortOrder('created')" style="cursor: pointer">
                 Created At
                 <i
@@ -122,20 +106,6 @@
               [class.uncategorized]="category.name === 'UNCATEGORIZED'"
             >
               <td class="text-truncate">{{ category.name }}</td>
-              <td class="text-truncate status-column">
-                <span
-                  class="rounded-circle me-1"
-                  [ngStyle]="{
-                    'width.px': 10,
-                    'height.px': 10,
-                    'background-color': category.isActive ? 'green' : 'red',
-                    display: 'inline-block'
-                  }"
-                >
-                </span>
-                {{ category.isActive ? "Active" : "Inactive" }}
-              </td>
-
               <td>{{ category.created | date : "dd/MM/yyyy HH:mm" }}</td>
               <td>
                 {{
@@ -185,7 +155,7 @@
     aria-labelledby="deleteConfirmationModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="deleteConfirmationModalLabel">

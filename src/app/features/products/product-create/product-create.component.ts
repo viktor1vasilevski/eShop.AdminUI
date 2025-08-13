@@ -38,7 +38,7 @@ export class ProductCreateComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       subcategoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
+      description: ['', [Validators.required, Validators.maxLength(1500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
       image: ['', Validators.required],
     });

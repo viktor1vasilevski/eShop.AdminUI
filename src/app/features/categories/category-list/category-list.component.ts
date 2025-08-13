@@ -16,7 +16,6 @@ export interface CategoryRequest {
   sortDirection: SortOrder;
   sortBy: string;
   name: string;
-  isActive: boolean | null;
 }
 
 @Component({
@@ -32,7 +31,6 @@ export class CategoryListComponent implements OnInit {
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     name: '',
-    isActive: null,
   };
 
   private filterChangeSubject = new Subject<string>();
@@ -70,8 +68,6 @@ export class CategoryListComponent implements OnInit {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
         this.categories = response.data;
-        console.log(this.categories);
-
         this.totalCount =
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();
