@@ -10,7 +10,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { CommonModule } from '@angular/common';
-import { NotificationType } from '../../../core/enums/notification-type.enum';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 
 @Component({
   selector: 'app-category-create',
@@ -36,7 +36,7 @@ export class CategoryCreateComponent {
 
   onSubmit() {
     if (!this.createCategoryForm.valid) {
-      this._notificationService.notify(NotificationType.Info, 'Invalid form');
+      this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;

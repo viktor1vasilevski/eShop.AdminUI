@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastrService, ActiveToast, IndividualConfig } from 'ngx-toastr';
-import { NotificationType } from '../enums/notification-type.enum';
+import { ResponseStatus } from '../enums/response-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -32,16 +32,16 @@ export class NotificationService {
   }
 
   notify(
-    type: NotificationType,
+    type: ResponseStatus,
     message: string | null | undefined,
     options?: Partial<IndividualConfig>
   ) {
     switch (type) {
-      case NotificationType.Success:
+      case ResponseStatus.Success:
         return this.success(message, options);
-      case NotificationType.Created:
+      case ResponseStatus.Created:
         return this.success(message, options);
-      case NotificationType.ServerError:
+      case ResponseStatus.ServerError:
         return this.error(message, options);
       default:
         //console.warn('Unknown notification type:', type);

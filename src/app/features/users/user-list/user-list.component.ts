@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
+import { Component, OnInit, ResourceStatus } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { UsersService } from '../../../core/services/users.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
-import { NotificationType } from '../../../core/enums/notification-type.enum';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 
 export interface UserRequest {
   skip: number;
@@ -47,7 +46,7 @@ export class UserListComponent implements OnInit {
           this.users = response.data;
         } else {
           this._notificationService.notify(
-            NotificationType.Info,
+            ResponseStatus.Info,
             response.message
           );
         }

@@ -1,4 +1,4 @@
-export enum NotificationType {
+export enum ResponseStatus {
   Success,
   BadRequest,
   ServerError,
@@ -9,5 +9,5 @@ export enum NotificationType {
   Conflict,
   Unauthorized,
 
-  Info
+  Info,
 }

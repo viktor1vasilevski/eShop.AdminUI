@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NotificationService } from './notification.service';
-import { NotificationType } from '../enums/notification-type.enum'; // adjust path
+import { ResponseStatus } from '../enums/response-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class ErrorHandlerService {
         if (errors.hasOwnProperty(field)) {
           errors[field].forEach((message: string) => {
             this._notificationService.notify(
-              NotificationType.ServerError,
+              ResponseStatus.ServerError,
               `${field}: ${message}`,
               {
                 timeOut: 4500,
@@ -27,12 +27,12 @@ export class ErrorHandlerService {
       }
     } else if (errorResponse?.error?.message) {
       this._notificationService.notify(
-        NotificationType.ServerError,
+        ResponseStatus.ServerError,
         errorResponse.error.message
       );
     } else {
       this._notificationService.notify(
-        NotificationType.ServerError,
+        ResponseStatus.ServerError,
         'An unexpected error occurred.'
       );
     }

@@ -21,7 +21,7 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { NotificationType } from '../../../core/enums/notification-type.enum';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 declare var bootstrap: any;
 
 export interface SubategoryRequest {
@@ -110,7 +110,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
         response && response.data
           ? (this.categoriesDropdownList = response.data)
           : this._notificationService.notify(
-              NotificationType.Info,
+              ResponseStatus.Info,
               response.message
             );
       },

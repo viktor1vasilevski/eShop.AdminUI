@@ -11,7 +11,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../../core/services/category.service';
-import { NotificationType } from '../../../core/enums/notification-type.enum';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 
 @Component({
   selector: 'app-subcategory-edit',
@@ -78,7 +78,7 @@ export class SubcategoryEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.editSubcategoryForm.valid) {
-      this._notificationService.notify(NotificationType.Info, 'Invalid form');
+      this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;
