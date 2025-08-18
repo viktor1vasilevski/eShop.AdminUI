@@ -127,15 +127,15 @@ export class UserListComponent implements OnInit {
   }
 
   toggleSortOrder(sortedBy: string) {
-    // if (this.subcategoryRequest.sortBy === sortedBy) {
-    //   this.subcategoryRequest.sortDirection =
-    //     this.subcategoryRequest.sortDirection === SortOrder.Ascending
-    //       ? SortOrder.Descending
-    //       : SortOrder.Ascending;
-    // } else {
-    //   this.subcategoryRequest.sortBy = sortedBy;
-    //   this.subcategoryRequest.sortDirection = SortOrder.Ascending;
-    // }
-    // this.loadSubcategories();
+    if (this.userRequest.sortBy === sortedBy) {
+      this.userRequest.sortDirection =
+        this.userRequest.sortDirection === SortOrder.Ascending
+          ? SortOrder.Descending
+          : SortOrder.Ascending;
+    } else {
+      this.userRequest.sortBy = sortedBy;
+      this.userRequest.sortDirection = SortOrder.Ascending;
+    }
+    this.loadUsers();
   }
 }
