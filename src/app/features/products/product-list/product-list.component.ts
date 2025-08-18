@@ -95,8 +95,10 @@ export class ProductListComponent implements OnInit {
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();
       },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
+      error: (errorResponse: any) => {
+        debugger;
+        this._errorHandlerService.handleErrors(errorResponse);
+      },
     });
   }
 

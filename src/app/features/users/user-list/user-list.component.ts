@@ -7,13 +7,11 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationType } from '../../../core/enums/notification-type.enum';
 
-export interface SubategoryRequest {
+export interface UserRequest {
   skip: number;
   take: number;
   sortDirection: SortOrder;
   sortBy: string;
-  name: string;
-  categoryId: string;
 }
 
 @Component({
@@ -23,40 +21,41 @@ export interface SubategoryRequest {
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit {
-  subcategoryRequest: SubategoryRequest = {
+  userRequest: UserRequest = {
     skip: 0,
     take: 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
-    name: '',
-    categoryId: '',
   };
 
   users: any[] = [];
-  constructor(private _userService: UsersService,
+  constructor(
+    private _userService: UsersService,
     private _errorHandlerService: ErrorHandlerService,
     private _notificationService: NotificationService
   ) {}
-
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
   loadUsers() {
-    this._userService.getUsers().subscribe({
+    debugger;
+    this._userService.getUsers(this.userRequest).subscribe({
       next: (response: any) => {
-        if(response && response.data){
+        if (response && response.data) {
           this.users = response.data;
         } else {
-          this._notificationService.notify(NotificationType.Info, response.message);
+          this._notificationService.notify(
+            NotificationType.Info,
+            response.message
+          );
         }
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
-        
-      }
-    })
+      },
+    });
   }
 
   toggleSortOrder(sortedBy: string) {

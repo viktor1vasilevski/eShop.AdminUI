@@ -11,14 +11,14 @@ export class UsersService {
 
   constructor(private _dataApiService: DataService) {}
 
-  getUsers(): Observable<any> {
+  getUsers(request: any): Observable<any> {
     const params = new HttpParams()
       // .set('name', request.name)
       // .set('categoryId', request.categoryId)
-      // .set('skip', request.skip.toString())
-      // .set('take', request.take.toString())
-      // .set('sortDirection', request.sortDirection)
-      // .set('sortBy', request.sortBy);
+      .set('skip', request.skip.toString())
+      .set('take', request.take.toString())
+      .set('sortDirection', request.sortDirection)
+      .set('sortBy', request.sortBy);
 
     const url = `${this.baseUrl}/user`;
     return this._dataApiService.getAll<any>(url, params);

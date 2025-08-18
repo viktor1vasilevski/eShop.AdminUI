@@ -33,8 +33,8 @@
                   *ngIf="users.length > 0"
                   [ngClass]="[
                     'bi',
-                    subcategoryRequest.sortBy === 'created'
-                      ? subcategoryRequest.sortDirection === 'asc'
+                    userRequest.sortBy === 'created'
+                      ? userRequest.sortDirection === 'asc'
                         ? 'bi-arrow-up white-arrow'
                         : 'bi-arrow-down white-arrow'
                       : 'bi-arrow-down'
@@ -50,8 +50,8 @@
                   *ngIf="users.length > 0"
                   [ngClass]="[
                     'bi',
-                    subcategoryRequest.sortBy === 'lastmodified'
-                      ? subcategoryRequest.sortDirection === 'asc'
+                    userRequest.sortBy === 'lastmodified'
+                      ? userRequest.sortDirection === 'asc'
                         ? 'bi-arrow-up white-arrow'
                         : 'bi-arrow-down white-arrow'
                       : 'bi-arrow-down'
