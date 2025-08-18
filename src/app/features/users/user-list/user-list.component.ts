@@ -8,6 +8,7 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
+import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 
 export interface UserRequest {
   skip: number;
@@ -22,7 +23,12 @@ export interface UserRequest {
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    PaginationComponent,
+  ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
@@ -39,6 +45,9 @@ export class UserListComponent implements OnInit {
   };
 
   private filterChangeSubject = new Subject<string>();
+
+  totalPages: number[] = [];
+  currentPage: number = 1;
 
   users: any[] = [];
   constructor(
@@ -92,6 +101,19 @@ export class UserListComponent implements OnInit {
     this.userRequest.username = '';
     this.userRequest.email = '';
     this.userRequest.skip = 0;
+    this.loadUsers();
+  }
+
+  changePage(page: number): void {
+    this.currentPage = page;
+    this.userRequest.skip = (page - 1) * this.userRequest.take;
+    this.loadUsers();
+  }
+
+  onItemsPerPageChange(itemsPerPage: number): void {
+    this.userRequest.take = itemsPerPage;
+    this.userRequest.skip = 0;
+    this.currentPage = 1;
     this.loadUsers();
   }
 
