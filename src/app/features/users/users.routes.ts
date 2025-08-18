@@ -8,4 +8,11 @@ export const userRoutes: Routes = [
         (m) => m.UserListComponent
       ),
   },
+  {
+    path: 'users/:id/orders',
+    loadComponent: () =>
+      import('./user-orders/user-orders.component').then(
+        (m) => m.UserOrdersComponent
+      ),
+  },
 ];
