@@ -96,7 +96,6 @@ export class ProductListComponent implements OnInit {
         this.calculateTotalPages();
       },
       error: (errorResponse: any) => {
-        debugger;
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });

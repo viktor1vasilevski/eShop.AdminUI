@@ -48,6 +48,7 @@ export class UserListComponent implements OnInit {
 
   totalPages: number[] = [];
   currentPage: number = 1;
+  totalCount: number = 0;
 
   users: any[] = [];
   constructor(
@@ -78,6 +79,9 @@ export class UserListComponent implements OnInit {
       next: (response: any) => {
         if (response && response.data) {
           this.users = response.data;
+          this.totalCount =
+            typeof response?.totalCount === 'number' ? response.totalCount : 0;
+          this.calculateTotalPages();
         } else {
           this._notificationService.notify(
             ResponseStatus.Info,
@@ -89,6 +93,11 @@ export class UserListComponent implements OnInit {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
+  }
+
+  calculateTotalPages(): void {
+    const pages = Math.ceil(this.totalCount / this.userRequest.take);
+    this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
   }
 
   onFilterChange(): void {
