@@ -13,8 +13,10 @@ export class UsersService {
 
   getUsers(request: any): Observable<any> {
     const params = new HttpParams()
-      // .set('name', request.name)
-      // .set('categoryId', request.categoryId)
+      .set('firstName', request.firstName)
+      .set('lastName', request.lastName)
+      .set('username', request.username)
+      .set('email', request.email)
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
       .set('sortDirection', request.sortDirection)

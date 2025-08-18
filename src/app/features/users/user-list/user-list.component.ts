@@ -5,17 +5,24 @@ import { UsersService } from '../../../core/services/users.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ResponseStatus } from '../../../core/enums/response-status.enum';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 
 export interface UserRequest {
   skip: number;
   take: number;
   sortDirection: SortOrder;
   sortBy: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
 }
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
@@ -25,17 +32,35 @@ export class UserListComponent implements OnInit {
     take: 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
   };
+
+  private filterChangeSubject = new Subject<string>();
 
   users: any[] = [];
   constructor(
     private _userService: UsersService,
     private _errorHandlerService: ErrorHandlerService,
-    private _notificationService: NotificationService
+    private _notificationService: NotificationService,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {});
+
     this.loadUsers();
+
+    this.filterChangeSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(() => {
+        this.userRequest.skip = 0;
+        this.loadUsers();
+      });
   }
 
   loadUsers() {
@@ -55,6 +80,19 @@ export class UserListComponent implements OnInit {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
+  }
+
+  onFilterChange(): void {
+    this.filterChangeSubject.next(JSON.stringify(this.userRequest));
+  }
+
+  clearFilters(): void {
+    this.userRequest.firstName = '';
+    this.userRequest.lastName = '';
+    this.userRequest.username = '';
+    this.userRequest.email = '';
+    this.userRequest.skip = 0;
+    this.loadUsers();
   }
 
   toggleSortOrder(sortedBy: string) {

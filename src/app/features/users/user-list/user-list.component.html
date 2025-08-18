@@ -1,4 +1,102 @@
 <div class="main-content p-4">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-body p-3">
+      <!-- Section Header -->
+      <h5 class="mb-3">User Filters</h5>
+      <div class="d-flex justify-content-start mb-3">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearFilters()"
+        >
+          Clear Filters
+        </button>
+      </div>
+
+      <form class="row g-3 align-items-end">
+        <!-- First Name Filter -->
+        <div class="col-md-4">
+          <label for="firstNameFilter" class="form-label">First Name</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="userRequest.firstName"
+              (input)="onFilterChange()"
+              class="form-control"
+              name="firstName"
+              id="firstNameFilter"
+              placeholder="Search by first name"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Last Name Filter -->
+        <div class="col-md-4">
+          <label for="lastNameFilter" class="form-label">Last Name</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="userRequest.lastName"
+              (input)="onFilterChange()"
+              class="form-control"
+              name="lastName"
+              id="lastNameFilter"
+              placeholder="Search by last name"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Username Filter -->
+        <div class="col-md-4">
+          <label for="usernameFilter" class="form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="userRequest.username"
+              (input)="onFilterChange()"
+              class="form-control"
+              name="username"
+              id="usernameFilter"
+              placeholder="Search by username"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <!-- Email Filter -->
+        <div class="col-md-4">
+          <label for="emailFilter" class="form-label">Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              [(ngModel)]="userRequest.email"
+              (input)="onFilterChange()"
+              class="form-control"
+              name="email"
+              id="emailFilter"
+              placeholder="Search by email"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Users List -->
   <div class="card shadow-sm">
     <div
