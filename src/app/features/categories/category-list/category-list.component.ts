@@ -106,10 +106,7 @@ export class CategoryListComponent implements OnInit {
     this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
       next: (response: any) => {
         this.loadCategories();
-        this._notificationService.notify(
-          response.notificationType,
-          response.message
-        );
+        this._notificationService.notify(response.status, response.message);
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),

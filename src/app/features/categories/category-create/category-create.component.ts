@@ -46,10 +46,8 @@ export class CategoryCreateComponent {
         next: (response: any) => {
           this.isSubmitting = false;
           this.router.navigate(['/categories']);
-          this._notificationService.notify(
-            response.notificationType,
-            response.message
-          );
+          debugger;
+          this._notificationService.notify(response.status, response.message);
         },
         error: (errorResponse: any) => {
           this.isSubmitting = false;
