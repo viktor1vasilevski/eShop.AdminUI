@@ -64,7 +64,6 @@ export class CategoryListComponent implements OnInit {
   }
 
   loadCategories() {
-    debugger;
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
         this.categories = response.data;
@@ -73,7 +72,6 @@ export class CategoryListComponent implements OnInit {
         this.calculateTotalPages();
       },
       error: (errorResponse: any) => {
-        debugger;
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });

@@ -65,7 +65,6 @@ export class CategoryEditComponent implements OnInit {
       .editCategory(this.selectedCategoryId, this.editCategoryForm.value)
       .subscribe({
         next: (response: any) => {
-          debugger;
           this.isSubmitting = false;
           this._notificationService.notify(response.status, response.message);
           this.router.navigate(['/categories']);

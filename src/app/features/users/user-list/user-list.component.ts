@@ -74,7 +74,6 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers() {
-    debugger;
     this._userService.getUsers(this.userRequest).subscribe({
       next: (response: any) => {
         if (response && response.data) {
