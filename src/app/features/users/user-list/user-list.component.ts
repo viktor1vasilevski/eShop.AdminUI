@@ -138,7 +138,7 @@ export class UserListComponent implements OnInit {
     this.loadUsers();
   }
 
-  viewOrders(id: string) {
-    this.router.navigate(['/users', id, 'orders']);
+  viewOrders(userId: string) {
+    this.router.navigate(['/users', userId, 'orders']);
   }
 }

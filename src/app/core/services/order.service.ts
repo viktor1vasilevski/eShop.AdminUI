@@ -7,7 +7,7 @@ import { HttpParams } from '@angular/common/http';
   providedIn: 'root',
 })
 export class OrderService {
-  private baseUrl = 'https://localhost:44366/api';
+  private baseUrl = 'https://localhost:44344/api';
 
   constructor(private _dataApiService: DataService) {}
 
@@ -15,5 +15,10 @@ export class OrderService {
     const params = new HttpParams().set('userId', request.userId);
     const url = `${this.baseUrl}/order`;
     return this._dataApiService.getAll<any>(url, params);
+  }
+
+  getOrdersByUserId(userId: string): Observable<any> {
+    const url = `${this.baseUrl}/order/${userId}`;
+    return this._dataApiService.getById<any>(url);
   }
 }

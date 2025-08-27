@@ -1,1 +1,101 @@
-<p>user-orders works!</p>
+<div class="main-content p-4">
+  <!-- Orders Card -->
+  <div class="card shadow-sm">
+    <div
+      class="card-header text-white d-flex justify-content-between align-items-center"
+      style="background-color: #495057"
+    >
+      <span><i class="bi bi-receipt me-2"></i>User Orders</span>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table
+          class="table mb-0 table-hover align-middle"
+          style="table-layout: fixed; width: 100%"
+        >
+          <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 20%" />
+          </colgroup>
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Order Date</th>
+              <th scope="col">Items</th>
+              <th scope="col">Unit Price</th>
+              <th scope="col">Total Amount</th>
+              <th scope="col" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="orders.length === 0">
+              <td colspan="5" class="text-center text-muted">
+                No orders found.
+              </td>
+            </tr>
+            <tr *ngFor="let order of orders">
+              <!-- Order Date -->
+              <td>{{ order.orderCreatedOn | date : "dd/MM/yyyy HH:mm" }}</td>
+
+              <!-- Items -->
+              <td class="text-truncate">
+                <ul class="mb-0 ps-3">
+                  <li
+                    *ngFor="let item of order.items"
+                    class="d-flex align-items-center mb-1"
+                  >
+                    <img
+                      [src]="item.image"
+                      alt="{{ item.productName }}"
+                      class="me-2 rounded"
+                      style="width: 32px; height: 32px; object-fit: cover"
+                    />
+                    <span>{{ item.productName }} (x{{ item.quantity }})</span>
+                  </li>
+                </ul>
+              </td>
+
+              <!-- Unit Prices -->
+              <td>
+                <ul class="mb-0 ps-3 list-unstyled">
+                  <li *ngFor="let item of order.items">
+                    ${{ item.unitPrice }}
+                  </li>
+                </ul>
+              </td>
+
+              <!-- Order Total -->
+              <td>${{ order.totalAmount }}</td>
+
+              <!-- Actions -->
+              <td class="text-end">
+                <button
+                  class="btn btn-sm btn-outline-info me-2"
+                  title="View Details"
+                  (click)="viewOrderDetails(order)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination (if needed) -->
+      <div class="p-3" *ngIf="orders.length !== 0">
+        <!-- <app-pagination
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          [itemsPerPage]="itemsPerPage"
+          (pageChange)="changePage($event)"
+          (itemsPerPageChange)="onItemsPerPageChange($event)"
+        >
+        </app-pagination> -->
+      </div>
+    </div>
+  </div>
+</div>
