@@ -17,8 +17,14 @@ export class OrderService {
     return this._dataApiService.getAll<any>(url, params);
   }
 
-  getOrdersByUserId(userId: string): Observable<any> {
+  getOrdersByUserId(userId: string, request?: any | null): Observable<any> {
+    const params = new HttpParams()
+      .set('skip', request.skip.toString())
+      .set('take', request.take.toString())
+      .set('sortDirection', request.sortDirection)
+      .set('sortBy', request.sortBy);
+
     const url = `${this.baseUrl}/order/${userId}`;
-    return this._dataApiService.getById<any>(url);
+    return this._dataApiService.getAll<any>(url, params);
   }
 }

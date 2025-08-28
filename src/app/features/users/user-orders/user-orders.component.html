@@ -1,6 +1,17 @@
 <div class="main-content p-4">
+  <!-- User Info Card -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title mb-2">User Information</h5>
+      <p class="mb-1"><strong>First Name:</strong> {{ userInfo?.firstName }}</p>
+      <p class="mb-1"><strong>Last Name:</strong> {{ userInfo?.lastName }}</p>
+      <p class="mb-0"><strong>Username:</strong> {{ userInfo?.username }}</p>
+    </div>
+  </div>
+
   <!-- Orders Card -->
   <div class="card shadow-sm">
+    <!-- Table Header -->
     <div
       class="card-header text-white d-flex justify-content-between align-items-center"
       style="background-color: #495057"
@@ -8,6 +19,7 @@
       <span><i class="bi bi-receipt me-2"></i>User Orders</span>
     </div>
 
+    <!-- Card Body -->
     <div class="card-body p-0">
       <div class="table-responsive">
         <table
@@ -15,30 +27,35 @@
           style="table-layout: fixed; width: 100%"
         >
           <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 25%" />
-            <col style="width: 15%" />
-            <col style="width: 15%" />
+            <col style="width: 22%" />
+            <col style="width: 33%" />
+            <col style="width: 12%" />
+            <col style="width: 13%" />
             <col style="width: 20%" />
           </colgroup>
+
           <thead class="table-dark">
             <tr>
               <th scope="col">Order Date</th>
               <th scope="col">Items</th>
-              <th scope="col">Unit Price</th>
-              <th scope="col">Total Amount</th>
+              <th scope="col" class="text-end">Unit Price</th>
+              <th scope="col" class="text-end">Total Amount</th>
               <th scope="col" class="text-end">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             <tr *ngIf="orders.length === 0">
               <td colspan="5" class="text-center text-muted">
                 No orders found.
               </td>
             </tr>
+
             <tr *ngFor="let order of orders">
               <!-- Order Date -->
-              <td>{{ order.orderCreatedOn | date : "dd/MM/yyyy HH:mm" }}</td>
+              <td class="text-nowrap">
+                {{ order.orderCreatedOn | date : "dd/MM/yyyy HH:mm" }}
+              </td>
 
               <!-- Items -->
               <td class="text-truncate">
@@ -53,22 +70,29 @@
                       class="me-2 rounded"
                       style="width: 32px; height: 32px; object-fit: cover"
                     />
-                    <span>{{ item.productName }} (x{{ item.quantity }})</span>
+                    <span
+                      class="text-truncate d-inline-block"
+                      style="max-width: 100%"
+                    >
+                      {{ item.productName }} (x{{ item.quantity }})
+                    </span>
                   </li>
                 </ul>
               </td>
 
-              <!-- Unit Prices -->
-              <td>
+              <!-- Unit Prices (list) -->
+              <td class="text-end">
                 <ul class="mb-0 ps-3 list-unstyled">
-                  <li *ngFor="let item of order.items">
-                    ${{ item.unitPrice }}
+                  <li *ngFor="let item of order.items" class="text-nowrap">
+                    {{ item.unitPrice | currency : "USD" : "symbol" : "1.2-2" }}
                   </li>
                 </ul>
               </td>
 
               <!-- Order Total -->
-              <td>${{ order.totalAmount }}</td>
+              <td class="text-end fw-semibold">
+                {{ order.totalAmount | currency : "USD" : "symbol" : "1.2-2" }}
+              </td>
 
               <!-- Actions -->
               <td class="text-end">
@@ -79,22 +103,49 @@
                 >
                   <i class="bi bi-eye"></i>
                 </button>
+
+                <!-- Print single order (moved inside the Actions cell) -->
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="printOrder(order)"
+                  title="Print Order"
+                >
+                  <i class="bi bi-printer"></i>
+                </button>
               </td>
             </tr>
           </tbody>
+
+          <!-- Aligned table total -->
+          <tfoot *ngIf="orders.length > 0">
+            <tr>
+              <td colspan="3"></td>
+              <td class="text-end fw-semibold">Grand Total:</td>
+              <td class="text-end fw-bold text-success">
+                {{ getGrandTotal() | currency : "USD" : "symbol" : "1.2-2" }}
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
-      <!-- Pagination (if needed) -->
+      <!-- Print All Orders -->
+      <div class="p-3 d-flex justify-content-end" *ngIf="orders.length > 0">
+        <button class="btn btn-outline-dark" (click)="printAllOrders()">
+          <i class="bi bi-printer-fill"></i> Print All Orders
+        </button>
+      </div>
+
+      <!-- Pagination -->
       <div class="p-3" *ngIf="orders.length !== 0">
-        <!-- <app-pagination
+        <app-pagination
           [currentPage]="currentPage"
           [totalPages]="totalPages"
-          [itemsPerPage]="itemsPerPage"
+          [itemsPerPage]="orderRequest.take"
           (pageChange)="changePage($event)"
           (itemsPerPageChange)="onItemsPerPageChange($event)"
         >
-        </app-pagination> -->
+        </app-pagination>
       </div>
     </div>
   </div>
