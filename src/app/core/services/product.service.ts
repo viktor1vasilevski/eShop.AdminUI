@@ -50,4 +50,23 @@ export class ProductService {
     const url = `${this.baseUrl}/product/${id}`;
     return this._dataApiService.delete<any>(url);
   }
+
+  generateDescription(
+    productName: string,
+    category: string,
+    subcategory: string,
+    additionalContext?: string
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('productName', productName)
+      .set('category', category)
+      .set('subcategory', subcategory);
+
+    if (additionalContext) {
+      params = params.set('additionalContext', additionalContext);
+    }
+
+    const url = `${this.baseUrl}/product/generate`;
+    return this._dataApiService.getAll<any>(url, params);
+  }
 }

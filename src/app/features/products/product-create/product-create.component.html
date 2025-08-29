@@ -14,9 +14,6 @@
           (change)="onFileSelected($event)"
           class="form-control"
         />
-        <!-- <div *ngIf="image?.invalid && image?.touched" class="text-danger">
-                    <small *ngIf="image?.errors?.['required']">Image is required.</small>
-                </div> -->
         <div *ngIf="imagePreviewUrl">
           <img
             [src]="imagePreviewUrl"
@@ -165,6 +162,13 @@
                 rows="3"
                 placeholder="Enter product description (optional)"
               ></textarea>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary mt-2"
+                (click)="generateDescription()"
+              >
+                <i class="bi bi-robot"></i> Generate with AI
+              </button>
             </div>
           </div>
         </div>

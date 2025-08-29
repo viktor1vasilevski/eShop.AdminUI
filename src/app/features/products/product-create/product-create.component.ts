@@ -12,6 +12,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { CategoryService } from '../../../core/services/category.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { ProductService } from '../../../core/services/product.service';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 
 @Component({
   selector: 'app-product-create',
@@ -80,6 +81,55 @@ export class ProductCreateComponent implements OnInit {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
+  }
+
+  generateDescription() {
+    debugger;
+    const name = this.createProductForm.value.name;
+
+    if (!name) {
+      this._notificationService.notify(
+        ResponseStatus.Info,
+        'Please enter the product name to generate a proper description.'
+      );
+      return;
+    }
+
+    const subcategory = this.subcategoriesDropdownList.find(
+      (s: any) => s.id === this.createProductForm.value.subcategoryId
+    );
+
+    if (!subcategory) {
+      this._notificationService.notify(
+        ResponseStatus.Info,
+        'Please select a subcategory to generate a proper description.'
+      );
+      return;
+    }
+
+    // Split "Subcategory (Category)"
+    const match = subcategory.name.match(/^(.+)\s+\((.+)\)$/);
+
+    if (!match) {
+      alert('Subcategory format is invalid.');
+      return;
+    }
+
+    const subcategoryName = match[1]; // e.g., "Skin Care"
+    const categoryName = match[2]; // e.g., "Personal Care"
+
+    this._productService
+      .generateDescription(name, categoryName, subcategoryName)
+      .subscribe({
+        next: (res) => {
+          debugger;
+          this.createProductForm.patchValue({ description: res.data });
+        },
+        error: (err) => {
+          debugger;
+          this._errorHandlerService.handleErrors(err);
+        },
+      });
   }
 
   onFileSelected(event: Event): void {

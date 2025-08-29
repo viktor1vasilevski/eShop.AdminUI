@@ -9,7 +9,7 @@ export class NotificationService {
   constructor(private toastr: ToastrService) {}
 
   private showToast(
-    method: 'success' | 'error',
+    method: 'success' | 'error' | 'info',
     title: string,
     message: string | null | undefined,
     options: Partial<IndividualConfig> = {}
@@ -31,6 +31,10 @@ export class NotificationService {
     return this.showToast('error', 'Error', message, options);
   }
 
+  private info(message: string | null | undefined, options = {}) {
+    return this.showToast('info', 'Info', message, options);
+  }
+
   notify(
     type: ResponseStatus,
     message: string | null | undefined,
@@ -39,6 +43,8 @@ export class NotificationService {
     switch (type) {
       case ResponseStatus.Success:
         return this.success(message, options);
+      case ResponseStatus.Info:
+        return this.info(message, options);
       case ResponseStatus.Created:
         return this.success(message, options);
       case ResponseStatus.ServerError:
