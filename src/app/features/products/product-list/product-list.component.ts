@@ -8,12 +8,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Subject,
-  Subscription,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
 declare var bootstrap: any;
 
@@ -115,6 +110,7 @@ export class ProductListComponent implements OnInit {
     this._subcategoryService.getSubcategoriesDropdownList().subscribe({
       next: (response: any) => {
         this.subcategoriesDropdownList = response.data;
+        console.log(this.subcategoriesDropdownList);
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),

@@ -31,7 +31,6 @@ export class ProductCreateComponent implements OnInit {
     private router: Router,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
-    private _categoryService: CategoryService,
     private _subcategoryService: SubcategoryService,
     private _productService: ProductService
   ) {
