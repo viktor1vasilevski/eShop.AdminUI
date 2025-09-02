@@ -28,14 +28,16 @@
           </button>
         </div>
 
-        <form class="row g-2">
-          <app-filter-input
-            label="Search Categories"
-            id="categorySearch"
-            placeholder="Search categories by name"
-            [(value)]="categoryRequest.name"
-            (valueChange)="onFilterChange()"
-          ></app-filter-input>
+        <form class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <app-filter-input
+              label="Search Categories"
+              id="categorySearch"
+              placeholder="Search categories by name"
+              [(value)]="categoryRequest.name"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
+          </div>
         </form>
       </div>
     </div>
