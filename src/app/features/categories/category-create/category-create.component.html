@@ -1,44 +1,79 @@
 <div class="main-content p-4">
-  <!-- Create Form -->
   <div class="card shadow-sm">
     <div class="card-body p-4">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Create Category</h4>
       </div>
+
+      <!-- Image Upload -->
       <form [formGroup]="createCategoryForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="categoryName" class="form-label">Category Name</label>
-          <div class="input-group">
-            <span class="input-group-text bg-light">
-              <i class="bi bi-folder-plus"></i>
-            </span>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="image" class="form-label">Image</label>
             <input
-              type="text"
-              id="categoryName"
+              type="file"
+              id="image"
+              (change)="onFileSelected($event)"
               class="form-control"
-              name="categoryName"
-              formControlName="name"
-              placeholder="Enter category name"
-              autocomplete="off"
             />
-          </div>
-          <div
-            *ngIf="
-              createCategoryForm.get('name')?.invalid &&
-              createCategoryForm.get('name')?.touched
-            "
-            class="text-danger mt-1"
-          >
-            <small *ngIf="createCategoryForm.get('name')?.errors?.['required']">
-              Category name is required.
-            </small>
-            <small
-              *ngIf="createCategoryForm.get('name')?.errors?.['minlength']"
+            <div *ngIf="imagePreviewUrl" class="mt-2">
+              <img
+                [src]="imagePreviewUrl"
+                alt="Preview"
+                class="img-thumbnail"
+                style="max-height: 200px"
+              />
+            </div>
+            <div
+              *ngIf="
+                createCategoryForm.get('image')?.invalid &&
+                createCategoryForm.get('image')?.touched
+              "
+              class="text-danger small mt-1"
             >
-              Category name must be at least 3 characters.
-            </small>
+              <div
+                *ngIf="createCategoryForm.get('image')?.errors?.['required']"
+              >
+                Category image is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="categoryName" class="form-label">Category Name</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-folder-plus"></i>
+              </span>
+              <input
+                type="text"
+                id="categoryName"
+                class="form-control"
+                formControlName="name"
+                placeholder="Enter category name"
+                autocomplete="off"
+              />
+            </div>
+            <div
+              *ngIf="
+                createCategoryForm.get('name')?.invalid &&
+                createCategoryForm.get('name')?.touched
+              "
+              class="text-danger small mt-1"
+            >
+              <div *ngIf="createCategoryForm.get('name')?.errors?.['required']">
+                Category name is required.
+              </div>
+              <div
+                *ngIf="createCategoryForm.get('name')?.errors?.['minlength']"
+              >
+                Must be at least 2 characters.
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- Buttons -->
         <div class="d-flex justify-content-end mt-4 gap-2">
           <button
             class="btn btn-outline-secondary"
@@ -47,13 +82,12 @@
           >
             <i class="bi bi-x-lg me-2"></i> Cancel
           </button>
-
           <button
             class="btn btn-primary"
             type="submit"
             [disabled]="createCategoryForm.invalid || isSubmitting"
           >
-            <i class="bi bi-check-lg me-2"></i> Create Category
+            <i class="bi bi-check-lg me-2"></i> Create
           </button>
         </div>
       </form>

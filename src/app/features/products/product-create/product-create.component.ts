@@ -9,7 +9,6 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
-import { CategoryService } from '../../../core/services/category.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { ProductService } from '../../../core/services/product.service';
 import { ResponseStatus } from '../../../core/enums/response-status.enum';
@@ -62,7 +61,7 @@ export class ProductCreateComponent implements OnInit {
 
   onSubmit() {
     if (!this.createProductForm.valid) {
-      //this._notificationService.info('Invalid form');
+      this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;
     }
     this.isSubmitting = true;

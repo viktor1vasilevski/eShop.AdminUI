@@ -22,6 +22,8 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
 export class CategoryCreateComponent {
   createCategoryForm: FormGroup;
   isSubmitting = false;
+  imagePreviewUrl: string | null = null;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -31,6 +33,7 @@ export class CategoryCreateComponent {
   ) {
     this.createCategoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
+      image: ['', Validators.required],
     });
   }
 
@@ -53,5 +56,20 @@ export class CategoryCreateComponent {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.createCategoryForm.patchValue({ image: base64String });
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 }
