@@ -48,7 +48,10 @@ export class CategoryListComponent implements OnInit {
   };
 
   settings: TableSettings = {
-    header: 'Category List',
+    header: {
+      text: 'Category List',
+      icon: 'bi bi-folder me-2',
+    },
     columns: [
       { field: 'name', title: 'Category' },
       { field: 'created', title: 'Created At' },

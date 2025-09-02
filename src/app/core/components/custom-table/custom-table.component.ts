@@ -8,8 +8,13 @@ export interface TableColumn {
   type?: 'text' | 'html' | 'data'; // optional type (default text)
 }
 
+export interface TableHeader {
+  text: string;
+  icon?: string;
+}
+
 export interface TableSettings {
-  header: string | null;
+  header: TableHeader;
   columns: TableColumn[];
 }
 
