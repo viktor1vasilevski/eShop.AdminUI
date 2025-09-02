@@ -8,6 +8,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
+import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
@@ -20,7 +21,13 @@ export interface CategoryRequest {
 
 @Component({
   selector: 'app-category-list',
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    PaginationComponent,
+    FilterInputComponent,
+  ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
 })

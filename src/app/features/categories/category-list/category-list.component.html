@@ -29,25 +29,13 @@
         </div>
 
         <form class="row g-2">
-          <div class="col-md-6 col-lg-4">
-            <label for="categorySearch" class="form-label"
-              >Search Categories</label
-            >
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                id="categorySearch"
-                type="text"
-                [(ngModel)]="categoryRequest.name"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="search"
-                placeholder="Search categories by name"
-              />
-            </div>
-          </div>
+          <app-filter-input
+            label="Search Categories"
+            id="categorySearch"
+            placeholder="Search categories by name"
+            [(value)]="categoryRequest.name"
+            (valueChange)="onFilterChange()"
+          ></app-filter-input>
         </form>
       </div>
     </div>
