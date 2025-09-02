@@ -8,7 +8,7 @@
       type="button"
       data-bs-toggle="collapse"
       [attr.data-bs-target]="'#' + id"
-      aria-expanded="{{ !collapsed }}"
+      [attr.aria-expanded]="!collapsed"
       [attr.aria-controls]="id"
     >
       Toggle
