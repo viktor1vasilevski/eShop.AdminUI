@@ -31,46 +31,26 @@
 
         <form class="row g-2">
           <!-- Subcategory Search Input -->
-          <div class="col-md-6 col-lg-4">
-            <label for="subcategorySearch" class="form-label">
-              Search Subcategories
-            </label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                id="subcategorySearch"
-                [(ngModel)]="subcategoryRequest.name"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="search"
-                placeholder="Search subcategories by name"
-                autocomplete="off"
-              />
-            </div>
+          <div class="col-lg-4">
+            <app-filter-input
+              label="Search Subcategories"
+              id="subcategorySearch"
+              placeholder="Search subcategories by name"
+              [(value)]="subcategoryRequest.name"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
 
           <!-- Category Dropdown -->
-          <div class="col-md-4">
-            <label for="categoryFilter" class="form-label">Category</label>
-            <select
+          <div class="col-lg-4">
+            <app-filter-dropdown
+              label="Category"
               id="categoryFilter"
-              class="form-select"
-              [(ngModel)]="subcategoryRequest.categoryId"
-              (change)="onCategoryChange($event)"
-              name="categoryId"
-              aria-label="Filter by category"
-            >
-              <option value="">All categories</option>
-              <option
-                *ngFor="let category of categoriesDropdownList"
-                [value]="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </select>
+              [options]="categoriesDropdownList"
+              [(selected)]="subcategoryRequest.categoryId"
+              defaultText="All categories"
+              (selectedChange)="onCategoryChange($event)"
+            ></app-filter-dropdown>
           </div>
         </form>
       </div>

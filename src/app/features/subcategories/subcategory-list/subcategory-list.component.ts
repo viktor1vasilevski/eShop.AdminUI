@@ -21,7 +21,8 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { ResponseStatus } from '../../../core/enums/response-status.enum';
+import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
+import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
 declare var bootstrap: any;
 
 export interface SubategoryRequest {
@@ -30,12 +31,19 @@ export interface SubategoryRequest {
   sortDirection: SortOrder;
   sortBy: string;
   name: string;
-  categoryId: string;
+  categoryId: string | null;
 }
 
 @Component({
   selector: 'app-subcategory-list',
-  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    PaginationComponent,
+    FilterDropdownComponent,
+    FilterInputComponent,
+  ],
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
 })
@@ -46,7 +54,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     name: '',
-    categoryId: '',
+    categoryId: null,
   };
 
   categoriesDropdownList: any[] = [];
@@ -107,12 +115,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        response && response.data
-          ? (this.categoriesDropdownList = response.data)
-          : this._notificationService.notify(
-              ResponseStatus.Info,
-              response.message
-            );
+        this.categoriesDropdownList = response.data;
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -141,8 +144,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
   }
 
-  onCategoryChange(event: any): void {
-    const selectedValue = (event.target as HTMLSelectElement).value;
+  onCategoryChange(selectedValue: any): void {
     this.subcategoryRequest.categoryId = selectedValue;
     this.subcategoryRequest.skip = 0;
     this.loadSubcategories();

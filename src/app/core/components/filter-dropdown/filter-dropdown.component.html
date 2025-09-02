@@ -1,0 +1,17 @@
+<div class="w-100">
+  <label [for]="id" class="form-label">{{ label }}</label>
+  <select
+    class="form-select w-100"
+    [id]="id"
+    [(ngModel)]="selected"
+    (change)="selectedChange.emit(selected)"
+  >
+    <!-- Pre-selected "All Categories" option with null value -->
+    <option [ngValue]="null">{{ defaultText }}</option>
+
+    <!-- Actual categories -->
+    <option *ngFor="let option of options" [ngValue]="option.id">
+      {{ option.name }}
+    </option>
+  </select>
+</div>

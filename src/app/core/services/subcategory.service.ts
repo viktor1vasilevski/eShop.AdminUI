@@ -14,7 +14,7 @@ export class SubcategoryService {
   getSubcategories(request: any): Observable<any> {
     const params = new HttpParams()
       .set('name', request.name)
-      .set('categoryId', request.categoryId)
+      .set('categoryId', request.categoryId ?? '')
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
       .set('sortDirection', request.sortDirection)
