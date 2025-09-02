@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
+import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
+import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
 
 export interface UserRequest {
   skip: number;
@@ -28,6 +30,7 @@ export interface UserRequest {
     ReactiveFormsModule,
     FormsModule,
     PaginationComponent,
+    FilterInputComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',

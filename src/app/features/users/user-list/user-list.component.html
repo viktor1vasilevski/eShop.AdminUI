@@ -29,84 +29,48 @@
         </div>
 
         <form class="row g-3 align-items-end">
-          <!-- First Name Filter -->
-          <div class="col-md-4">
-            <label for="firstNameFilter" class="form-label">First Name</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                [(ngModel)]="userRequest.firstName"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="firstName"
-                id="firstNameFilter"
-                placeholder="Search by first name"
-                autocomplete="off"
-              />
-            </div>
+          <!-- First Name -->
+          <div class="col-md-3">
+            <app-filter-input
+              label="First Name"
+              id="firstNameFilter"
+              placeholder="First name"
+              [(value)]="userRequest.firstName"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
 
-          <!-- Last Name Filter -->
-          <div class="col-md-4">
-            <label for="lastNameFilter" class="form-label">Last Name</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                [(ngModel)]="userRequest.lastName"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="lastName"
-                id="lastNameFilter"
-                placeholder="Search by last name"
-                autocomplete="off"
-              />
-            </div>
+          <!-- Last Name -->
+          <div class="col-md-3">
+            <app-filter-input
+              label="Last Name"
+              id="lastNameFilter"
+              placeholder="Last name"
+              [(value)]="userRequest.lastName"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
 
-          <!-- Username Filter -->
-          <div class="col-md-4">
-            <label for="usernameFilter" class="form-label">Username</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                [(ngModel)]="userRequest.username"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="username"
-                id="usernameFilter"
-                placeholder="Search by username"
-                autocomplete="off"
-              />
-            </div>
+          <!-- Username -->
+          <div class="col-md-3">
+            <app-filter-input
+              label="Username"
+              id="usernameFilter"
+              placeholder="Username"
+              [(value)]="userRequest.username"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
 
-          <!-- Email Filter -->
-          <div class="col-md-4">
-            <label for="emailFilter" class="form-label">Email</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                [(ngModel)]="userRequest.email"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="email"
-                id="emailFilter"
-                placeholder="Search by email"
-                autocomplete="off"
-              />
-            </div>
+          <!-- Email -->
+          <div class="col-md-3">
+            <app-filter-input
+              label="Email"
+              id="emailFilter"
+              placeholder="Email"
+              [(value)]="userRequest.email"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
         </form>
       </div>
