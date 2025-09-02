@@ -9,6 +9,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { CategoryService } from '../../../core/services/category.service';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
+import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
@@ -27,6 +28,7 @@ export interface CategoryRequest {
     FormsModule,
     PaginationComponent,
     FilterInputComponent,
+    FilterCardComponent,
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',

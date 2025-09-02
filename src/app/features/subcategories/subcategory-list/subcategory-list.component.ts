@@ -23,6 +23,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { CategoryService } from '../../../core/services/category.service';
 import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
 import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
+import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
 declare var bootstrap: any;
 
 export interface SubategoryRequest {
