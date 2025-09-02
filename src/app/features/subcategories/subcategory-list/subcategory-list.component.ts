@@ -115,7 +115,10 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
   loadCategoriesDropdownList() {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        this.categoriesDropdownList = response.data;
+        this.categoriesDropdownList = response.data.map((cat: any) => ({
+          id: cat.categoryId,
+          name: cat.name,
+        }));
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),

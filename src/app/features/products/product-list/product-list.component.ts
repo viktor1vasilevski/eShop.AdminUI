@@ -10,15 +10,17 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
+import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
+import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
 declare var bootstrap: any;
 
 export interface ProductRequest {
   name: string;
-  categoryId: string;
+  categoryId: string | null;
   description: string;
   unitPrice: number;
   unitQuantity: number;
-  subcategoryId: string;
+  subcategoryId: string | null;
   skip: number;
   take: number;
   sortDirection: SortOrder;
@@ -33,6 +35,8 @@ export interface ProductRequest {
     FormsModule,
     PaginationComponent,
     ReactiveFormsModule,
+    FilterDropdownComponent,
+    FilterInputComponent,
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -40,8 +44,8 @@ export interface ProductRequest {
 export class ProductListComponent implements OnInit {
   productRequest: ProductRequest = {
     name: '',
-    categoryId: '',
-    subcategoryId: '',
+    categoryId: null,
+    subcategoryId: null,
     description: '',
     unitPrice: 0,
     unitQuantity: 0,
@@ -83,6 +87,7 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts() {
+    debugger;
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
         this.products = response.data;
@@ -99,7 +104,10 @@ export class ProductListComponent implements OnInit {
   loadCategoriesDropdownList(): void {
     this._categoryService.getCategoriesDropdownList().subscribe({
       next: (response: any) => {
-        this.categoriesDropdownList = response.data;
+        this.categoriesDropdownList = response.data.map((cat: any) => ({
+          id: cat.categoryId,
+          name: cat.name,
+        }));
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -109,8 +117,10 @@ export class ProductListComponent implements OnInit {
   loadSubcategoriesDropdownList(): void {
     this._subcategoryService.getSubcategoriesDropdownList().subscribe({
       next: (response: any) => {
-        this.subcategoriesDropdownList = response.data;
-        console.log(this.subcategoriesDropdownList);
+        this.subcategoriesDropdownList = response.data.map((cat: any) => ({
+          id: cat.subcategoryId,
+          name: cat.name,
+        }));
       },
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
@@ -162,10 +172,8 @@ export class ProductListComponent implements OnInit {
     this.loadProducts();
   }
 
-  onDropdownItemChange(event: any, type: string) {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedValue = selectElement.value;
-
+  onDropdownItemChange(selectedValue: any, type: string) {
+    debugger;
     type == 'category'
       ? (this.productRequest.categoryId = selectedValue)
       : (this.productRequest.subcategoryId = selectedValue);

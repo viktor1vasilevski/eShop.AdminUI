@@ -31,64 +31,37 @@
         <form class="row g-3 align-items-end">
           <!-- Name Filter -->
           <div class="col-md-4">
-            <label for="nameFilter" class="form-label">Name</label>
-            <div class="input-group">
-              <span class="input-group-text bg-light">
-                <i class="bi bi-search"></i>
-              </span>
-              <input
-                type="text"
-                [(ngModel)]="productRequest.name"
-                (input)="onFilterChange()"
-                class="form-control"
-                name="name"
-                id="nameFilter"
-                placeholder="Search products by name"
-                autocomplete="off"
-              />
-            </div>
+            <app-filter-input
+              label="Name"
+              id="nameFilter"
+              placeholder="Search products by name"
+              [(value)]="productRequest.name"
+              (valueChange)="onFilterChange()"
+            ></app-filter-input>
           </div>
 
           <!-- Category Filter -->
           <div class="col-md-4">
-            <label for="categoryFilter" class="form-label">Category</label>
-            <select
+            <app-filter-dropdown
+              label="Category"
               id="categoryFilter"
-              class="form-select"
-              [(ngModel)]="productRequest.categoryId"
-              (change)="onDropdownItemChange($event, 'category')"
-              name="categoryId"
-            >
-              <option value="">All categories</option>
-              <option
-                *ngFor="let category of categoriesDropdownList"
-                [value]="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </select>
+              [options]="categoriesDropdownList"
+              [(selected)]="productRequest.categoryId"
+              defaultText="All Categories"
+              (selectedChange)="onDropdownItemChange($event, 'category')"
+            ></app-filter-dropdown>
           </div>
 
           <!-- Subcategory Filter -->
           <div class="col-md-4">
-            <label for="subcategoryFilter" class="form-label"
-              >Subcategory</label
-            >
-            <select
+            <app-filter-dropdown
+              label="Subcategory"
               id="subcategoryFilter"
-              class="form-select"
-              [(ngModel)]="productRequest.subcategoryId"
-              (change)="onDropdownItemChange($event, 'subcategory')"
-              name="subcategoryId"
-            >
-              <option value="">All subcategories</option>
-              <option
-                *ngFor="let subcategory of subcategoriesDropdownList"
-                [value]="subcategory.subcategoryId"
-              >
-                {{ subcategory.name }}
-              </option>
-            </select>
+              [options]="subcategoriesDropdownList"
+              [(selected)]="productRequest.subcategoryId"
+              defaultText="All Subcategories"
+              (selectedChange)="onDropdownItemChange($event, 'subcategory')"
+            ></app-filter-dropdown>
           </div>
         </form>
       </div>
