@@ -1,0 +1,27 @@
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th *ngFor="let col of settings.columns">{{ col.title }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows">
+        <td *ngFor="let col of settings.columns">
+          <span *ngIf="!col.type || col.type === 'text'">{{
+            row[col.field]
+          }}</span>
+          <span *ngIf="col.type === 'html'" [innerHTML]="row[col.field]"></span>
+        </td>
+      </tr>
+      <tr *ngIf="rows.length === 0">
+        <td
+          [attr.colspan]="settings.columns.length"
+          class="text-center text-muted"
+        >
+          No data found.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

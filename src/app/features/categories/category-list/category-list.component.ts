@@ -10,6 +10,10 @@ import { CategoryService } from '../../../core/services/category.service';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
 import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
+import {
+  CustomTableComponent,
+  TableSettings,
+} from '../../../core/components/custom-table/custom-table.component';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
@@ -29,6 +33,7 @@ export interface CategoryRequest {
     PaginationComponent,
     FilterInputComponent,
     FilterCardComponent,
+    CustomTableComponent,
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css',
@@ -40,6 +45,14 @@ export class CategoryListComponent implements OnInit {
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     name: '',
+  };
+
+  settings: TableSettings = {
+    columns: [
+      { field: 'name', title: 'Category' },
+      { field: 'created', title: 'Created At' },
+      { field: 'lastModified', title: 'Last Modified' },
+    ],
   };
 
   private filterChangeSubject = new Subject<string>();
