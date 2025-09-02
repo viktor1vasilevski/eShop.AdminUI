@@ -44,6 +44,7 @@ export interface SubategoryRequest {
     PaginationComponent,
     FilterDropdownComponent,
     FilterInputComponent,
+    FilterCardComponent,
   ],
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
