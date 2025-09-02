@@ -48,6 +48,7 @@ export class CategoryListComponent implements OnInit {
   };
 
   settings: TableSettings = {
+    header: 'Category List',
     columns: [
       { field: 'name', title: 'Category' },
       { field: 'created', title: 'Created At' },

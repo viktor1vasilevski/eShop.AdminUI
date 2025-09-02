@@ -9,6 +9,7 @@ export interface TableColumn {
 }
 
 export interface TableSettings {
+  header: string | null;
   columns: TableColumn[];
 }
 
