@@ -12,6 +12,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
 import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
 import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
+import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
 declare var bootstrap: any;
 
 export interface ProductRequest {
@@ -37,6 +38,7 @@ export interface ProductRequest {
     ReactiveFormsModule,
     FilterDropdownComponent,
     FilterInputComponent,
+    FilterCardComponent,
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
