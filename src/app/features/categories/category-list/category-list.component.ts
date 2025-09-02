@@ -77,6 +77,8 @@ export class CategoryListComponent implements OnInit {
     });
   }
 
+  viewCategoryDetails(category: any) {}
+
   showDeleteCategoryModal(category: any) {
     this.categoryToDelete = category;
     const modal = document.getElementById('deleteConfirmationModal');
