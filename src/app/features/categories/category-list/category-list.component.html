@@ -1,38 +1,55 @@
 <div class="main-content p-4">
   <div class="card mb-3 shadow-sm">
-    <div class="card-body p-3">
-      <h5 class="mb-3">Filters</h5>
-      <div class="d-flex justify-content-start mb-3">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="clearFilters()"
-        >
-          Clear Filters
-        </button>
-      </div>
+    <div
+      class="card-header p-3 d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Filters</h5>
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#filterBody"
+        aria-expanded="true"
+        aria-controls="filterBody"
+      >
+        Toggle
+      </button>
+    </div>
 
-      <form class="row g-2">
-        <div class="col-md-6 col-lg-4">
-          <label for="categorySearch" class="form-label"
-            >Search Categories</label
+    <div id="filterBody" class="collapse show">
+      <div class="card-body p-3">
+        <div class="d-flex justify-content-start mb-3">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="clearFilters()"
           >
-          <div class="input-group">
-            <span class="input-group-text bg-light">
-              <i class="bi bi-search"></i>
-            </span>
-            <input
-              id="categorySearch"
-              type="text"
-              [(ngModel)]="categoryRequest.name"
-              (input)="onFilterChange()"
-              class="form-control"
-              name="search"
-              placeholder="Search categories by name"
-            />
-          </div>
+            Clear Filters
+          </button>
         </div>
-      </form>
+
+        <form class="row g-2">
+          <div class="col-md-6 col-lg-4">
+            <label for="categorySearch" class="form-label"
+              >Search Categories</label
+            >
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                id="categorySearch"
+                type="text"
+                [(ngModel)]="categoryRequest.name"
+                (input)="onFilterChange()"
+                class="form-control"
+                name="search"
+                placeholder="Search categories by name"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
