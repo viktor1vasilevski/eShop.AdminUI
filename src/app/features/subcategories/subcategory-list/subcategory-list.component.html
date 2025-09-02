@@ -1,74 +1,79 @@
 <div class="main-content p-4">
-  <!-- Info Alert -->
-  <!-- <div class="alert alert-info text-center" role="alert">
-    All inputs are created and modified by the admin.<br />
-    <span class="fw-bold">Note:</span> The "UNCATEGORIZED" subcategory is
-    designated for products that the admin is currently uncertain about
-    categorizing. As such, it is neither editable nor deletable, and
-    subcategories created under the "UNCATEGORIZED" category will not be visible
-    when making changes to products.
-  </div> -->
-
-  <!-- Filter Section -->
   <div class="card mb-3 shadow-sm">
-    <div class="card-body p-3">
-      <h5 class="mb-3">Filters</h5>
+    <div
+      class="card-header p-3 d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Filters</h5>
+      <button
+        class="btn btn-outline-secondary btn-sm"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#subcategoryFilterBody"
+        aria-expanded="false"
+        aria-controls="subcategoryFilterBody"
+      >
+        Toggle
+      </button>
+    </div>
 
-      <!-- Clear Filters Button -->
-      <div class="d-flex justify-content-start mb-3">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="clearFilters()"
-        >
-          Clear Filters
-        </button>
-      </div>
-
-      <form class="row g-2">
-        <!-- Subcategory Search Input with Icon -->
-        <div class="col-md-6 col-lg-4">
-          <label for="subcategorySearch" class="form-label">
-            Search Subcategories
-          </label>
-          <div class="input-group">
-            <span class="input-group-text bg-light">
-              <i class="bi bi-search"></i>
-            </span>
-            <input
-              type="text"
-              id="subcategorySearch"
-              [(ngModel)]="subcategoryRequest.name"
-              (input)="onFilterChange()"
-              class="form-control"
-              name="search"
-              placeholder="Search subcategories by name"
-              autocomplete="off"
-            />
-          </div>
-        </div>
-
-        <!-- Category Dropdown -->
-        <div class="col-md-4">
-          <label for="categoryFilter" class="form-label">Category</label>
-          <select
-            id="categoryFilter"
-            class="form-select"
-            [(ngModel)]="subcategoryRequest.categoryId"
-            (change)="onCategoryChange($event)"
-            name="categoryId"
-            aria-label="Filter by category"
+    <div id="subcategoryFilterBody" class="collapse">
+      <div class="card-body p-3">
+        <!-- Clear Filters Button -->
+        <div class="d-flex justify-content-start mb-3">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="clearFilters()"
           >
-            <option value="">All categories</option>
-            <option
-              *ngFor="let category of categoriesDropdownList"
-              [value]="category.id"
-            >
-              {{ category.name }}
-            </option>
-          </select>
+            Clear Filters
+          </button>
         </div>
-      </form>
+
+        <form class="row g-2">
+          <!-- Subcategory Search Input -->
+          <div class="col-md-6 col-lg-4">
+            <label for="subcategorySearch" class="form-label">
+              Search Subcategories
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                id="subcategorySearch"
+                [(ngModel)]="subcategoryRequest.name"
+                (input)="onFilterChange()"
+                class="form-control"
+                name="search"
+                placeholder="Search subcategories by name"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <!-- Category Dropdown -->
+          <div class="col-md-4">
+            <label for="categoryFilter" class="form-label">Category</label>
+            <select
+              id="categoryFilter"
+              class="form-select"
+              [(ngModel)]="subcategoryRequest.categoryId"
+              (change)="onCategoryChange($event)"
+              name="categoryId"
+              aria-label="Filter by category"
+            >
+              <option value="">All categories</option>
+              <option
+                *ngFor="let category of categoriesDropdownList"
+                [value]="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
