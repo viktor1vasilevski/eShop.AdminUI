@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 // Column definition
 export interface TableColumn {
@@ -28,6 +29,12 @@ export interface TableHeader {
 export interface TableSettings {
   header: TableHeader;
   columns: TableColumn[];
+  pagination?: PaginationSettings;
+}
+
+export interface PaginationSettings {
+  enabled: boolean; // toggle pagination
+  itemsPerPageOptions?: number[]; // dropdown options
 }
 
 // Row definition with action functions
@@ -41,9 +48,17 @@ export interface TableRow {
 @Component({
   selector: 'app-custom-table',
   templateUrl: './custom-table.component.html',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, PaginationComponent],
 })
 export class CustomTableComponent<T extends TableRow = TableRow> {
   @Input() settings!: TableSettings;
   @Input() data: T[] = [];
+
+  // controlled by parent
+  @Input() currentPage = 1;
+  @Input() totalPages: number[] = [];
+  @Input() itemsPerPage = 10;
+
+  @Output() pageChange = new EventEmitter<number>();
+  @Output() itemsPerPageChange = new EventEmitter<number>();
 }

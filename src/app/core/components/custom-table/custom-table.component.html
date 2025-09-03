@@ -109,6 +109,18 @@
           </tr>
         </tbody>
       </table>
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="settings.pagination?.enabled && data.length > 0"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [itemsPerPage]="itemsPerPage"
+        [itemsPerPageOptions]="
+          settings.pagination?.itemsPerPageOptions ?? [5, 10, 20]
+        "
+        (pageChange)="pageChange.emit($event)"
+        (itemsPerPageChange)="itemsPerPageChange.emit($event)"
+      ></app-pagination>
     </div>
   </div>
 </div>

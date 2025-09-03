@@ -12,8 +12,18 @@ export class PaginationComponent {
   @Input() currentPage: number = 1;
   @Input() totalPages: number[] = [];
   @Input() itemsPerPage: number = 10;
+
+  @Input() itemsPerPageOptions: number[] = [5, 10, 15, 20]; // default
+
   @Output() pageChange = new EventEmitter<number>();
   @Output() itemsPerPageChange = new EventEmitter<number>();
+
+  ngOnInit() {
+    debugger;
+    if (this.itemsPerPageOptions?.length > 0) {
+      this.itemsPerPage = this.itemsPerPageOptions[0];
+    }
+  }
 
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages.length) {

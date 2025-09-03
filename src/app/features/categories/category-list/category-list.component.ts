@@ -39,14 +39,6 @@ export interface CategoryRequest {
   styleUrl: './category-list.component.css',
 })
 export class CategoryListComponent implements OnInit {
-  categoryRequest: CategoryRequest = {
-    skip: 0,
-    take: 10,
-    sortDirection: SortOrder.Descending,
-    sortBy: 'created',
-    name: '',
-  };
-
   data: any[] = [];
 
   settings: TableSettings = {
@@ -70,6 +62,18 @@ export class CategoryListComponent implements OnInit {
       },
       { field: 'actions', title: 'Actions', width: '10%' },
     ],
+    pagination: {
+      enabled: true,
+      itemsPerPageOptions: [5, 15, 30, 100],
+    },
+  };
+
+  categoryRequest: CategoryRequest = {
+    skip: 0,
+    take: this.settings.pagination?.itemsPerPageOptions?.[0] ?? 10,
+    sortDirection: SortOrder.Descending,
+    sortBy: 'created',
+    name: '',
   };
 
   private filterChangeSubject = new Subject<string>();

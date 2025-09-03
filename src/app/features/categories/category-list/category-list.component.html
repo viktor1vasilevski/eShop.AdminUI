@@ -133,7 +133,15 @@
   </div>
 
   <!-- component.html -->
-  <app-custom-table [settings]="settings" [data]="data"></app-custom-table>
+  <app-custom-table
+    [settings]="settings"
+    [data]="data"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [itemsPerPage]="categoryRequest.take"
+    (pageChange)="changePage($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+  ></app-custom-table>
 
   <div
     class="modal fade"
