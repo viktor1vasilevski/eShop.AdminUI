@@ -34,6 +34,13 @@
                 *ngIf="col.type === 'html'"
                 [innerHTML]="row[col.field] || '/'"
               ></span>
+              <span *ngIf="col.type === 'date'">
+                {{
+                  row[col.field]
+                    ? (row[col.field] | date : "dd/MM/yyyy HH:mm")
+                    : "/"
+                }}
+              </span>
             </td>
           </tr>
           <tr *ngIf="rows.length === 0">

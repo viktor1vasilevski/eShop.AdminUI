@@ -54,8 +54,13 @@ export class CategoryListComponent implements OnInit {
     },
     columns: [
       { field: 'name', title: 'Category', width: '30%' },
-      { field: 'created', title: 'Created At', width: '30%' },
-      { field: 'lastModified', title: 'Last Modified', width: '30%' },
+      { field: 'created', title: 'Created At', width: '30%', type: 'date' },
+      {
+        field: 'lastModified',
+        title: 'Last Modified',
+        width: '30%',
+        type: 'date',
+      },
     ],
   };
 
