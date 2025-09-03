@@ -36,25 +36,60 @@
             [style.width]="col.width || 'auto'"
           />
         </colgroup>
+
         <thead class="table-dark">
           <tr>
             <th *ngFor="let col of settings.columns">{{ col.title }}</th>
           </tr>
         </thead>
+
         <tbody>
           <tr
-            *ngFor="let row of rows"
+            *ngFor="let row of data"
             [class.uncategorized]="row['name'] === 'UNCATEGORIZED'"
           >
             <td *ngFor="let col of settings.columns">
-              <span *ngIf="!col.type || col.type === 'text'">
+              <!-- Actions column -->
+              <ng-container *ngIf="col.field === 'actions'">
+                <button
+                  class="btn btn-sm btn-outline-secondary me-2"
+                  (click)="row['view']?.()"
+                  title="View details"
+                  [disabled]="row['name'] === 'UNCATEGORIZED'"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-info me-2"
+                  (click)="row['edit']?.()"
+                  title="Edit"
+                  [disabled]="row['name'] === 'UNCATEGORIZED'"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="row['delete']?.()"
+                  title="Delete"
+                  [disabled]="row['name'] === 'UNCATEGORIZED'"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </ng-container>
+
+              <!-- Text / HTML / Date columns -->
+              <span
+                *ngIf="
+                  col.field !== 'actions' && (!col.type || col.type === 'text')
+                "
+              >
                 {{ row[col.field] || "/" }}
               </span>
               <span
-                *ngIf="col.type === 'html'"
+                *ngIf="col.field !== 'actions' && col.type === 'html'"
                 [innerHTML]="row[col.field] || '/'"
               ></span>
-              <span *ngIf="col.type === 'date'">
+              <span *ngIf="col.field !== 'actions' && col.type === 'date'">
                 {{
                   row[col.field]
                     ? (row[col.field] | date : "dd/MM/yyyy HH:mm")
@@ -63,7 +98,8 @@
               </span>
             </td>
           </tr>
-          <tr *ngIf="rows.length === 0">
+
+          <tr *ngIf="data.length === 0">
             <td
               [attr.colspan]="settings.columns.length"
               class="text-center text-muted"

@@ -3,38 +3,47 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+// Column definition
 export interface TableColumn {
-  field: string; // the property in your row data
-  title: string; // column header text
-  type?: 'text' | 'html' | 'date'; // optional type (default text)
+  field: string;
+  title: string;
+  type?: 'text' | 'html' | 'date';
   width?: string;
 }
 
+// Optional header button
 export interface TableHeader {
   text: string;
   icon?: string;
   actionButton?: {
-    // optional button in the header
-    text: string; // button text
-    icon?: string; // optional icon class
-    routerLink?: string; // optional Angular router link
-    click?: () => void; // optional click handler
-    class?: string; // optional CSS classes for styling
+    text: string;
+    icon?: string;
+    routerLink?: string;
+    click?: () => void;
+    class?: string;
   };
 }
 
+// Table settings
 export interface TableSettings {
   header: TableHeader;
   columns: TableColumn[];
 }
 
+// Row definition with action functions
+export interface TableRow {
+  [key: string]: any; // any other data fields
+  view?: () => void;
+  edit?: () => void;
+  delete?: () => void;
+}
+
 @Component({
   selector: 'app-custom-table',
-  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './custom-table.component.html',
-  styleUrl: './custom-table.component.css',
+  imports: [CommonModule, FormsModule, RouterLink],
 })
-export class CustomTableComponent<T extends Record<string, any> = any> {
+export class CustomTableComponent<T extends TableRow = TableRow> {
   @Input() settings!: TableSettings;
-  @Input() rows: T[] = [];
+  @Input() data: T[] = [];
 }

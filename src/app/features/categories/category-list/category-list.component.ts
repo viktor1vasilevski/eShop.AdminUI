@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -47,6 +47,8 @@ export class CategoryListComponent implements OnInit {
     name: '',
   };
 
+  data: any[] = [];
+
   settings: TableSettings = {
     header: {
       text: 'Category List',
@@ -66,6 +68,7 @@ export class CategoryListComponent implements OnInit {
         width: '30%',
         type: 'date',
       },
+      { field: 'actions', title: 'Actions', width: '10%' },
     ],
   };
 
@@ -81,7 +84,8 @@ export class CategoryListComponent implements OnInit {
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
-    public router: Router
+    public router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -103,6 +107,17 @@ export class CategoryListComponent implements OnInit {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
         this.categories = response.data;
+
+        this.data = this.categories.map((cat) => ({
+          ...cat,
+          view: () => alert('View ' + cat.name),
+          edit: () => alert('Edit ' + cat.name),
+          delete: () => alert('Delete ' + cat.name),
+        }));
+
+        // Force Angular to detect changes
+        this.cd.detectChanges();
+
         this.totalCount =
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();
@@ -113,7 +128,9 @@ export class CategoryListComponent implements OnInit {
     });
   }
 
-  viewCategoryDetails(category: any) {}
+  viewCategoryDetails(id: number) {
+    console.log('Viewing category', id);
+  }
 
   showDeleteCategoryModal(category: any) {
     this.categoryToDelete = category;
