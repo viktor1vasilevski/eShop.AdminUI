@@ -3,10 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../../../core/services/order.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
-import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { PdfReportService } from '../../../core/services/pdf-report.service';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 export interface OrderRequest {
   skip: number;

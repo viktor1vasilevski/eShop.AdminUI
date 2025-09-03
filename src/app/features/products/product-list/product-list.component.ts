@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
@@ -10,9 +9,10 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
-import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
-import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
-import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
+import { FilterDropdownComponent } from '../../../shared/components/filter-dropdown/filter-dropdown.component';
+import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
 declare var bootstrap: any;
 
 export interface ProductRequest {

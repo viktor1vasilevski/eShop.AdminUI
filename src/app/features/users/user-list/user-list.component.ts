@@ -8,10 +8,9 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
-import { FilterDropdownComponent } from '../../../core/components/filter-dropdown/filter-dropdown.component';
-import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
-import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
+import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
 
 export interface UserRequest {
   skip: number;

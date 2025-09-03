@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PaginationComponent } from '../pagination/pagination.component';
-import { SortOrder } from '../../enums/sort-order.enum';
+import { SortOrder } from '../../../core/enums/sort-order.enum';
 
 // Column definition
 export interface TableColumn {
@@ -50,8 +50,9 @@ export interface TableRow {
 
 @Component({
   selector: 'app-custom-table',
-  templateUrl: './custom-table.component.html',
   imports: [CommonModule, FormsModule, RouterLink, PaginationComponent],
+  templateUrl: './custom-table.component.html',
+  styleUrl: './custom-table.component.css',
 })
 export class CustomTableComponent<T extends TableRow = TableRow> {
   @Input() settings!: TableSettings;

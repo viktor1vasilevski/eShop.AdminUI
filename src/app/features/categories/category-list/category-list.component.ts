@@ -1,18 +1,18 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
-import { FilterInputComponent } from '../../../core/components/filter-input/filter-input.component';
-import { FilterCardComponent } from '../../../core/components/filter-card/filter-card.component';
+import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
+import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
 import {
   CustomTableComponent,
   TableSettings,
-} from '../../../core/components/custom-table/custom-table.component';
+} from '../../../shared/components/custom-table/custom-table.component';
 declare var bootstrap: any;
 
 export interface CategoryRequest {
