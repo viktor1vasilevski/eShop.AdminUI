@@ -1,10 +1,5 @@
 <div class="main-content p-4">
-  <app-filter-card
-    title="Filters"
-    id="productFilterBody"
-    [collapsed]="true"
-    (clear)="clearFilters()"
-  >
+  <app-filter-card title="Filters" [collapsed]="true" (clear)="clearFilters()">
     <form class="row g-3 align-items-end">
       <!-- Name Filter -->
       <div class="col-md-4">
