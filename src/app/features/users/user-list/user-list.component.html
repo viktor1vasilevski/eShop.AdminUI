@@ -1,10 +1,5 @@
 <div class="main-content p-4">
-  <app-filter-card
-    title="Filters"
-    id="userFilterBody"
-    [collapsed]="true"
-    (clear)="clearFilters()"
-  >
+  <app-filter-card title="Filters" [collapsed]="true" (clear)="clearFilters()">
     <form class="row g-3 align-items-end">
       <!-- First Name -->
       <div class="col-md-3">
@@ -52,88 +47,16 @@
     </form>
   </app-filter-card>
 
-  <!-- Users List -->
-  <div class="card shadow-sm">
-    <div
-      class="card-header text-white d-flex justify-content-between align-items-center"
-      style="background-color: #495057"
-    >
-      <span><i class="bi bi-people me-2"></i>Users List</span>
-    </div>
-
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table
-          class="table mb-0 table-hover align-middle"
-          style="table-layout: fixed; width: 100%"
-        >
-          <colgroup>
-            <col style="width: 15%" />
-            <col style="width: 15%" />
-            <col style="width: 15%" />
-            <col style="width: 15%" />
-            <col style="width: 10%" />
-          </colgroup>
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">First Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Username</th>
-              <th scope="col">Email</th>
-              <th (click)="toggleSortOrder('created')" style="cursor: pointer">
-                Created At
-                <i
-                  *ngIf="users.length > 0"
-                  [ngClass]="[
-                    'bi',
-                    userRequest.sortBy === 'created'
-                      ? userRequest.sortDirection === 'asc'
-                        ? 'bi-arrow-up white-arrow'
-                        : 'bi-arrow-down white-arrow'
-                      : 'bi-arrow-down'
-                  ]"
-                ></i>
-              </th>
-              <th scope="col" class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="users.length === 0">
-              <td colspan="5" class="text-center text-muted">
-                No subcategories found.
-              </td>
-            </tr>
-            <tr *ngFor="let user of users">
-              <td class="text-truncate">{{ user.firstName }}</td>
-              <td class="text-truncate">{{ user.lastName }}</td>
-              <td class="text-truncate">{{ user.username }}</td>
-              <td class="text-truncate">{{ user.email }}</td>
-              <td>{{ user.created | date : "dd/MM/yyyy HH:mm" }}</td>
-              <td class="text-end">
-                <button
-                  class="btn btn-sm btn-outline-info me-2"
-                  title="View Orders"
-                  (click)="viewOrders(user.id)"
-                >
-                  <i class="bi bi-receipt"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pagination Component -->
-      <div class="p-3" *ngIf="users.length !== 0">
-        <app-pagination
-          [currentPage]="currentPage"
-          [totalPages]="totalPages"
-          [itemsPerPage]="userRequest.take"
-          (pageChange)="changePage($event)"
-          (itemsPerPageChange)="onItemsPerPageChange($event)"
-        >
-        </app-pagination>
-      </div>
-    </div>
-  </div>
+  <app-custom-table
+    [settings]="settings"
+    [data]="data"
+    [sortBy]="userRequest.sortBy"
+    [sortDirection]="userRequest.sortDirection"
+    (sortChange)="onSortChange($event)"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [itemsPerPage]="userRequest.take"
+    (pageChange)="changePage($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+  ></app-custom-table>
 </div>

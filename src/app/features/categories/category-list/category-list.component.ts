@@ -121,9 +121,7 @@ export class CategoryListComponent implements OnInit {
           edit: () => this.router.navigate(['categories/edit', cat.id]),
           delete: () => this.showDeleteCategoryModal(cat),
         }));
-
         this.cd.detectChanges();
-
         this.totalCount =
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();

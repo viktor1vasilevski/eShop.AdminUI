@@ -1,4 +1,4 @@
-import { Component, OnInit, ResourceStatus } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { UsersService } from '../../../core/services/users.service';
@@ -8,9 +8,12 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
 import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
+import {
+  CustomTableComponent,
+  TableSettings,
+} from '../../../shared/components/custom-table/custom-table.component';
 
 export interface UserRequest {
   skip: number;
@@ -29,17 +32,56 @@ export interface UserRequest {
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    PaginationComponent,
     FilterInputComponent,
     FilterCardComponent,
+    CustomTableComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit {
+  data: any[] = [];
+  settings: TableSettings = {
+    header: {
+      text: 'Users List',
+      icon: 'bi bi-people icon',
+      actionButton: {
+        text: 'Add User',
+        icon: 'bi bi-plus-lg',
+        routerLink: '/users/create',
+      },
+    },
+    columns: [
+      { field: 'firstName', title: 'First Name', width: '10%' },
+      { field: 'lastName', title: 'Last Name', width: '10%' },
+      { field: 'username', title: 'Username', width: '10%' },
+      { field: 'email', title: 'Email', width: '10%' },
+      {
+        field: 'created',
+        title: 'Created At',
+        width: '10%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'created',
+      },
+      {
+        field: 'lastModified',
+        title: 'Last Modified At',
+        width: '10%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'lastmodified',
+      },
+      { field: 'actions', title: 'Actions', width: '10%' },
+    ],
+    pagination: {
+      enabled: true,
+      itemsPerPageOptions: [5, 15, 30, 100],
+    },
+  };
   userRequest: UserRequest = {
     skip: 0,
-    take: 10,
+    take: this.settings.pagination?.itemsPerPageOptions?.[0] ?? 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     firstName: '',
@@ -59,7 +101,8 @@ export class UserListComponent implements OnInit {
     private _userService: UsersService,
     private _errorHandlerService: ErrorHandlerService,
     private _notificationService: NotificationService,
-    public router: Router
+    public router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -81,7 +124,13 @@ export class UserListComponent implements OnInit {
     this._userService.getUsers(this.userRequest).subscribe({
       next: (response: any) => {
         if (response && response.data) {
-          this.users = response.data;
+          this.data = response.data.map((cat: any) => ({
+            ...cat,
+            view: () => alert('View ' + cat.name),
+            edit: () => this.router.navigate(['categories/edit', cat.id]),
+            delete: () => this.showDeleteUser(cat),
+          }));
+          this.cd.detectChanges();
           this.totalCount =
             typeof response?.totalCount === 'number' ? response.totalCount : 0;
           this.calculateTotalPages();
@@ -98,6 +147,14 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  onSortChange(e: { sortBy: string; sortDirection: SortOrder }): void {
+    this.userRequest.sortBy = e.sortBy;
+    this.userRequest.sortDirection = e.sortDirection;
+    this.currentPage = 1;
+    this.userRequest.skip = 0;
+    this.loadUsers();
+  }
+
   calculateTotalPages(): void {
     const pages = Math.ceil(this.totalCount / this.userRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
@@ -106,6 +163,8 @@ export class UserListComponent implements OnInit {
   onFilterChange(): void {
     this.filterChangeSubject.next(JSON.stringify(this.userRequest));
   }
+
+  showDeleteUser(asdas: any) {}
 
   clearFilters(): void {
     this.userRequest.firstName = '';
