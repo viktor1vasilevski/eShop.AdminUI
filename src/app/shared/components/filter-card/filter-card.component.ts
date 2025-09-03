@@ -1,14 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 
 @Component({
   selector: 'app-filter-card',
-  imports: [],
+  standalone: true,
   templateUrl: './filter-card.component.html',
-  styleUrl: './filter-card.component.css',
+  styleUrls: ['./filter-card.component.css'],
 })
 export class FilterCardComponent {
-  @Input() title: string = 'Filters';
-  @Input() id: string = 'filterBody';
-  @Input() collapsed = true;
-  @Output() clear = new EventEmitter<void>();
+  title = input<string>('Filters');
+  id = input<string>('filterBody');
+
+  collapsed = model<boolean>(true);
+
+  clear = output<void>();
+
+  collapseTarget = () => `#${this.id()}`;
+  toggle() {
+    this.collapsed.update((v) => !v);
+  }
 }
