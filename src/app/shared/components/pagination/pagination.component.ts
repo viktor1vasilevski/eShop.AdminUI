@@ -1,38 +1,36 @@
+import { Component, computed, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pagination',
-  imports: [FormsModule, CommonModule],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.css',
+  styleUrls: ['./pagination.component.css'],
 })
 export class PaginationComponent {
-  @Input() currentPage: number = 1;
-  @Input() totalPages: number[] = [];
-  @Input() itemsPerPage: number = 10;
+  totalPages = input<number[]>([]);
+  itemsPerPageOptions = input<number[]>([5, 10, 15, 20]);
 
-  @Input() itemsPerPageOptions: number[] = [5, 10, 15, 20]; // default
+  currentPage = model<number>(1);
+  itemsPerPage = model<number>(10);
 
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() itemsPerPageChange = new EventEmitter<number>();
+  pageChange = output<number>();
+  itemsPerPageChange = output<number>();
 
-  ngOnInit() {
-    if (this.itemsPerPageOptions?.length > 0) {
-      this.itemsPerPage = this.itemsPerPageOptions[0];
-    }
-  }
+  isFirst = computed(() => this.currentPage() === 1);
+  isLast = computed(() => this.currentPage() === this.totalPages().length);
 
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages.length) {
+    const max = this.totalPages().length || 1;
+    if (page >= 1 && page <= max) {
+      this.currentPage.set(page);
       this.pageChange.emit(page);
     }
   }
 
-  onItemsPerPageChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const itemsPerPage = +selectElement.value;
-    this.itemsPerPageChange.emit(itemsPerPage);
+  setItemsPerPage(v: number): void {
+    this.itemsPerPage.set(v);
+    this.itemsPerPageChange.emit(v);
   }
 }

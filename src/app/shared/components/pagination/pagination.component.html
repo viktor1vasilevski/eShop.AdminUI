@@ -6,34 +6,56 @@
     <label for="itemsPerPage" class="form-label me-2">Items per page:</label>
     <select
       id="itemsPerPage"
-      [(ngModel)]="itemsPerPage"
-      (change)="onItemsPerPageChange($event)"
       class="form-select d-inline-block w-auto"
+      [value]="itemsPerPage()"
+      (change)="setItemsPerPage(+$any($event.target).value)"
     >
-      <option *ngFor="let option of itemsPerPageOptions" [value]="option">
+      <option *ngFor="let option of itemsPerPageOptions()" [value]="option">
         {{ option }}
       </option>
     </select>
   </div>
 
   <!-- Pagination controls -->
-  <nav>
+  <nav aria-label="Pagination">
     <ul class="pagination mb-0">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+      <li class="page-item" [class.disabled]="isFirst()">
+        <a
+          class="page-link"
+          href="#"
+          (click)="$event.preventDefault(); changePage(currentPage() - 1)"
+          [attr.aria-disabled]="isFirst()"
+          [attr.tabindex]="isFirst() ? -1 : 0"
+        >
+          Previous
+        </a>
       </li>
+
       <li
         class="page-item"
-        *ngFor="let page of totalPages"
-        [class.active]="page === currentPage"
+        *ngFor="let page of totalPages()"
+        [class.active]="page === currentPage()"
       >
-        <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+        <a
+          class="page-link"
+          href="#"
+          (click)="$event.preventDefault(); changePage(page)"
+          [attr.aria-current]="page === currentPage() ? 'page' : null"
+        >
+          {{ page }}
+        </a>
       </li>
-      <li
-        class="page-item"
-        [class.disabled]="currentPage === totalPages.length"
-      >
-        <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+
+      <li class="page-item" [class.disabled]="isLast()">
+        <a
+          class="page-link"
+          href="#"
+          (click)="$event.preventDefault(); changePage(currentPage() + 1)"
+          [attr.aria-disabled]="isLast()"
+          [attr.tabindex]="isLast() ? -1 : 0"
+        >
+          Next
+        </a>
       </li>
     </ul>
   </nav>
