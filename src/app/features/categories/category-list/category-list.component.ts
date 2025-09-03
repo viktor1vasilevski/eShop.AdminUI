@@ -51,6 +51,11 @@ export class CategoryListComponent implements OnInit {
     header: {
       text: 'Category List',
       icon: 'bi bi-folder me-2',
+      actionButton: {
+        text: 'Add Category',
+        icon: 'bi bi-plus-lg',
+        routerLink: '/categories/create',
+      },
     },
     columns: [
       { field: 'name', title: 'Category', width: '30%' },

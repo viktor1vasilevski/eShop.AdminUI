@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 export interface TableColumn {
   field: string; // the property in your row data
@@ -12,6 +13,14 @@ export interface TableColumn {
 export interface TableHeader {
   text: string;
   icon?: string;
+  actionButton?: {
+    // optional button in the header
+    text: string; // button text
+    icon?: string; // optional icon class
+    routerLink?: string; // optional Angular router link
+    click?: () => void; // optional click handler
+    class?: string; // optional CSS classes for styling
+  };
 }
 
 export interface TableSettings {
@@ -21,7 +30,7 @@ export interface TableSettings {
 
 @Component({
   selector: 'app-custom-table',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.css',
 })

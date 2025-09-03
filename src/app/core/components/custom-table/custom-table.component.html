@@ -3,13 +3,30 @@
     class="card-header text-white d-flex justify-content-between align-items-center"
     style="background-color: #495057"
   >
+    <!-- Header text + icon -->
     <span>
       <span *ngIf="settings.header.icon">
-        <i [class]="settings.header.icon"></i>
+        <i [class]="settings.header.icon + ' me-2'"></i>
       </span>
       {{ settings.header.text }}
     </span>
+
+    <!-- Optional header action button -->
+    <button
+      *ngIf="settings.header.actionButton"
+      class="btn btn-light btn-sm"
+      [routerLink]="settings.header.actionButton.routerLink"
+      (click)="settings.header.actionButton.click?.()"
+      [ngClass]="settings.header.actionButton.class"
+    >
+      <i
+        *ngIf="settings.header.actionButton.icon"
+        [class]="settings.header.actionButton.icon + ' me-1'"
+      ></i>
+      {{ settings.header.actionButton.text }}
+    </button>
   </div>
+
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover align-middle">
@@ -30,9 +47,9 @@
             [class.uncategorized]="row['name'] === 'UNCATEGORIZED'"
           >
             <td *ngFor="let col of settings.columns">
-              <span *ngIf="!col.type || col.type === 'text'">{{
-                row[col.field] || "/"
-              }}</span>
+              <span *ngIf="!col.type || col.type === 'text'">
+                {{ row[col.field] || "/" }}
+              </span>
               <span
                 *ngIf="col.type === 'html'"
                 [innerHTML]="row[col.field] || '/'"
