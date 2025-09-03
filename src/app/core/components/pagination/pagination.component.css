@@ -1,4 +1,22 @@
-.page-item.disabled .page-link {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.pagination-container {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.pagination .page-link {
+  padding: 0.4rem 0.75rem;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #495057;
+  border-color: #495057;
+}

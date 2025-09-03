@@ -56,7 +56,7 @@ export class CategoryListComponent implements OnInit {
       { field: 'created', title: 'Created At', width: '30%', type: 'date' },
       {
         field: 'lastModified',
-        title: 'Last Modified',
+        title: 'Last Modified At',
         width: '30%',
         type: 'date',
       },
