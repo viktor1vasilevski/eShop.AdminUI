@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { ProductService } from '../../../core/services/product.service';
 import { SubcategoryService } from '../../../core/services/subcategory.service';
@@ -9,10 +9,13 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
-import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
 import { FilterDropdownComponent } from '../../../shared/components/filter-dropdown/filter-dropdown.component';
 import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
+import {
+  CustomTableComponent,
+  TableSettings,
+} from '../../../shared/components/custom-table/custom-table.component';
 declare var bootstrap: any;
 
 export interface ProductRequest {
@@ -32,18 +35,58 @@ export interface ProductRequest {
   selector: 'app-product-list',
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
-    PaginationComponent,
     ReactiveFormsModule,
     FilterDropdownComponent,
     FilterInputComponent,
     FilterCardComponent,
+    CustomTableComponent,
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
 export class ProductListComponent implements OnInit {
+  data: any[] = [];
+  settings: TableSettings = {
+    header: {
+      text: 'Product List',
+      icon: 'bi bi-folder me-2',
+      actionButton: {
+        text: 'Add Product',
+        icon: 'bi bi-plus-lg',
+        routerLink: '/products/create',
+      },
+    },
+    columns: [
+      { field: 'name', title: 'Name', width: '15%' },
+      { field: 'subcategory', title: 'Subcategory', width: '10%' },
+      { field: 'category', title: 'Categor', width: '10%' },
+      { field: 'unitPrice', title: 'Unit Price', width: '8%' },
+      { field: 'unitQuantity', title: 'Unit Quantity', width: '8%' },
+      {
+        field: 'created',
+        title: 'Created At',
+        width: '10%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'created',
+      },
+      {
+        field: 'lastModified',
+        title: 'Last Modified At',
+        width: '10%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'lastmodified',
+      },
+      { field: 'actions', title: 'Actions', width: '10%' },
+    ],
+    pagination: {
+      enabled: true,
+      itemsPerPageOptions: [5, 15, 30, 100],
+    },
+  };
+
   productRequest: ProductRequest = {
     name: '',
     categoryId: null,
@@ -52,27 +95,29 @@ export class ProductListComponent implements OnInit {
     unitPrice: 0,
     unitQuantity: 0,
     skip: 0,
-    take: 10,
+    take: this.settings.pagination?.itemsPerPageOptions?.[0] ?? 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
   };
   private filterChangeSubject = new Subject<string>();
 
-  products: any[] = [];
   productDetails: any;
   subcategoriesDropdownList: any[] = [];
   categoriesDropdownList: any[] = [];
+
   totalCount: number = 0;
   totalPages: number[] = [];
   currentPage: number = 1;
   productToDelete: any = null;
+
   constructor(
     public router: Router,
     private _productService: ProductService,
     private _categoryService: CategoryService,
     private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
-    private _errorHandlerService: ErrorHandlerService
+    private _errorHandlerService: ErrorHandlerService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -92,7 +137,14 @@ export class ProductListComponent implements OnInit {
     debugger;
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
-        this.products = response.data;
+        this.data = response.data.map((cat: any) => ({
+          ...cat,
+          view: () => alert('View ' + cat.name),
+          edit: () => this.router.navigate(['products/edit', cat.id]),
+          delete: () => this.showDeleteProductModal(cat),
+        }));
+
+        this.cd.detectChanges();
         this.totalCount =
           typeof response?.totalCount === 'number' ? response.totalCount : 0;
         this.calculateTotalPages();
@@ -138,6 +190,14 @@ export class ProductListComponent implements OnInit {
     }
   }
 
+  onSortChange(e: { sortBy: string; sortDirection: SortOrder }): void {
+    this.productRequest.sortBy = e.sortBy;
+    this.productRequest.sortDirection = e.sortDirection;
+    this.currentPage = 1;
+    this.productRequest.skip = 0;
+    this.loadProducts();
+  }
+
   calculateTotalPages(): void {
     const pages = Math.ceil(this.totalCount / this.productRequest.take);
     this.totalPages = Array.from({ length: pages }, (_, i) => i + 1);
@@ -158,20 +218,6 @@ export class ProductListComponent implements OnInit {
 
   onFilterChange(): void {
     this.filterChangeSubject.next(JSON.stringify(this.productRequest));
-  }
-
-  toggleSortOrder(sortedBy: string) {
-    if (this.productRequest.sortBy === sortedBy) {
-      this.productRequest.sortDirection =
-        this.productRequest.sortDirection === SortOrder.Ascending
-          ? SortOrder.Descending
-          : SortOrder.Ascending;
-    } else {
-      this.productRequest.sortBy = sortedBy;
-      this.productRequest.sortDirection = SortOrder.Ascending;
-    }
-
-    this.loadProducts();
   }
 
   onDropdownItemChange(selectedValue: any, type: string) {
