@@ -3,7 +3,6 @@ import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PaginationComponent } from '../../../core/components/pagination/pagination.component';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -28,9 +27,7 @@ export interface CategoryRequest {
   selector: 'app-category-list',
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
-    PaginationComponent,
     FilterInputComponent,
     FilterCardComponent,
     CustomTableComponent,
@@ -53,12 +50,21 @@ export class CategoryListComponent implements OnInit {
     },
     columns: [
       { field: 'name', title: 'Category', width: '30%' },
-      { field: 'created', title: 'Created At', width: '30%', type: 'date' },
+      {
+        field: 'created',
+        title: 'Created At',
+        width: '30%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'created',
+      },
       {
         field: 'lastModified',
         title: 'Last Modified At',
         width: '30%',
         type: 'date',
+        sortable: true,
+        sortKey: 'lastmodified',
       },
       { field: 'actions', title: 'Actions', width: '10%' },
     ],
@@ -145,17 +151,11 @@ export class CategoryListComponent implements OnInit {
     }
   }
 
-  toggleSortOrder(sortedBy: string) {
-    if (this.categoryRequest.sortBy === sortedBy) {
-      this.categoryRequest.sortDirection =
-        this.categoryRequest.sortDirection === SortOrder.Ascending
-          ? SortOrder.Descending
-          : SortOrder.Ascending;
-    } else {
-      this.categoryRequest.sortBy = sortedBy;
-      this.categoryRequest.sortDirection = SortOrder.Ascending;
-    }
-
+  onSortChange(e: { sortBy: string; sortDirection: SortOrder }): void {
+    this.categoryRequest.sortBy = e.sortBy;
+    this.categoryRequest.sortDirection = e.sortDirection;
+    this.currentPage = 1;
+    this.categoryRequest.skip = 0;
     this.loadCategories();
   }
 

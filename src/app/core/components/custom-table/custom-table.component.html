@@ -39,7 +39,30 @@
 
         <thead class="table-dark">
           <tr>
-            <th *ngFor="let col of settings.columns">{{ col.title }}</th>
+            <th
+              *ngFor="let col of settings.columns"
+              [style.width]="col.width || 'auto'"
+              [class.sortable]="col.sortable"
+              (click)="toggleSort(col)"
+            >
+              <span>{{ col.title }}</span>
+
+              <!-- show sort icon only if column is sortable -->
+              <ng-container *ngIf="col.sortable">
+                <i
+                  class="bi ms-1"
+                  [ngClass]="[
+                    sortBy === (col.sortKey || col.field) &&
+                    sortDirection === 'asc'
+                      ? 'bi-arrow-up'
+                      : sortBy === (col.sortKey || col.field) &&
+                        sortDirection === 'desc'
+                      ? 'bi-arrow-down'
+                      : 'bi-arrow-down'
+                  ]"
+                ></i>
+              </ng-container>
+            </th>
           </tr>
         </thead>
 

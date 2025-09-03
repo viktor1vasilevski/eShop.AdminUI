@@ -2,3 +2,11 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+th.sortable .bi {
+  opacity: 0.75;
+}
