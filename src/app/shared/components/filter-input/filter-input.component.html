@@ -1,17 +1,21 @@
 <div class="w-100">
-  <label [for]="id" class="form-label">{{ label }}</label>
+  <label [for]="id()" class="form-label">{{ label() }}</label>
+
   <div class="input-group w-100">
     <span class="input-group-text bg-light">
-      <i class="bi bi-search"></i>
+      <i class="bi bi-search" aria-hidden="true"></i>
     </span>
+
     <input
-      type="text"
+      [id]="id()"
       class="form-control"
-      [id]="id"
-      [placeholder]="placeholder"
-      [(ngModel)]="value"
-      (input)="valueChange.emit(value)"
-      autocomplete="off"
+      type="search"
+      [placeholder]="placeholder()"
+      [value]="value()"
+      (input)="onInput($any($event.target).value)"
+      [disabled]="disabled()"
+      [attr.autocomplete]="autocomplete()"
+      role="searchbox"
     />
   </div>
 </div>

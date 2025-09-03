@@ -1,16 +1,28 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, input, model, output } from '@angular/core';
 
 @Component({
   selector: 'app-filter-input',
-  imports: [FormsModule],
+  standalone: true,
   templateUrl: './filter-input.component.html',
-  styleUrl: './filter-input.component.css',
+  styleUrls: ['./filter-input.component.css'],
 })
 export class FilterInputComponent {
-  @Input() label!: string;
-  @Input() placeholder: string = '';
-  @Input() id!: string;
-  @Input() value: string = '';
-  @Output() valueChange = new EventEmitter<string>();
+  label = input.required<string>();
+  placeholder = input<string>('');
+  id = input<string>('filter-' + Math.random().toString(36).slice(2));
+  disabled = input<boolean>(false);
+  autocomplete = input<string>('off');
+
+  value = model<string>('');
+
+  valueChanged = output<string>();
+
+  onInput(v: string) {
+    this.value.set(v);
+    this.valueChanged.emit(v);
+  }
+
+  clear() {
+    this.onInput('');
+  }
 }
