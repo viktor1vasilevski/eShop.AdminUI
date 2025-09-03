@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
@@ -36,13 +35,13 @@ export interface TableSettings {
 }
 
 export interface PaginationSettings {
-  enabled: boolean; // toggle pagination
-  itemsPerPageOptions?: number[]; // dropdown options
+  enabled: boolean;
+  itemsPerPageOptions?: number[];
 }
 
 // Row definition with action functions
 export interface TableRow {
-  [key: string]: any; // any other data fields
+  [key: string]: any;
   view?: () => void;
   edit?: () => void;
   delete?: () => void;
@@ -50,36 +49,39 @@ export interface TableRow {
 
 @Component({
   selector: 'app-custom-table',
-  imports: [CommonModule, FormsModule, RouterLink, PaginationComponent],
+  standalone: true,
+  imports: [CommonModule, RouterLink, PaginationComponent],
   templateUrl: './custom-table.component.html',
-  styleUrl: './custom-table.component.css',
+  styleUrls: ['./custom-table.component.css'],
 })
 export class CustomTableComponent<T extends TableRow = TableRow> {
-  @Input() settings!: TableSettings;
-  @Input() data: T[] = [];
+  // Inputs (signals)
+  settings = input.required<TableSettings>();
+  data = input<T[]>([]);
 
   // controlled by parent
-  @Input() currentPage = 1;
-  @Input() totalPages: number[] = [];
-  @Input() itemsPerPage = 10;
+  currentPage = input<number>(1);
+  totalPages = input<number[]>([]);
+  itemsPerPage = input<number>(10);
 
-  @Input() sortBy: string | null = null; // current sort key (from parent)
-  @Input() sortDirection: SortOrder = SortOrder.Descending;
+  sortBy = input<string | null>(null);
+  sortDirection = input<SortOrder>(SortOrder.Descending);
 
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() itemsPerPageChange = new EventEmitter<number>();
-  @Output() sortChange = new EventEmitter<{
-    sortBy: string;
-    sortDirection: SortOrder;
-  }>();
+  // Outputs (signals)
+  pageChange = output<number>();
+  itemsPerPageChange = output<number>();
+  sortChange = output<{ sortBy: string; sortDirection: SortOrder }>();
+
+  // expose enum in template
+  SortOrderRef = SortOrder;
 
   toggleSort(col: TableColumn) {
     if (!col.sortable) return;
     const key = col.sortKey ?? col.field;
 
     const next =
-      this.sortBy === key
-        ? this.sortDirection === SortOrder.Ascending
+      this.sortBy() === key
+        ? this.sortDirection() === SortOrder.Ascending
           ? SortOrder.Descending
           : SortOrder.Ascending
         : SortOrder.Ascending;

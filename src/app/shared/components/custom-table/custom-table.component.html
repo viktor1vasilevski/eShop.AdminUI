@@ -5,25 +5,26 @@
   >
     <!-- Header text + icon -->
     <span>
-      <span *ngIf="settings.header.icon">
-        <i [class]="settings.header.icon + ' me-2'"></i>
+      <span *ngIf="settings().header.icon">
+        <i [class]="settings().header.icon + ' me-2'"></i>
       </span>
-      {{ settings.header.text }}
+      {{ settings().header.text }}
     </span>
 
     <!-- Optional header action button -->
     <button
-      *ngIf="settings.header.actionButton"
+      *ngIf="settings().header.actionButton"
       class="btn btn-light btn-sm"
-      [routerLink]="settings.header.actionButton.routerLink"
-      (click)="settings.header.actionButton.click?.()"
-      [ngClass]="settings.header.actionButton.class"
+      [routerLink]="settings().header.actionButton?.routerLink"
+      (click)="settings().header.actionButton?.click?.()"
+      [ngClass]="settings().header.actionButton?.class"
+      type="button"
     >
       <i
-        *ngIf="settings.header.actionButton.icon"
-        [class]="settings.header.actionButton.icon + ' me-1'"
+        *ngIf="settings().header.actionButton?.icon"
+        [class]="settings().header.actionButton?.icon + ' me-1'"
       ></i>
-      {{ settings.header.actionButton.text }}
+      {{ settings().header.actionButton?.text }}
     </button>
   </div>
 
@@ -32,7 +33,7 @@
       <table class="table table-hover align-middle">
         <colgroup>
           <col
-            *ngFor="let col of settings.columns"
+            *ngFor="let col of settings().columns"
             [style.width]="col.width || 'auto'"
           />
         </colgroup>
@@ -40,7 +41,7 @@
         <thead class="table-dark">
           <tr>
             <th
-              *ngFor="let col of settings.columns"
+              *ngFor="let col of settings().columns"
               [style.width]="col.width || 'auto'"
               [class.sortable]="col.sortable"
               [class.text-end]="col.field === 'actions'"
@@ -54,11 +55,11 @@
                 <i
                   class="bi ms-1"
                   [ngClass]="[
-                    sortBy === (col.sortKey || col.field) &&
-                    sortDirection === 'asc'
+                    sortBy() === (col.sortKey || col.field) &&
+                    sortDirection() === SortOrderRef.Ascending
                       ? 'bi-arrow-up'
-                      : sortBy === (col.sortKey || col.field) &&
-                        sortDirection === 'desc'
+                      : sortBy() === (col.sortKey || col.field) &&
+                        sortDirection() === SortOrderRef.Descending
                       ? 'bi-arrow-down'
                       : 'bi-arrow-down'
                   ]"
@@ -70,11 +71,11 @@
 
         <tbody>
           <tr
-            *ngFor="let row of data"
+            *ngFor="let row of data()"
             [class.uncategorized]="row['name'] === 'UNCATEGORIZED'"
           >
             <td
-              *ngFor="let col of settings.columns"
+              *ngFor="let col of settings().columns"
               [class.text-end]="col.field === 'actions'"
             >
               <!-- Actions column -->
@@ -104,6 +105,7 @@
                   <i class="bi bi-trash"></i>
                 </button>
               </ng-container>
+
               <span
                 *ngIf="
                   col.field !== 'actions' && (!col.type || col.type === 'text')
@@ -111,10 +113,12 @@
               >
                 {{ row[col.field] || "/" }}
               </span>
+
               <span
                 *ngIf="col.field !== 'actions' && col.type === 'html'"
                 [innerHTML]="row[col.field] || '/'"
               ></span>
+
               <span *ngIf="col.field !== 'actions' && col.type === 'date'">
                 {{
                   row[col.field]
@@ -125,9 +129,9 @@
             </td>
           </tr>
 
-          <tr *ngIf="data.length === 0">
+          <tr *ngIf="data().length === 0">
             <td
-              [attr.colspan]="settings.columns.length"
+              [attr.colspan]="settings().columns.length"
               class="text-center text-muted"
             >
               No data found.
@@ -135,14 +139,15 @@
           </tr>
         </tbody>
       </table>
+
       <!-- Pagination -->
       <app-pagination
-        *ngIf="settings.pagination?.enabled && data.length > 0"
-        [currentPage]="currentPage"
-        [totalPages]="totalPages"
-        [itemsPerPage]="itemsPerPage"
+        *ngIf="settings().pagination?.enabled && data().length > 0"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [itemsPerPage]="itemsPerPage()"
         [itemsPerPageOptions]="
-          settings.pagination?.itemsPerPageOptions ?? [5, 10, 20]
+          settings().pagination?.itemsPerPageOptions ?? [5, 10, 20]
         "
         (pageChange)="pageChange.emit($event)"
         (itemsPerPageChange)="itemsPerPageChange.emit($event)"
