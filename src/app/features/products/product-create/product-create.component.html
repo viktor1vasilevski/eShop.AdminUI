@@ -155,19 +155,55 @@
               <label for="productDescription" class="form-label"
                 >Description</label
               >
-              <textarea
-                id="productDescription"
-                class="form-control"
-                formControlName="description"
-                rows="3"
-                placeholder="Enter product description (optional)"
-              ></textarea>
+
+              <div class="position-relative">
+                <textarea
+                  id="productDescription"
+                  class="form-control"
+                  formControlName="description"
+                  rows="3"
+                  placeholder="Enter product description (optional)"
+                  [readonly]="isGeneratingDesc"
+                  [attr.aria-busy]="isGeneratingDesc"
+                ></textarea>
+
+                <!-- Overlay spinner while generating -->
+                <div
+                  *ngIf="isGeneratingDesc"
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75 rounded"
+                  style="pointer-events: none"
+                >
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></div>
+                    <span>Generating description…</span>
+                  </div>
+                </div>
+              </div>
+
               <button
                 type="button"
                 class="btn btn-sm btn-outline-primary mt-2"
                 (click)="generateDescription()"
+                [disabled]="isGeneratingDesc"
               >
-                <i class="bi bi-robot"></i> Generate with AI
+                <i class="bi bi-robot me-1"></i>
+                <ng-container *ngIf="!isGeneratingDesc; else genLoading"
+                  >Generate with AI</ng-container
+                >
+                <ng-template #genLoading>
+                  <span class="d-inline-flex align-items-center gap-2">
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Generating…
+                  </span>
+                </ng-template>
               </button>
             </div>
           </div>

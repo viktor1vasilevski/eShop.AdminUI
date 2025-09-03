@@ -12,6 +12,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { ProductService } from '../../../core/services/product.service';
 import { ResponseStatus } from '../../../core/enums/response-status.enum';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-product-create',
@@ -24,6 +25,7 @@ export class ProductCreateComponent implements OnInit {
   subcategoriesDropdownList: any[] = [];
   isSubmitting = false;
   imagePreviewUrl: string | null = null;
+  isGeneratingDesc = false;
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +39,7 @@ export class ProductCreateComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       subcategoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
-      description: ['', [Validators.required, Validators.maxLength(1500)]],
+      description: ['', [Validators.required, Validators.maxLength(2500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
       image: ['', Validators.required],
     });
@@ -83,7 +85,6 @@ export class ProductCreateComponent implements OnInit {
 
   generateDescription() {
     const name = this.createProductForm.value.name;
-
     if (!name) {
       this._notificationService.notify(
         ResponseStatus.Info,
@@ -93,7 +94,7 @@ export class ProductCreateComponent implements OnInit {
     }
 
     const subcategory = this.subcategoriesDropdownList.find(
-      (s: any) => s.id === this.createProductForm.value.subcategoryId
+      (s: any) => s.subcategoryId === this.createProductForm.value.subcategoryId
     );
 
     if (!subcategory) {
@@ -104,7 +105,6 @@ export class ProductCreateComponent implements OnInit {
       return;
     }
 
-    // Split "Subcategory (Category)"
     const match = subcategory.name.match(/^(.+)\s+\((.+)\)$/);
 
     if (!match) {
@@ -112,18 +112,17 @@ export class ProductCreateComponent implements OnInit {
       return;
     }
 
-    const subcategoryName = match[1]; // e.g., "Skin Care"
-    const categoryName = match[2]; // e.g., "Personal Care"
+    const subcategoryName = match[1];
+    const categoryName = match[2];
+    this.isGeneratingDesc = true;
 
     this._productService
       .generateDescription(name, categoryName, subcategoryName)
+      .pipe(finalize(() => (this.isGeneratingDesc = false)))
       .subscribe({
-        next: (res) => {
-          this.createProductForm.patchValue({ description: res.data });
-        },
-        error: (err) => {
-          this._errorHandlerService.handleErrors(err);
-        },
+        next: (res) =>
+          this.createProductForm.patchValue({ description: res.data }),
+        error: (err) => this._errorHandlerService.handleErrors(err),
       });
   }
 
