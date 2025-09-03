@@ -53,9 +53,9 @@ export class CategoryListComponent implements OnInit {
       icon: 'bi bi-folder me-2',
     },
     columns: [
-      { field: 'name', title: 'Category' },
-      { field: 'created', title: 'Created At' },
-      { field: 'lastModified', title: 'Last Modified' },
+      { field: 'name', title: 'Category', width: '30%' },
+      { field: 'created', title: 'Created At', width: '30%' },
+      { field: 'lastModified', title: 'Last Modified', width: '30%' },
     ],
   };
 

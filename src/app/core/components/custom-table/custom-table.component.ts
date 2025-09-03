@@ -6,6 +6,7 @@ export interface TableColumn {
   field: string; // the property in your row data
   title: string; // column header text
   type?: 'text' | 'html' | 'data'; // optional type (default text)
+  width?: string;
 }
 
 export interface TableHeader {
