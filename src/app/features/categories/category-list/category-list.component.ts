@@ -111,8 +111,8 @@ export class CategoryListComponent implements OnInit {
         this.data = this.categories.map((cat) => ({
           ...cat,
           view: () => alert('View ' + cat.name),
-          edit: () => alert('Edit ' + cat.name),
-          delete: () => alert('Delete ' + cat.name),
+          edit: () => this.router.navigate(['categories/edit', cat.id]),
+          delete: () => this.showDeleteCategoryModal(cat),
         }));
 
         // Force Angular to detect changes
