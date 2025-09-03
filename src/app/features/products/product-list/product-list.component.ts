@@ -50,7 +50,7 @@ export class ProductListComponent implements OnInit {
   settings: TableSettings = {
     header: {
       text: 'Product List',
-      icon: 'bi bi-folder me-2',
+      icon: 'bi bi-box-seam icon',
       actionButton: {
         text: 'Add Product',
         icon: 'bi bi-plus-lg',
@@ -61,8 +61,20 @@ export class ProductListComponent implements OnInit {
       { field: 'name', title: 'Name', width: '15%' },
       { field: 'subcategory', title: 'Subcategory', width: '10%' },
       { field: 'category', title: 'Categor', width: '10%' },
-      { field: 'unitPrice', title: 'Unit Price', width: '8%' },
-      { field: 'unitQuantity', title: 'Unit Quantity', width: '8%' },
+      {
+        field: 'unitPrice',
+        title: 'Unit Price',
+        width: '8%',
+        sortable: true,
+        sortKey: 'unitPrice',
+      },
+      {
+        field: 'unitQuantity',
+        title: 'Unit Quantity',
+        width: '8%',
+        sortable: true,
+        sortKey: 'unitQuantity',
+      },
       {
         field: 'created',
         title: 'Created At',
@@ -134,7 +146,6 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts() {
-    debugger;
     this._productService.getProducts(this.productRequest).subscribe({
       next: (response: any) => {
         this.data = response.data.map((cat: any) => ({
@@ -221,7 +232,6 @@ export class ProductListComponent implements OnInit {
   }
 
   onDropdownItemChange(selectedValue: any, type: string) {
-    debugger;
     type == 'category'
       ? (this.productRequest.categoryId = selectedValue)
       : (this.productRequest.subcategoryId = selectedValue);

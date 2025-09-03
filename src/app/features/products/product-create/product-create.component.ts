@@ -82,7 +82,6 @@ export class ProductCreateComponent implements OnInit {
   }
 
   generateDescription() {
-    debugger;
     const name = this.createProductForm.value.name;
 
     if (!name) {
@@ -120,11 +119,9 @@ export class ProductCreateComponent implements OnInit {
       .generateDescription(name, categoryName, subcategoryName)
       .subscribe({
         next: (res) => {
-          debugger;
           this.createProductForm.patchValue({ description: res.data });
         },
         error: (err) => {
-          debugger;
           this._errorHandlerService.handleErrors(err);
         },
       });

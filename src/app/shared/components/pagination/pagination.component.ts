@@ -19,7 +19,6 @@ export class PaginationComponent {
   @Output() itemsPerPageChange = new EventEmitter<number>();
 
   ngOnInit() {
-    debugger;
     if (this.itemsPerPageOptions?.length > 0) {
       this.itemsPerPage = this.itemsPerPageOptions[0];
     }
