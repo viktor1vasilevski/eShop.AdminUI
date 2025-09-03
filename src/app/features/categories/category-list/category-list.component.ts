@@ -86,7 +86,6 @@ export class CategoryListComponent implements OnInit {
 
   totalCount: number = 0;
   totalPages: number[] = [];
-  categories: any[] = [];
   currentPage: number = 1;
   categoryToDelete: any = null;
 
@@ -116,16 +115,13 @@ export class CategoryListComponent implements OnInit {
   loadCategories() {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
       next: (response: any) => {
-        this.categories = response.data;
-
-        this.data = this.categories.map((cat) => ({
+        this.data = response.data.map((cat: any) => ({
           ...cat,
           view: () => alert('View ' + cat.name),
           edit: () => this.router.navigate(['categories/edit', cat.id]),
           delete: () => this.showDeleteCategoryModal(cat),
         }));
 
-        // Force Angular to detect changes
         this.cd.detectChanges();
 
         this.totalCount =

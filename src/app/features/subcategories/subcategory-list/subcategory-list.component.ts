@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -7,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import {
   debounceTime,
@@ -20,10 +21,13 @@ import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
-import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
 import { FilterDropdownComponent } from '../../../shared/components/filter-dropdown/filter-dropdown.component';
 import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
+import {
+  CustomTableComponent,
+  TableSettings,
+} from '../../../shared/components/custom-table/custom-table.component';
 declare var bootstrap: any;
 
 export interface SubategoryRequest {
@@ -39,26 +43,66 @@ export interface SubategoryRequest {
   selector: 'app-subcategory-list',
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
-    PaginationComponent,
     FilterDropdownComponent,
     FilterInputComponent,
     FilterCardComponent,
+    CustomTableComponent,
   ],
   templateUrl: './subcategory-list.component.html',
   styleUrl: './subcategory-list.component.css',
 })
 export class SubcategoryListComponent implements OnInit, OnDestroy {
+  settings: TableSettings = {
+    header: {
+      text: 'Subcategory List',
+      icon: 'bi bi-folder me-2',
+      actionButton: {
+        text: 'Add Subcategory',
+        icon: 'bi bi-plus-lg',
+        routerLink: '/subcategories/create',
+      },
+    },
+    columns: [
+      { field: 'name', title: 'Subcategory', width: '20%' },
+      { field: 'category', title: 'Category', width: '20%' },
+      {
+        field: 'created',
+        title: 'Created At',
+        width: '20%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'created',
+      },
+      {
+        field: 'lastModified',
+        title: 'Last Modified At',
+        width: '20%',
+        type: 'date',
+        sortable: true,
+        sortKey: 'lastmodified',
+      },
+      { field: 'actions', title: 'Actions', width: '10%' },
+    ],
+    pagination: {
+      enabled: true,
+      itemsPerPageOptions: [5, 15, 30, 100],
+    },
+  };
+
   subcategoryRequest: SubategoryRequest = {
     skip: 0,
-    take: 10,
+    take: this.settings.pagination?.itemsPerPageOptions?.[0] ?? 10,
     sortDirection: SortOrder.Descending,
     sortBy: 'created',
     name: '',
     categoryId: null,
   };
 
+  data: any[] = [];
+  totalCount: number = 0;
+  totalPages: number[] = [];
+  currentPage: number = 1;
   categoriesDropdownList: any[] = [];
   subcategoryToDelete: any = null;
 
@@ -67,17 +111,13 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
     private _categoryService: CategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
-    public router: Router
+    public router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   @ViewChild('subcategoryNameInput') categoryNameInput!: ElementRef;
   private nameChangeSubject = new Subject<string>();
   private nameChangeSubscription!: Subscription;
-
-  totalCount: number = 0;
-  totalPages: number[] = [];
-  subcategories: any[] = [];
-  currentPage: number = 1;
 
   ngOnDestroy(): void {
     this.nameChangeSubscription?.unsubscribe();
@@ -104,7 +144,14 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
       .getSubcategories(this.subcategoryRequest)
       .subscribe({
         next: (response: any) => {
-          this.subcategories = response.data;
+          this.data = response.data.map((sub: any) => ({
+            ...sub,
+            view: () => alert('View ' + sub.name),
+            edit: () => this.router.navigate(['subcategories/edit', sub.id]),
+            delete: () => this.showDeleteSubcategoryModal(sub),
+          }));
+
+          this.cd.detectChanges();
           this.totalCount =
             typeof response?.totalCount === 'number' ? response.totalCount : 0;
           this.calculateTotalPages();
@@ -151,6 +198,14 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
 
   onCategoryChange(selectedValue: any): void {
     this.subcategoryRequest.categoryId = selectedValue;
+    this.subcategoryRequest.skip = 0;
+    this.loadSubcategories();
+  }
+
+  onSortChange(e: { sortBy: string; sortDirection: SortOrder }): void {
+    this.subcategoryRequest.sortBy = e.sortBy;
+    this.subcategoryRequest.sortDirection = e.sortDirection;
+    this.currentPage = 1;
     this.subcategoryRequest.skip = 0;
     this.loadSubcategories();
   }

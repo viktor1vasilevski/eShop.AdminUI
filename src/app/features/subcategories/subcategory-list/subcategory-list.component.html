@@ -31,125 +31,18 @@
     </form>
   </app-filter-card>
 
-  <!-- Category List -->
-  <div class="card shadow-sm">
-    <div
-      class="card-header text-white d-flex justify-content-between align-items-center"
-      style="background-color: #495057"
-    >
-      <span><i class="bi bi-folder me-2"></i>Subcategory List</span>
-      <button class="btn btn-light btn-sm" routerLink="/subcategories/create">
-        <i class="bi bi-plus-lg me-1"></i> Add Subcategory
-      </button>
-    </div>
-
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table
-          class="table mb-0 table-hover align-middle"
-          style="table-layout: fixed; width: 100%"
-        >
-          <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 25%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 10%" />
-          </colgroup>
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">Subcategory</th>
-              <th scope="col">Category</th>
-              <th (click)="toggleSortOrder('created')" style="cursor: pointer">
-                Created At
-                <i
-                  *ngIf="subcategories.length > 0"
-                  [ngClass]="[
-                    'bi',
-                    subcategoryRequest.sortBy === 'created'
-                      ? subcategoryRequest.sortDirection === 'asc'
-                        ? 'bi-arrow-up white-arrow'
-                        : 'bi-arrow-down white-arrow'
-                      : 'bi-arrow-down'
-                  ]"
-                ></i>
-              </th>
-              <th
-                (click)="toggleSortOrder('lastmodified')"
-                style="cursor: pointer"
-              >
-                Last Modified At
-                <i
-                  *ngIf="subcategories.length > 0"
-                  [ngClass]="[
-                    'bi',
-                    subcategoryRequest.sortBy === 'lastmodified'
-                      ? subcategoryRequest.sortDirection === 'asc'
-                        ? 'bi-arrow-up white-arrow'
-                        : 'bi-arrow-down white-arrow'
-                      : 'bi-arrow-down'
-                  ]"
-                ></i>
-              </th>
-              <th scope="col" class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="subcategories.length === 0">
-              <td colspan="5" class="text-center text-muted">
-                No subcategories found.
-              </td>
-            </tr>
-            <tr
-              *ngFor="let subcategory of subcategories"
-              [class.uncategorized]="subcategory.name === 'UNCATEGORIZED'"
-            >
-              <td class="text-truncate">{{ subcategory.name }}</td>
-              <td class="text-truncate">{{ subcategory.category }}</td>
-              <td>{{ subcategory.created | date : "dd/MM/yyyy HH:mm" }}</td>
-              <td>
-                {{
-                  subcategory.lastModified
-                    ? (subcategory.lastModified | date : "dd/MM/yyyy HH:mm")
-                    : "/"
-                }}
-              </td>
-              <td class="text-end">
-                <button
-                  class="btn btn-sm btn-outline-info me-2"
-                  (click)="
-                    router.navigate(['subcategories/edit', subcategory.id])
-                  "
-                  title="Edit"
-                >
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  (click)="showDeleteSubcategoryModal(subcategory)"
-                  title="Delete"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pagination Component -->
-      <div class="p-3" *ngIf="subcategories.length !== 0">
-        <app-pagination
-          [currentPage]="currentPage"
-          [totalPages]="totalPages"
-          [itemsPerPage]="subcategoryRequest.take"
-          (pageChange)="changePage($event)"
-          (itemsPerPageChange)="onItemsPerPageChange($event)"
-        >
-        </app-pagination>
-      </div>
-    </div>
-  </div>
+  <app-custom-table
+    [settings]="settings"
+    [data]="data"
+    [sortBy]="subcategoryRequest.sortBy"
+    [sortDirection]="subcategoryRequest.sortDirection"
+    (sortChange)="onSortChange($event)"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [itemsPerPage]="subcategoryRequest.take"
+    (pageChange)="changePage($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+  ></app-custom-table>
 
   <!-- Delete Confirmation Modal -->
   <div
