@@ -28,11 +28,11 @@
           <tr *ngFor="let row of rows">
             <td *ngFor="let col of settings.columns">
               <span *ngIf="!col.type || col.type === 'text'">{{
-                row[col.field]
+                row[col.field] || "/"
               }}</span>
               <span
                 *ngIf="col.type === 'html'"
-                [innerHTML]="row[col.field]"
+                [innerHTML]="row[col.field] || '/'"
               ></span>
             </td>
           </tr>
