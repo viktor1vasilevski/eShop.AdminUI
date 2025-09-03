@@ -1,18 +1,51 @@
+import { Component, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+
+type Option = { id: any; name: string };
 
 @Component({
   selector: 'app-filter-dropdown',
-  imports: [FormsModule, CommonModule],
+  standalone: true,
+  imports: [CommonModule], // for *ngFor
   templateUrl: './filter-dropdown.component.html',
-  styleUrl: './filter-dropdown.component.css',
+  styleUrls: ['./filter-dropdown.component.css'],
 })
-export class FilterDropdownComponent<T extends { id: any; name: string }> {
-  @Input() label!: string;
-  @Input() id!: string;
-  @Input() options: T[] = [];
-  @Input() selected: any;
-  @Input() defaultText = 'Select';
-  @Output() selectedChange = new EventEmitter<any>();
+export class FilterDropdownComponent {
+  // inputs
+  label = input.required<string>();
+  id = input.required<string>();
+  options = input<Option[]>([]);
+  defaultText = input<string>('Select');
+
+  // two-way bindable selected value (supports [(selected)])
+  selected = model<any | null>(null);
+
+  // optional event if parent wants a side-effect hook
+  selectedChange = output<any>();
+
+  onChange(event: Event) {
+    const el = event.target as HTMLSelectElement;
+    const raw = el.value;
+
+    // Coerce to the id’s runtime type (number/bool/string) based on your options
+    const next = this.coerceId(raw);
+    this.selected.set(next);
+    this.selectedChange.emit(next);
+  }
+
+  private coerceId(raw: string): any {
+    const opts = this.options();
+    if (!opts.length) return raw;
+    const sample = opts[0].id;
+
+    if (typeof sample === 'number') {
+      const n = Number(raw);
+      return Number.isNaN(n) ? null : n;
+    }
+    if (typeof sample === 'boolean') {
+      return raw === 'true';
+    }
+    // default: string or other primitive
+    return raw === '' ? null : raw;
+  }
 }
