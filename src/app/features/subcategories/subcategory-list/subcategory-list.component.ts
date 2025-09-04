@@ -86,7 +86,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
     ],
     pagination: {
       enabled: true,
-      itemsPerPageOptions: [5, 15, 30, 100],
+      itemsPerPageOptions: [10, 30, 50, 100],
     },
   };
 
