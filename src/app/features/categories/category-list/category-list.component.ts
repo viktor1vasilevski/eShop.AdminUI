@@ -11,17 +11,13 @@ import { FilterInputComponent } from '../../../shared/components/filter-input/fi
 import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
 import {
   CustomTableComponent,
+  TableRow,
   TableSettings,
 } from '../../../shared/components/custom-table/custom-table.component';
+import { ApiResponse } from '../../../core/models/api-response';
+import { CategoryDTO } from './category-dto.model';
+import { CategoryRequest } from './category-request.model';
 declare var bootstrap: any;
-
-export interface CategoryRequest {
-  skip: number;
-  take: number;
-  sortDirection: SortOrder;
-  sortBy: string;
-  name: string;
-}
 
 @Component({
   selector: 'app-category-list',
@@ -36,8 +32,6 @@ export interface CategoryRequest {
   styleUrl: './category-list.component.css',
 })
 export class CategoryListComponent implements OnInit {
-  data: any[] = [];
-
   settings: TableSettings = {
     header: {
       text: 'Category List',
@@ -84,6 +78,7 @@ export class CategoryListComponent implements OnInit {
 
   private filterChangeSubject = new Subject<string>();
 
+  data: Array<TableRow> = [];
   totalCount: number = 0;
   totalPages: number[] = [];
   currentPage: number = 1;
@@ -114,26 +109,21 @@ export class CategoryListComponent implements OnInit {
 
   loadCategories() {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
-      next: (response: any) => {
-        this.data = response.data.map((cat: any) => ({
+      next: (res: ApiResponse<CategoryDTO[]>) => {
+        const items = res.data ?? [];
+        this.data = items.map((cat: CategoryDTO) => ({
           ...cat,
-          view: () => alert('View ' + cat.name),
+          view: () => this.router.navigate(['categories', cat.id]),
           edit: () => this.router.navigate(['categories/edit', cat.id]),
           delete: () => this.showDeleteCategoryModal(cat),
         }));
         this.cd.detectChanges();
         this.totalCount =
-          typeof response?.totalCount === 'number' ? response.totalCount : 0;
+          typeof res?.totalCount === 'number' ? res.totalCount : 0;
         this.calculateTotalPages();
       },
-      error: (errorResponse: any) => {
-        this._errorHandlerService.handleErrors(errorResponse);
-      },
+      error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
-  }
-
-  viewCategoryDetails(id: number) {
-    console.log('Viewing category', id);
   }
 
   showDeleteCategoryModal(category: any) {

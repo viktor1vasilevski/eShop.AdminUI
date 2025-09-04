@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
+import { CategoryRequest } from '../../features/categories/category-list/category-request.model';
+import { ApiResponse } from '../models/api-response';
+import { CategoryDTO } from '../../features/categories/category-list/category-dto.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +14,9 @@ export class CategoryService {
 
   constructor(private _dataApiService: DataService) {}
 
-  getCategories(request: any): Observable<any> {
+  getCategories(
+    request: CategoryRequest
+  ): Observable<ApiResponse<CategoryDTO[]>> {
     let params = new HttpParams()
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
@@ -19,12 +24,8 @@ export class CategoryService {
       .set('sortBy', request.sortBy)
       .set('name', request.name);
 
-    if (request.isActive !== null && request.isActive !== undefined) {
-      params = params.set('isActive', request.isActive.toString());
-    }
-
     const url = `${this.baseUrl}/category`;
-    return this._dataApiService.getAll<any>(url, params);
+    return this._dataApiService.getAll<ApiResponse<CategoryDTO[]>>(url, params);
   }
 
   createCategory(request: any): Observable<any> {
