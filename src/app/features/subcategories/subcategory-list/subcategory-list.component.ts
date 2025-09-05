@@ -146,7 +146,7 @@ export class SubcategoryListComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.data = response.data.map((sub: any) => ({
             ...sub,
-            view: () => alert('View ' + sub.name),
+            view: () => this.router.navigate(['subcategories', sub.id]),
             edit: () => this.router.navigate(['subcategories/edit', sub.id]),
             delete: () => this.showDeleteSubcategoryModal(sub),
           }));
