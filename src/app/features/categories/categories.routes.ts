@@ -9,19 +9,20 @@ export const categoryRoutes: Routes = [
       ),
   },
   {
-    path: 'categories/:id',
-    loadComponent: () =>
-      import('./category-details/category-details.component').then(
-        (m) => m.CategoryDetailsComponent
-      ),
-  },
-  {
     path: 'categories/create',
     loadComponent: () =>
       import('./category-create/category-create.component').then(
         (m) => m.CategoryCreateComponent
       ),
   },
+  {
+    path: 'categories/:id',
+    loadComponent: () =>
+      import('./category-details/category-details.component').then(
+        (m) => m.CategoryDetailsComponent
+      ),
+  },
+
   {
     path: 'categories/edit/:id',
     loadComponent: () =>
