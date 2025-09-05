@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
-import { CategoryRequest } from '../../features/categories/category-list/category-request.model';
 import { ApiResponse } from '../models/api-response';
 import { CategoryDTO } from '../../features/categories/models/category-dto.model';
+import { CategoryRequest } from '../../features/categories/models/category-request.model';
 
 @Injectable({
   providedIn: 'root',

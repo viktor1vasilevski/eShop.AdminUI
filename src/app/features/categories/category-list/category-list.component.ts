@@ -15,8 +15,8 @@ import {
   TableSettings,
 } from '../../../shared/components/custom-table/custom-table.component';
 import { ApiResponse } from '../../../core/models/api-response';
-import { CategoryRequest } from './category-request.model';
 import { CategoryDTO } from '../models/category-dto.model';
+import { CategoryRequest } from '../models/category-request.model';
 declare var bootstrap: any;
 
 @Component({
