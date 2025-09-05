@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-category-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.css',
 })
@@ -30,23 +30,9 @@ export class CategoryDetailsComponent implements OnInit {
       next: (res: any) => {
         if (res && res.data) {
           this.category = res.data;
-          console.log(this.category);
         }
       },
       error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
-  }
-
-  viewSubcategory(sc: { id: string; name: string }) {
-    // navigate using the ID, but the UI doesn't display it
-    // this.router.navigate(['/subcategories', sc.id]);
-  }
-
-  viewProduct(p: { id: string; name: string }) {
-    // this.router.navigate(['/products', p.id]);
-  }
-
-  editCategory() {
-    // this.router.navigate(['/categories/edit', this.category.id]);
   }
 }
