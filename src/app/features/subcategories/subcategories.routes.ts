@@ -9,19 +9,20 @@ export const subcategoryRoutes: Routes = [
       ),
   },
   {
-    path: 'subcategories/:id',
-    loadComponent: () =>
-      import('./subcategory-details/subcategory-details.component').then(
-        (m) => m.SubcategoryDetailsComponent
-      ),
-  },
-  {
     path: 'subcategories/create',
     loadComponent: () =>
       import('./subcategory-create/subcategory-create.component').then(
         (m) => m.SubcategoryCreateComponent
       ),
   },
+  {
+    path: 'subcategories/:id',
+    loadComponent: () =>
+      import('./subcategory-details/subcategory-details.component').then(
+        (m) => m.SubcategoryDetailsComponent
+      ),
+  },
+
   {
     path: 'subcategories/edit/:id',
     loadComponent: () =>
