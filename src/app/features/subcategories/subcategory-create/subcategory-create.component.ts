@@ -22,6 +22,7 @@ export class SubcategoryCreateComponent implements OnInit {
   createSubcategoryForm: FormGroup;
   categoriesDropdownList: any[] = [];
   isSubmitting = false;
+  imagePreviewUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +35,7 @@ export class SubcategoryCreateComponent implements OnInit {
     this.createSubcategoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       categoryId: ['', Validators.required],
+      image: ['', Validators.required],
     });
   }
 
@@ -42,6 +44,7 @@ export class SubcategoryCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    debugger;
     if (!this.createSubcategoryForm.valid) {
       //this._notificationService.info('Invalid form');
       return;
@@ -73,5 +76,20 @@ export class SubcategoryCreateComponent implements OnInit {
       error: (errorResponse: any) =>
         this._errorHandlerService.handleErrors(errorResponse),
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.createSubcategoryForm.patchValue({ image: base64String });
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 }
