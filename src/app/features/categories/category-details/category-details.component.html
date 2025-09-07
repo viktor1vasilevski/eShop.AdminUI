@@ -1,15 +1,15 @@
 <div class="main-content p-4" *ngIf="category as c">
   <div class="row g-4">
-    <!-- Left side: Details -->
+    <!-- Left side: Sticky Details -->
     <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div
-          class="card-header bg-secondary text-white d-flex justify-content-between align-items-center py-2"
-        >
-          <h5 class="mb-0 d-flex align-items-center">
-            <i class="bi bi-folder me-2"></i>{{ c.name }}
-          </h5>
-          <div class="d-flex gap-2">
+      <div class="position-sticky" style="top: 1rem">
+        <div class="card shadow-sm">
+          <div
+            class="card-header bg-secondary text-white d-flex justify-content-between align-items-center py-2"
+          >
+            <h5 class="mb-0 d-flex align-items-center">
+              <i class="bi bi-folder me-2"></i>{{ c.name }}
+            </h5>
             <button
               class="btn btn-sm btn-light"
               [routerLink]="['/categories/edit', c.id]"
@@ -17,36 +17,36 @@
               <i class="bi bi-pencil-square me-1"></i>Edit
             </button>
           </div>
-        </div>
 
-        <div class="card-body p-4">
-          <!-- Meta info -->
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Created</h6>
-            <p class="mb-0 fw-medium">{{ c.created | date : "medium" }}</p>
-          </div>
-
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Last Modified</h6>
-            <p class="mb-0 fw-medium">
-              {{ c.lastModified ? (c.lastModified | date : "medium") : "—" }}
-            </p>
-          </div>
-
-          <!-- Image -->
-          <div class="text-center mt-4" *ngIf="c.image; else noImage">
-            <img
-              [src]="c.image"
-              [alt]="c.name"
-              class="img-fluid rounded shadow-sm"
-              style="max-height: 250px; object-fit: contain"
-            />
-          </div>
-          <ng-template #noImage>
-            <div class="text-center text-muted fst-italic mt-4">
-              <i class="bi bi-image me-1"></i>No image available
+          <div class="card-body p-4">
+            <!-- Meta info -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Created</h6>
+              <p class="mb-0 fw-medium">{{ c.created | date : "medium" }}</p>
             </div>
-          </ng-template>
+
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Last Modified</h6>
+              <p class="mb-0 fw-medium">
+                {{ c.lastModified ? (c.lastModified | date : "medium") : "—" }}
+              </p>
+            </div>
+
+            <!-- Image -->
+            <div class="text-center mt-4" *ngIf="c.image; else noImage">
+              <img
+                [src]="c.image"
+                [alt]="c.name"
+                class="img-fluid rounded shadow-sm"
+                style="max-height: 250px; object-fit: contain"
+              />
+            </div>
+            <ng-template #noImage>
+              <div class="text-center text-muted fst-italic mt-4">
+                <i class="bi bi-image me-1"></i>No image available
+              </div>
+            </ng-template>
+          </div>
         </div>
       </div>
     </div>
@@ -73,6 +73,7 @@
                 'pb-4': sc !== c.subcategories[c.subcategories.length - 1]
               }"
             >
+              <!-- Subcategory header -->
               <div
                 class="d-flex justify-content-between align-items-center mb-1"
               >
@@ -88,21 +89,33 @@
                     }}
                   </span>
                 </div>
-                <a
-                  class="btn btn-sm btn-outline-primary"
-                  [routerLink]="['/subcategories', sc.id]"
-                >
-                  <i class="bi bi-box-arrow-up-right me-1"></i> View
-                </a>
+                <div class="d-flex gap-2">
+                  <a
+                    class="btn btn-sm btn-outline-primary"
+                    [routerLink]="['/subcategories', sc.id]"
+                  >
+                    <i class="bi bi-folder2-open me-1"></i> Subcategory
+                  </a>
+                  <a
+                    class="btn btn-sm btn-outline-secondary"
+                    [routerLink]="['/subcategories', sc.id, 'products']"
+                  >
+                    <i class="bi bi-boxes me-1"></i> Products
+                  </a>
+                </div>
               </div>
 
-              <!-- Products as pills -->
+              <!-- Products as badge pills -->
               <ng-container *ngIf="sc.products?.length; else noProducts">
                 <div class="mt-2">
                   <ul class="list-inline mb-0">
                     <li
                       class="list-inline-item mb-1"
-                      *ngFor="let p of sc.products.slice(0, 5)"
+                      *ngFor="
+                        let p of sc.showAllProducts
+                          ? sc.products
+                          : sc.products.slice(0, 12)
+                      "
                     >
                       <span
                         class="badge text-bg-light d-inline-flex align-items-center"
@@ -117,17 +130,17 @@
                         </a>
                       </span>
                     </li>
-
-                    <!-- +N more -->
-                    <li
-                      class="list-inline-item mb-1"
-                      *ngIf="sc.products.length > 5"
-                    >
-                      <span class="badge text-bg-warning">
-                        +{{ sc.products.length - 5 }} more
-                      </span>
-                    </li>
                   </ul>
+
+                  <!-- Show more / Show less toggle -->
+                  <div *ngIf="sc.products.length > 5" class="mt-2">
+                    <button
+                      class="btn btn-sm btn-link p-0"
+                      (click)="sc.showAllProducts = !sc.showAllProducts"
+                    >
+                      {{ sc.showAllProducts ? "Show less" : "Show more" }}
+                    </button>
+                  </div>
                 </div>
               </ng-container>
 
