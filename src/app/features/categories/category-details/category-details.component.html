@@ -55,23 +55,89 @@
     <div class="col-md-8">
       <div class="card shadow-sm h-100">
         <div class="card-header bg-body text-body py-2">
-          <h6 class="mb-0 d-flex align-items-center">
-            <i class="bi bi-list-ul me-2"></i>
-            Subcategories
-            <span class="text-muted ms-2"
-              >({{ c.subcategories?.length || 0 }})</span
-            >
-          </h6>
+          <div
+            class="d-flex align-items-center justify-content-between gap-2 flex-wrap"
+          >
+            <h6 class="mb-0 d-flex align-items-center">
+              <i class="bi bi-list-ul me-2"></i>
+              Subcategories
+              <span class="text-muted ms-2">
+                ({{ getFilteredSubcategories().length }} /
+                {{ c.subcategories?.length || 0 }})
+              </span>
+            </h6>
+
+            <!-- Global product search -->
+            <div class="input-group input-group-sm" style="max-width: 340px">
+              <span class="input-group-text bg-body-tertiary">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search all products…"
+                [(ngModel)]="globalSearch"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                *ngIf="globalSearch"
+                (click)="globalSearch = ''"
+                title="Clear"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+            <!-- Subcategory name search -->
+            <div class="input-group input-group-sm" style="max-width: 300px">
+              <span class="input-group-text bg-body-tertiary">
+                <i class="bi bi-folder2-open"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search subcategories…"
+                [(ngModel)]="subcategorySearch"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                *ngIf="subcategorySearch"
+                (click)="subcategorySearch = ''"
+                title="Clear"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Total product matches when global search active -->
+          <div *ngIf="globalSearch" class="mt-1 small text-muted">
+            {{ getTotalFilteredCount() }} match{{
+              getTotalFilteredCount() === 1 ? "" : "es"
+            }}
+            across all subcategories
+          </div>
         </div>
 
         <div class="card-body p-3">
-          <ng-container *ngIf="c.subcategories?.length; else noSubcategories">
+          <!-- No subcategory matches -->
+          <div
+            *ngIf="
+              c.subcategories?.length && !getFilteredSubcategories().length
+            "
+            class="text-center text-muted fst-italic py-3"
+          >
+            No subcategories match “{{ subcategorySearch }}”.
+          </div>
+
+          <!-- Subcategories list -->
+          <ng-container
+            *ngIf="getFilteredSubcategories().length; else noSubcategories"
+          >
             <div
-              *ngFor="let sc of c.subcategories"
-              class="border-bottom py-3"
-              [ngClass]="{
-                'pb-4': sc !== c.subcategories[c.subcategories.length - 1]
-              }"
+              *ngFor="let sc of getFilteredSubcategories(); let last = last"
+              class="p-3 mb-3 bg-light rounded shadow-sm border"
+              [class.border-bottom]="!last"
             >
               <!-- Subcategory header -->
               <div
@@ -89,24 +155,58 @@
                     }}
                   </span>
                 </div>
+
+                <!-- Edit button -->
+                <div>
+                  <button
+                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center"
+                    [routerLink]="['/subcategories', sc.id]"
+                  >
+                    <i class="bi bi-pencil me-1"></i>
+                    Edit
+                  </button>
+                </div>
               </div>
 
-              <!-- Products as badge pills -->
+              <!-- Divider -->
+              <hr class="my-3 border-top border-2 border-secondary-subtle" />
+
+              <!-- Product search (per subcategory) -->
+              <div class="input-group input-group-sm mb-2">
+                <span class="input-group-text bg-body-tertiary">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Search products in this subcategory…"
+                  [(ngModel)]="sc._search"
+                  [disabled]="!!globalSearch"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  *ngIf="sc._search && !globalSearch"
+                  (click)="sc._search = ''"
+                  title="Clear"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+
+              <!-- Products -->
               <ng-container *ngIf="sc.products?.length; else noProducts">
                 <div class="mt-2">
                   <ul class="list-inline mb-0">
                     <li
                       class="list-inline-item mb-1"
-                      *ngFor="
-                        let p of sc.showAllProducts
-                          ? sc.products
-                          : sc.products.slice(0, 12)
-                      "
+                      *ngFor="let p of getFilteredProducts(sc)"
                     >
                       <span
-                        class="badge text-bg-light d-inline-flex align-items-center"
+                        class="badge text-bg-warning d-inline-flex align-items-center border border-dark"
                       >
                         {{ p.name }}
+
+                        <!-- View -->
                         <a
                           class="ms-2 text-decoration-none"
                           [routerLink]="['/products', p.id]"
@@ -114,18 +214,56 @@
                         >
                           <i class="bi bi-box-arrow-up-right"></i>
                         </a>
+
+                        <!-- Edit -->
+                        <a
+                          class="ms-2 text-decoration-none text-primary"
+                          [routerLink]="['/products', p.id, 'edit']"
+                          title="Edit product"
+                        >
+                          <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <!-- Delete -->
+                        <a
+                          class="ms-2 text-decoration-none text-danger"
+                          href="javascript:void(0)"
+                          (click)="deleteProduct(p)"
+                          title="Delete product"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </a>
                       </span>
                     </li>
                   </ul>
 
-                  <!-- Show more / Show less toggle -->
-                  <div *ngIf="sc.products.length > 5" class="mt-2">
+                  <!-- No matches state -->
+                  <div
+                    class="text-muted fst-italic small mt-2"
+                    *ngIf="!getFilteredProducts(sc).length"
+                  >
+                    No products match “{{ globalSearch || sc._search }}”.
+                  </div>
+
+                  <!-- Show more / Show less -->
+                  <div *ngIf="getFilteredCount(sc) > 12" class="mt-2">
                     <button
-                      class="btn btn-sm btn-link p-0"
+                      class="btn btn-sm btn-secondary d-inline-flex align-items-center"
                       (click)="sc.showAllProducts = !sc.showAllProducts"
                     >
+                      <i
+                        class="bi me-1"
+                        [ngClass]="
+                          sc.showAllProducts
+                            ? 'bi-chevron-up'
+                            : 'bi-chevron-down'
+                        "
+                      ></i>
                       {{ sc.showAllProducts ? "Show less" : "Show more" }}
                     </button>
+                    <span class="badge text-bg-info ms-2">
+                      {{ getVisibleCount(sc) }} of {{ getFilteredCount(sc) }}
+                    </span>
                   </div>
                 </div>
               </ng-container>
