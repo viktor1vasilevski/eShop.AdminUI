@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SubcategoryCardComponent } from '../../../core/components/category/subcategory-card/subcategory-card.component';
+import { SubcategoriesHeaderComponent } from '../../../core/components/category/subcategories-header/subcategories-header.component';
 
 @Component({
   selector: 'app-category-details',
-  imports: [CommonModule, RouterLink, FormsModule],
+  standalone: true, // ✅ important when importing standalone children
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    SubcategoriesHeaderComponent,
+    SubcategoryCardComponent,
+  ],
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.css',
 })
@@ -15,15 +24,20 @@ export class CategoryDetailsComponent implements OnInit {
   categoryId: any;
   category: any = null;
 
-  // searches
+  // searches (bound to header component)
   globalSearch = '';
   subcategorySearch = '';
 
+  // page size used in visible count helper (keep in sync with child default if needed)
+  private readonly pageSize = 12;
+
   constructor(
     private route: ActivatedRoute,
+    private router: Router, // ✅ needed for onEditSubcategory
     private _categoryService: CategoryService,
     private _errorHandlerService: ErrorHandlerService
   ) {}
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.categoryId = params['id'];
@@ -36,33 +50,13 @@ export class CategoryDetailsComponent implements OnInit {
       next: (res: any) => {
         if (res?.data) {
           this.category = res.data;
-
-          // overwrite with dummy data
-          this.category.subcategories = [];
-
-          for (let i = 1; i <= 50; i++) {
-            const subcategory = {
-              id: i,
-              name: `Subcategory ${i}`,
-              products: [] as any[],
-            };
-
-            for (let j = 1; j <= 20; j++) {
-              subcategory.products.push({
-                id: i * 1000 + j,
-                name: `Product ${i}-${j}`,
-              });
-            }
-
-            this.category.subcategories.push(subcategory);
-          }
         }
       },
       error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
   }
 
-  // --- helpers ---
+  // ---- filtering (for header counts and list of cards) ----
   getFilteredSubcategories() {
     const list = this?.category?.subcategories || [];
     const term = (this.subcategorySearch || '').toLowerCase().trim();
@@ -72,20 +66,40 @@ export class CategoryDetailsComponent implements OnInit {
     );
   }
 
-  private getFilterTerm(sc: any): string {
-    return (this.globalSearch || sc?._search || '').toLowerCase().trim();
+  getTotalFilteredCount(): number {
+    const subs = this?.category?.subcategories || [];
+    if (!subs.length) return 0;
+    const term = (this.globalSearch || '').toLowerCase().trim();
+    if (!term)
+      return subs.reduce(
+        (acc: number, s: any) => acc + (s?.products?.length || 0),
+        0
+      );
+    return subs.reduce(
+      (acc: number, s: any) =>
+        acc +
+        (s?.products || []).filter((p: any) =>
+          (p?.name || '').toLowerCase().includes(term)
+        ).length,
+      0
+    );
   }
 
-  getFilteredProducts(sc: any) {
-    if (!sc?.products) return [];
-    const term = this.getFilterTerm(sc);
-    const list = term
-      ? sc.products.filter((p: any) =>
-          (p?.name || '').toLowerCase().includes(term)
-        )
-      : sc.products;
+  // ---- child events ----
+  onEditSubcategory(sc: any) {
+    this.router.navigate(['/subcategories', sc.id]);
+  }
 
-    return sc.showAllProducts ? list : list.slice(0, 12);
+  deleteProduct(p: any) {
+    if (confirm(`Delete ${p?.name}?`)) {
+      console.log('Delete', p);
+      // this._productService.delete(p.id).subscribe(...)
+    }
+  }
+
+  // (Optional) helpers below were used in the old inline list; safe to remove if not referenced:
+  private getFilterTerm(sc: any): string {
+    return (this.globalSearch || sc?._search || '').toLowerCase().trim();
   }
 
   getFilteredCount(sc: any) {
@@ -98,34 +112,10 @@ export class CategoryDetailsComponent implements OnInit {
       : sc.products.length;
   }
 
-  getTotalFilteredCount(): number {
-    const subs = this?.category?.subcategories || [];
-    if (!subs.length) return 0;
-    const term = (this.globalSearch || '').toLowerCase().trim();
-    if (!term)
-      return subs.reduce(
-        (acc: number, s: any) => acc + (s?.products?.length || 0),
-        0
-      );
-
-    return subs.reduce((acc: number, s: any) => {
-      const count = (s?.products || []).filter((p: any) =>
-        (p?.name || '').toLowerCase().includes(term)
-      ).length;
-      return acc + count;
-    }, 0);
-  }
-
   getVisibleCount(sc: any) {
     const totalFiltered = this.getFilteredCount(sc);
-    return sc.showAllProducts ? totalFiltered : Math.min(totalFiltered, 12);
-  }
-
-  // wire your delete to a service as needed
-  deleteProduct(p: any) {
-    if (confirm(`Delete ${p?.name}?`)) {
-      console.log('Delete', p);
-      // this._productService.delete(p.id).subscribe(...)
-    }
+    return sc.showAllProducts
+      ? totalFiltered
+      : Math.min(totalFiltered, this.pageSize);
   }
 }

@@ -1,0 +1,42 @@
+<div class="card-header bg-body text-body py-2">
+  <div class="d-flex align-items-end justify-content-between gap-3 flex-wrap">
+    <h6 class="mb-0 d-flex align-items-center">
+      <i class="bi bi-list-ul me-2"></i>
+      Subcategories
+      <span class="text-muted ms-2">
+        ({{ filteredCount() }} / {{ totalSubcategories() || 0 }})
+      </span>
+    </h6>
+
+    <!-- Global product search -->
+    <app-filter-input
+      class="flex-grow-1"
+      label="All products"
+      placeholder="Search all products…"
+      [(value)]="globalSearch"
+      autocomplete="off"
+    >
+    </app-filter-input>
+
+    <!-- Subcategory name search -->
+    <app-filter-input
+      class="flex-grow-1"
+      label="Subcategories"
+      placeholder="Search subcategories…"
+      [(value)]="subcategorySearch"
+      autocomplete="off"
+    >
+    </app-filter-input>
+  </div>
+
+  <!-- Optional matches line when global search active -->
+  <div
+    *ngIf="globalSearch() && totalProductMatches() !== null"
+    class="mt-1 small text-muted"
+  >
+    {{ totalProductMatches() }} match{{
+      totalProductMatches() === 1 ? "" : "es"
+    }}
+    across all subcategories
+  </div>
+</div>
