@@ -1,1 +1,139 @@
-<p>product-details works!</p>
+<div class="main-content p-4">
+  <div class="row g-4">
+    <!-- Left: Product image -->
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 1rem">
+        <div class="card shadow-sm">
+          <div
+            class="card-header bg-secondary text-white d-flex justify-content-between align-items-center py-2"
+          >
+            <h5 class="mb-0 d-flex align-items-center">
+              <i class="bi bi-box-seam me-2"></i>{{ product.name }}
+            </h5>
+            <button
+              class="btn btn-sm btn-light"
+              [routerLink]="['/products', product.id, 'edit']"
+            >
+              <i class="bi bi-pencil-square me-1"></i>Edit
+            </button>
+          </div>
+
+          <div class="card-body p-4">
+            <!-- Price -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Price</h6>
+              <p class="mb-0 fw-medium">
+                {{ product.unitPrice | currency }}
+                <span class="text-muted">/ {{ product.unitQuantity }}</span>
+              </p>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Category</h6>
+              <p class="mb-0 fw-medium">
+                <a
+                  [routerLink]="['/categories', product.categoryId]"
+                  class="text-decoration-none"
+                >
+                  <i class="bi bi-folder me-1"></i>{{ product.category }}
+                </a>
+              </p>
+            </div>
+
+            <!-- Subcategory -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Subcategory</h6>
+              <p class="mb-0 fw-medium">
+                <a
+                  [routerLink]="['/subcategories', product.subcategoryId]"
+                  class="text-decoration-none"
+                >
+                  <i class="bi bi-diagram-3 me-1"></i>{{ product.subcategory }}
+                </a>
+              </p>
+            </div>
+
+            <!-- Created -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Created</h6>
+              <p class="mb-0 fw-medium">
+                {{ product.created | date : "medium" }}
+              </p>
+            </div>
+
+            <!-- Last Modified -->
+            <div class="mb-3">
+              <h6 class="text-muted mb-1">Last Modified</h6>
+              <p class="mb-0 fw-medium">
+                {{
+                  product.lastModified
+                    ? (product.lastModified | date : "medium")
+                    : "—"
+                }}
+              </p>
+            </div>
+
+            <!-- Image -->
+            <div class="text-center mt-4" *ngIf="product.image; else noImage">
+              <img
+                [src]="product.image"
+                [alt]="product.name"
+                class="img-fluid rounded shadow-sm"
+                style="max-height: 250px; object-fit: contain"
+              />
+            </div>
+            <ng-template #noImage>
+              <div class="text-center text-muted fst-italic mt-4">
+                <i class="bi bi-image me-1"></i>No image available
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Product details -->
+    <div class="col-md-8">
+      <!-- Comments -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-body text-body">
+          <h6 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-chat-dots me-2"></i>
+            Comments
+            <span class="text-muted ms-2"
+              >({{ product.comments?.length || 0 }})</span
+            >
+          </h6>
+        </div>
+        <div class="card-body">
+          <ng-container *ngIf="product.comments?.length; else noComments">
+            <div
+              *ngFor="let c of product.comments"
+              class="border-bottom py-2 mb-2"
+              [ngClass]="{
+                'pb-3 mb-3': c !== product.comments[product.comments.length - 1]
+              }"
+            >
+              <div class="d-flex justify-content-between">
+                <strong>{{ c.createdBy }}</strong>
+                <small class="text-muted">{{
+                  c.created | date : "short"
+                }}</small>
+              </div>
+              <div class="text-muted small mb-1">
+                <i class="bi bi-star-fill text-warning"></i> {{ c.rating }}/5
+              </div>
+              <p class="mb-0">{{ c.commentText }}</p>
+            </div>
+          </ng-container>
+          <ng-template #noComments>
+            <div class="text-muted fst-italic text-center py-3">
+              No comments yet.
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
