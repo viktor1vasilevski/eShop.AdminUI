@@ -22,7 +22,6 @@ export const categoryRoutes: Routes = [
         (m) => m.CategoryDetailsComponent
       ),
   },
-
   {
     path: 'categories/edit/:id',
     loadComponent: () =>
