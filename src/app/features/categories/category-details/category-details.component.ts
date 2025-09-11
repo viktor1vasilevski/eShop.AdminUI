@@ -50,6 +50,7 @@ export class CategoryDetailsComponent implements OnInit {
       next: (res: any) => {
         if (res?.data) {
           this.category = res.data;
+          console.log(this.category);
         }
       },
       error: (err: any) => this._errorHandlerService.handleErrors(err),

@@ -49,7 +49,6 @@ export class CategoryCreateComponent implements OnInit {
     this._categoryService.getCategoriesTree().subscribe({
       next: (res: any) => {
         this.categoryTree = res.data;
-        console.log(this.categoryTree);
       },
       error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
