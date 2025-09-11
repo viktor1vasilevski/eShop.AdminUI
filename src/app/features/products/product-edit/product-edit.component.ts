@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
-import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 
@@ -30,7 +29,6 @@ export class ProductEditComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private _productService: ProductService,
-    private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService
   ) {
@@ -49,7 +47,6 @@ export class ProductEditComponent implements OnInit {
       this.selectedProductId = params['id'];
       this.loadProductById();
     });
-    this.loadSubcategoriesDropdownList();
   }
 
   loadProductById(): void {
@@ -64,17 +61,6 @@ export class ProductEditComponent implements OnInit {
           image: response.data.image,
         });
         this.imagePreviewUrl = response.data.image;
-      },
-      error: (errorResponse: any) => {
-        this._errorHandlerService.handleErrors(errorResponse);
-      },
-    });
-  }
-
-  loadSubcategoriesDropdownList(): void {
-    this._subcategoryService.getSubcategoriesDropdownList().subscribe({
-      next: (response: any) => {
-        this.subcategoriesDropdownList = response.data;
       },
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);

@@ -24,6 +24,55 @@
         </div>
       </div>
 
+      <div class="form-group mb-4">
+        <label class="form-label">Select Category</label>
+
+        <ng-container *ngIf="categoryTree.length; else loadingTree">
+          <ul class="list-unstyled">
+            <ng-container
+              *ngTemplateOutlet="
+                renderTree;
+                context: { $implicit: categoryTree }
+              "
+            ></ng-container>
+          </ul>
+        </ng-container>
+
+        <ng-template #loadingTree>
+          <div class="text-muted fst-italic">Loading category tree…</div>
+        </ng-template>
+
+        <!-- Recursive Tree Template -->
+        <ng-template #renderTree let-tree>
+          <li *ngFor="let node of tree">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                [id]="node.id"
+                [value]="node.id"
+                [checked]="selectedCategoryId === node.id"
+                (change)="onCategorySelected(node.id)"
+                name="categoryRadio"
+              />
+              <label class="form-check-label" [for]="node.id">{{
+                node.name
+              }}</label>
+            </div>
+
+            <!-- Recursive children -->
+            <ul class="ms-4 mt-1 list-unstyled" *ngIf="node.children?.length">
+              <ng-container
+                *ngTemplateOutlet="
+                  renderTree;
+                  context: { $implicit: node.children }
+                "
+              ></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+      </div>
+
       <form [formGroup]="createProductForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <!-- Left Column -->
@@ -90,6 +139,7 @@
                 <small>Price is required and must be a valid number.</small>
               </div>
             </div>
+
             <!-- Quantity -->
             <div class="mb-3">
               <label for="productQuantity" class="form-label">Quantity</label>
@@ -120,36 +170,6 @@
 
           <!-- Right Column -->
           <div class="col-md-6">
-            <!-- Subcategory Dropdown -->
-            <div class="mb-3">
-              <label for="subcategorySelect" class="form-label"
-                >Subcategory</label
-              >
-              <select
-                id="subcategorySelect"
-                class="form-select"
-                formControlName="subcategoryId"
-                required
-              >
-                <option value="" disabled>Select a subcategory</option>
-                <option
-                  *ngFor="let subcategory of subcategoriesDropdownList"
-                  [value]="subcategory.subcategoryId"
-                >
-                  {{ subcategory.name }}
-                </option>
-              </select>
-              <div
-                *ngIf="
-                  createProductForm.get('subcategoryId')?.invalid &&
-                  createProductForm.get('subcategoryId')?.touched
-                "
-                class="text-danger mt-1"
-              >
-                <small>Subcategory is required.</small>
-              </div>
-            </div>
-
             <!-- Description -->
             <div class="mb-3">
               <label for="productDescription" class="form-label"

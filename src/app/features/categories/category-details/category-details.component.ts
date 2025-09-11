@@ -10,13 +10,7 @@ import { SubcategoriesHeaderComponent } from '../../../core/components/category/
 @Component({
   selector: 'app-category-details',
   standalone: true, // ✅ important when importing standalone children
-  imports: [
-    CommonModule,
-    RouterLink,
-    FormsModule,
-    SubcategoriesHeaderComponent,
-    SubcategoryCardComponent,
-  ],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.css',
 })
@@ -59,11 +53,13 @@ export class CategoryDetailsComponent implements OnInit {
 
   // ---- filtering (for header counts and list of cards) ----
   getFilteredSubcategories() {
-    const list = this?.category?.subcategories || [];
-    const term = (this.subcategorySearch || '').toLowerCase().trim();
-    if (!term) return list;
-    return list.filter((sc: any) =>
-      (sc?.name || '').toLowerCase().includes(term)
+    if (!this.category?.subcategories) return [];
+
+    const term = this.subcategorySearch?.toLowerCase().trim();
+    if (!term) return this.category.subcategories;
+
+    return this.category.subcategories.filter((sub: any) =>
+      sub.name.toLowerCase().includes(term)
     );
   }
 

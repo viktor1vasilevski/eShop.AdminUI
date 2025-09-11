@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SortOrder } from '../../../core/enums/sort-order.enum';
 import { ProductService } from '../../../core/services/product.service';
-import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
@@ -126,7 +125,6 @@ export class ProductListComponent implements OnInit {
     public router: Router,
     private _productService: ProductService,
     private _categoryService: CategoryService,
-    private _subcategoryService: SubcategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     private cd: ChangeDetectorRef
@@ -134,7 +132,6 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
-    this.loadSubcategoriesDropdownList();
     this.loadCategoriesDropdownList();
 
     this.filterChangeSubject
@@ -147,17 +144,21 @@ export class ProductListComponent implements OnInit {
 
   loadProducts() {
     this._productService.getProducts(this.productRequest).subscribe({
-      next: (response: any) => {
-        this.data = response.data.map((cat: any) => ({
-          ...cat,
-          view: () => alert('View ' + cat.name),
-          edit: () => this.router.navigate(['products/edit', cat.id]),
-          delete: () => this.showDeleteProductModal(cat),
-        }));
+      next: (res: any) => {
+        if (res?.data.length > 0) {
+          this.data = res?.data.map((cat: any) => ({
+            ...cat,
+            view: () => alert('View ' + cat.name),
+            edit: () => this.router.navigate(['products/edit', cat.id]),
+            delete: () => this.showDeleteProductModal(cat),
+          }));
+        } else {
+          this.data = [];
+        }
 
         this.cd.detectChanges();
         this.totalCount =
-          typeof response?.totalCount === 'number' ? response.totalCount : 0;
+          typeof res?.totalCount === 'number' ? res.totalCount : 0;
         this.calculateTotalPages();
       },
       error: (errorResponse: any) => {
@@ -171,19 +172,6 @@ export class ProductListComponent implements OnInit {
       next: (response: any) => {
         this.categoriesDropdownList = response.data.map((cat: any) => ({
           id: cat.categoryId,
-          name: cat.name,
-        }));
-      },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
-    });
-  }
-
-  loadSubcategoriesDropdownList(): void {
-    this._subcategoryService.getSubcategoriesDropdownList().subscribe({
-      next: (response: any) => {
-        this.subcategoriesDropdownList = response.data.map((cat: any) => ({
-          id: cat.subcategoryId,
           name: cat.name,
         }));
       },

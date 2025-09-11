@@ -9,10 +9,9 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
-import { SubcategoryService } from '../../../core/services/subcategory.service';
 import { ProductService } from '../../../core/services/product.service';
 import { ResponseStatus } from '../../../core/enums/response-status.enum';
-import { finalize } from 'rxjs';
+import { CategoryService } from '../../../core/services/category.service';
 
 @Component({
   selector: 'app-product-create',
@@ -22,43 +21,49 @@ import { finalize } from 'rxjs';
 })
 export class ProductCreateComponent implements OnInit {
   createProductForm: FormGroup;
-  subcategoriesDropdownList: any[] = [];
   isSubmitting = false;
   imagePreviewUrl: string | null = null;
   isGeneratingDesc = false;
+
+  categoryTree: any[] = [];
+  selectedCategoryId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
-    private _subcategoryService: SubcategoryService,
-    private _productService: ProductService
+    private _productService: ProductService,
+    private _categoryService: CategoryService
   ) {
     this.createProductForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      subcategoryId: ['', Validators.required],
-      price: ['', [Validators.required, Validators.min(0.01)]],
+      categoryId: ['', Validators.required],
+      price: [0, [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(2500)]],
-      quantity: ['', [Validators.required, Validators.min(1)]],
+      quantity: [0, [Validators.required, Validators.min(1)]],
       image: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-    this.loadSubcategoriesWithCategoriesDropdownList();
+    this.loadCategoryTree();
   }
 
-  loadSubcategoriesWithCategoriesDropdownList() {
-    this._subcategoryService
-      .getSubcategoriesWithCategoriesDropdownList()
-      .subscribe({
-        next: (response: any) => {
-          this.subcategoriesDropdownList = response.data;
-        },
-        error: (errorResponse: any) =>
-          this._errorHandlerService.handleErrors(errorResponse),
-      });
+  loadCategoryTree(): void {
+    this._categoryService.getCategoriesTree().subscribe({
+      next: (res) => {
+        this.categoryTree = res.data ?? [];
+        console.log(this.categoryTree);
+      },
+      error: (err) => this._errorHandlerService.handleErrors(err),
+    });
+  }
+
+  onCategorySelected(id: string) {
+    debugger;
+    this.selectedCategoryId = id;
+    this.createProductForm.get('categoryId')?.setValue(id);
   }
 
   onSubmit() {
@@ -84,46 +89,40 @@ export class ProductCreateComponent implements OnInit {
   }
 
   generateDescription() {
-    const name = this.createProductForm.value.name;
-    if (!name) {
-      this._notificationService.notify(
-        ResponseStatus.Info,
-        'Please enter the product name to generate a proper description.'
-      );
-      return;
-    }
-
-    const subcategory = this.subcategoriesDropdownList.find(
-      (s: any) => s.subcategoryId === this.createProductForm.value.subcategoryId
-    );
-
-    if (!subcategory) {
-      this._notificationService.notify(
-        ResponseStatus.Info,
-        'Please select a subcategory to generate a proper description.'
-      );
-      return;
-    }
-
-    const match = subcategory.name.match(/^(.+)\s+\((.+)\)$/);
-
-    if (!match) {
-      alert('Subcategory format is invalid.');
-      return;
-    }
-
-    const subcategoryName = match[1];
-    const categoryName = match[2];
-    this.isGeneratingDesc = true;
-
-    this._productService
-      .generateDescription(name, categoryName, subcategoryName)
-      .pipe(finalize(() => (this.isGeneratingDesc = false)))
-      .subscribe({
-        next: (res) =>
-          this.createProductForm.patchValue({ description: res.data }),
-        error: (err) => this._errorHandlerService.handleErrors(err),
-      });
+    // const name = this.createProductForm.value.name;
+    // if (!name) {
+    //   this._notificationService.notify(
+    //     ResponseStatus.Info,
+    //     'Please enter the product name to generate a proper description.'
+    //   );
+    //   return;
+    // }
+    // const subcategory = this.subcategoriesDropdownList.find(
+    //   (s: any) => s.subcategoryId === this.createProductForm.value.subcategoryId
+    // );
+    // if (!subcategory) {
+    //   this._notificationService.notify(
+    //     ResponseStatus.Info,
+    //     'Please select a subcategory to generate a proper description.'
+    //   );
+    //   return;
+    // }
+    // const match = subcategory.name.match(/^(.+)\s+\((.+)\)$/);
+    // if (!match) {
+    //   alert('Subcategory format is invalid.');
+    //   return;
+    // }
+    // const subcategoryName = match[1];
+    // const categoryName = match[2];
+    // this.isGeneratingDesc = true;
+    // this._productService
+    //   .generateDescription(name, categoryName, subcategoryName)
+    //   .pipe(finalize(() => (this.isGeneratingDesc = false)))
+    //   .subscribe({
+    //     next: (res) =>
+    //       this.createProductForm.patchValue({ description: res.data }),
+    //     error: (err) => this._errorHandlerService.handleErrors(err),
+    //   });
   }
 
   onFileSelected(event: Event): void {
