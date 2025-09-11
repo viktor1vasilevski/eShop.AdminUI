@@ -56,4 +56,9 @@ export class CategoryService {
     const url = `${this.baseUrl}/category/getCategoriesDropdownList`;
     return this._dataApiService.getAll<any>(url);
   }
+
+  getCategoriesTree(): Observable<any> {
+    const url = `${this.baseUrl}/category/tree`;
+    return this._dataApiService.getAll<any>(url);
+  }
 }

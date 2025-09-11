@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,10 +19,13 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
   templateUrl: './category-create.component.html',
   styleUrl: './category-create.component.css',
 })
-export class CategoryCreateComponent {
+export class CategoryCreateComponent implements OnInit {
   createCategoryForm: FormGroup;
   isSubmitting = false;
   imagePreviewUrl: string | null = null;
+
+  categoryTree: any[] = [];
+  selectedParentId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +37,27 @@ export class CategoryCreateComponent {
     this.createCategoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       image: ['', Validators.required],
+      parentCategoryId: [null],
     });
+  }
+
+  ngOnInit(): void {
+    this.loadCategoriesTree();
+  }
+
+  loadCategoriesTree() {
+    this._categoryService.getCategoriesTree().subscribe({
+      next: (res: any) => {
+        this.categoryTree = res.data;
+        console.log(this.categoryTree);
+      },
+      error: (err: any) => this._errorHandlerService.handleErrors(err),
+    });
+  }
+
+  onParentSelected(id: string | null) {
+    this.selectedParentId = id;
+    this.createCategoryForm.patchValue({ parentCategoryId: id });
   }
 
   onSubmit() {
@@ -56,6 +79,20 @@ export class CategoryCreateComponent {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
+  }
+
+  expandedNodes: Set<string> = new Set();
+
+  toggleNode(node: any): void {
+    if (this.expandedNodes.has(node.id)) {
+      this.expandedNodes.delete(node.id);
+    } else {
+      this.expandedNodes.add(node.id);
+    }
+  }
+
+  isExpanded(node: any): boolean {
+    return this.expandedNodes.has(node.id);
   }
 
   onFileSelected(event: Event): void {

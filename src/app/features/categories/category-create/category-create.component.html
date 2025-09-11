@@ -5,9 +5,9 @@
         <h4 class="mb-0">Create Category</h4>
       </div>
 
-      <!-- Image Upload -->
       <form [formGroup]="createCategoryForm" (ngSubmit)="onSubmit()">
-        <div class="row g-3">
+        <div class="row g-4">
+          <!-- Image Upload -->
           <div class="col-md-6">
             <label for="image" class="form-label">Image</label>
             <input
@@ -39,6 +39,7 @@
             </div>
           </div>
 
+          <!-- Category Name -->
           <div class="col-md-6">
             <label for="categoryName" class="form-label">Category Name</label>
             <div class="input-group">
@@ -70,6 +71,99 @@
                 Must be at least 2 characters.
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Tree View: Parent Category Selection -->
+        <div class="mt-4">
+          <!-- None / Top-Level Option -->
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="parentCategory"
+              [value]="null"
+              (change)="onParentSelected(null)"
+              [checked]="!selectedParentId"
+              id="noParent"
+            />
+            <label class="form-check-label" for="noParent">
+              <i class="bi bi-slash-circle me-1 text-muted"></i>
+              No Parent (Top-Level Category)
+            </label>
+          </div>
+
+          <label class="form-label">Parent Category</label>
+          <div
+            class="border rounded p-3 bg-light"
+            style="max-height: 400px; overflow-y: auto"
+          >
+            <ng-container *ngFor="let category of categoryTree">
+              <ng-template
+                [ngTemplateOutlet]="renderTree"
+                [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
+              ></ng-template>
+            </ng-container>
+
+            <!-- Recursive Tree Template -->
+            <ng-template #renderTree let-node let-level="level">
+              <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
+                <div class="d-flex align-items-center gap-2">
+                  <!-- Expand/Collapse Icon -->
+                  <span
+                    *ngIf="node.children?.length"
+                    class="cursor-pointer"
+                    (click)="toggleNode(node)"
+                    style="width: 16px"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="{
+                        'bi-caret-right': !isExpanded(node),
+                        'bi-caret-down': isExpanded(node)
+                      }"
+                    ></i>
+                  </span>
+                  <span
+                    *ngIf="!node.children?.length"
+                    style="width: 16px"
+                  ></span>
+
+                  <!-- Radio Button -->
+                  <div class="form-check d-flex align-items-center gap-2">
+                    <input
+                      class="form-check-input mt-0"
+                      type="radio"
+                      name="parentCategory"
+                      [value]="node.id"
+                      (change)="onParentSelected(node.id)"
+                      [checked]="node.id === selectedParentId"
+                      id="{{ node.id }}"
+                    />
+                    <label
+                      class="form-check-label d-flex align-items-center gap-2"
+                      [for]="node.id"
+                    >
+                      <i class="bi bi-folder2-open text-warning"></i>
+                      {{ node.name }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recursive Children -->
+              <div *ngIf="isExpanded(node)">
+                <ng-container *ngFor="let child of node.children">
+                  <ng-template
+                    [ngTemplateOutlet]="renderTree"
+                    [ngTemplateOutletContext]="{
+                      $implicit: child,
+                      level: level + 1
+                    }"
+                  ></ng-template>
+                </ng-container>
+              </div>
+            </ng-template>
           </div>
         </div>
 
