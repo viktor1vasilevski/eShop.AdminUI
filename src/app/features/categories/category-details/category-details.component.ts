@@ -51,37 +51,6 @@ export class CategoryDetailsComponent implements OnInit {
     });
   }
 
-  // ---- filtering (for header counts and list of cards) ----
-  getFilteredSubcategories() {
-    if (!this.category?.subcategories) return [];
-
-    const term = this.subcategorySearch?.toLowerCase().trim();
-    if (!term) return this.category.subcategories;
-
-    return this.category.subcategories.filter((sub: any) =>
-      sub.name.toLowerCase().includes(term)
-    );
-  }
-
-  getTotalFilteredCount(): number {
-    const subs = this?.category?.subcategories || [];
-    if (!subs.length) return 0;
-    const term = (this.globalSearch || '').toLowerCase().trim();
-    if (!term)
-      return subs.reduce(
-        (acc: number, s: any) => acc + (s?.products?.length || 0),
-        0
-      );
-    return subs.reduce(
-      (acc: number, s: any) =>
-        acc +
-        (s?.products || []).filter((p: any) =>
-          (p?.name || '').toLowerCase().includes(term)
-        ).length,
-      0
-    );
-  }
-
   // ---- child events ----
   onEditSubcategory(sc: any) {
     this.router.navigate(['/subcategories', sc.id]);

@@ -1,45 +1,142 @@
 <div class="main-content p-4">
-  <!-- Page Header -->
-
-  <!-- Create Form -->
   <div class="card shadow-sm">
     <div class="card-body p-4">
+      <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">Edit Category</h4>
       </div>
+
+      <!-- Form -->
       <form [formGroup]="editCategoryForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="categoryName" class="form-label">Category Name</label>
-          <div class="input-group">
-            <span class="input-group-text bg-light">
-              <i class="bi bi-folder-plus"></i>
-            </span>
+        <div class="row g-4">
+          <!-- Image Upload -->
+          <div class="col-md-6">
+            <label for="image" class="form-label">Image</label>
             <input
-              type="text"
-              id="categoryName"
+              type="file"
+              id="image"
+              (change)="onFileSelected($event)"
               class="form-control"
-              name="categoryName"
-              formControlName="name"
-              placeholder="Enter category name"
-              autocomplete="off"
             />
+            <div *ngIf="imagePreviewUrl" class="mt-2">
+              <img
+                [src]="imagePreviewUrl"
+                alt="Preview"
+                class="img-thumbnail"
+                style="max-height: 200px"
+              />
+            </div>
           </div>
-          <div
-            *ngIf="
-              editCategoryForm.get('name')?.invalid &&
-              editCategoryForm.get('name')?.touched
-            "
-            class="text-danger mt-1"
-          >
-            <small *ngIf="editCategoryForm.get('name')?.errors?.['required']">
-              Category name is required.
-            </small>
-            <small *ngIf="editCategoryForm.get('name')?.errors?.['minlength']">
-              Category name must be at least 3 characters.
-            </small>
+
+          <!-- Category Name -->
+          <div class="col-md-6">
+            <label for="categoryName" class="form-label">Category Name</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-folder"></i>
+              </span>
+              <input
+                type="text"
+                id="categoryName"
+                class="form-control"
+                formControlName="name"
+                placeholder="Enter category name"
+                autocomplete="off"
+              />
+            </div>
+            <div
+              *ngIf="
+                editCategoryForm.get('name')?.invalid &&
+                editCategoryForm.get('name')?.touched
+              "
+              class="text-danger mt-1"
+            >
+              <small *ngIf="editCategoryForm.get('name')?.errors?.['required']">
+                Category name is required.
+              </small>
+              <small
+                *ngIf="editCategoryForm.get('name')?.errors?.['minlength']"
+              >
+                Category name must be at least 3 characters.
+              </small>
+            </div>
           </div>
         </div>
 
+        <!-- Parent Category Selection -->
+        <div class="mt-4">
+          <label class="form-label">Parent Category</label>
+          <div
+            class="border rounded p-3 bg-light"
+            style="max-height: 400px; overflow-y: auto"
+          >
+            <!-- No Parent Option -->
+            <div class="form-check mb-2">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="parentCategory"
+                [value]="null"
+                (change)="onParentSelected(null)"
+                [checked]="!editCategoryForm.value.parentCategoryId"
+                id="noParent"
+              />
+              <label class="form-check-label" for="noParent">
+                <i class="bi bi-slash-circle me-1 text-muted"></i>
+                No Parent (Top-Level Category)
+              </label>
+            </div>
+
+            <!-- Recursive Tree Rendering -->
+            <ng-container *ngFor="let category of categoryTree">
+              <ng-template
+                [ngTemplateOutlet]="renderTree"
+                [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
+              ></ng-template>
+            </ng-container>
+
+            <!-- Tree Template -->
+            <ng-template #renderTree let-node let-level="level">
+              <ng-container *ngIf="!excludedCategoryIds.includes(node.id)">
+                <!-- Node -->
+                <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
+                  <div class="form-check d-flex align-items-center gap-2">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="parentCategory"
+                      [value]="node.id"
+                      (change)="onParentSelected(node.id)"
+                      [checked]="
+                        editCategoryForm.value.parentCategoryId === node.id
+                      "
+                      [id]="node.id"
+                    />
+                    <label class="form-check-label" [for]="node.id">
+                      <i class="bi bi-folder2-open text-warning"></i>
+                      {{ node.name }}
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Children -->
+                <div *ngIf="node.children?.length">
+                  <ng-container *ngFor="let child of node.children">
+                    <ng-template
+                      [ngTemplateOutlet]="renderTree"
+                      [ngTemplateOutletContext]="{
+                        $implicit: child,
+                        level: level + 1
+                      }"
+                    ></ng-template>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Buttons -->
         <div class="d-flex justify-content-end mt-4 gap-2">
           <button
             class="btn btn-outline-secondary"
@@ -53,7 +150,7 @@
             type="submit"
             [disabled]="editCategoryForm.invalid || isSubmitting"
           >
-            <i class="bi bi-check-lg me-2"></i> Save Category
+            <i class="bi bi-check-lg me-2"></i> Save Changes
           </button>
         </div>
       </form>

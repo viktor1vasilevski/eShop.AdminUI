@@ -47,6 +47,11 @@ export class CategoryService {
     return this._dataApiService.getById<any>(url);
   }
 
+  getCategoryForEditById(id: string): Observable<any> {
+    const url = `${this.baseUrl}/category/${id}/edit`;
+    return this._dataApiService.getById<any>(url);
+  }
+
   deleteCategory(id: string): Observable<any> {
     const url = `${this.baseUrl}/category/${id}`;
     return this._dataApiService.delete<any>(url);

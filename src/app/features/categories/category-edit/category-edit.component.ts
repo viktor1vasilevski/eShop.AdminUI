@@ -22,6 +22,9 @@ export class CategoryEditComponent implements OnInit {
   isSubmitting = false;
   editCategoryForm: FormGroup;
   selectedCategoryId: string = '';
+  excludedCategoryIds: string[] = [];
+  imagePreviewUrl: string | null = null;
+  categoryTree: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -33,26 +36,49 @@ export class CategoryEditComponent implements OnInit {
   ) {
     this.editCategoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
+      parentCategoryId: [''],
+      image: [''],
     });
   }
 
   ngOnInit(): void {
+    this.loadCategoriesTree();
+
     this.route.params.subscribe((params) => {
       this.selectedCategoryId = params['id'];
       this.loadCategoryById();
     });
   }
 
-  loadCategoryById() {
-    this._categoryService.getCategoryById(this.selectedCategoryId).subscribe({
-      next: (response: any) => {
-        this.editCategoryForm.patchValue({
-          name: response.data?.name,
-        });
+  loadCategoriesTree() {
+    this._categoryService.getCategoriesTree().subscribe({
+      next: (res: any) => {
+        this.categoryTree = res.data;
+        console.log(this.categoryTree);
       },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
+      error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
+  }
+
+  loadCategoryById() {
+    this._categoryService
+      .getCategoryForEditById(this.selectedCategoryId)
+      .subscribe({
+        next: (response: any) => {
+          this.editCategoryForm.patchValue({
+            name: response.data?.name,
+            parentCategoryId: response.data?.parentCategoryId,
+          });
+          this.imagePreviewUrl = response.data?.image;
+          // exclude this category + its children
+          debugger;
+          this.excludedCategoryIds = this.getAllDescendantIds(response.data);
+          this.excludedCategoryIds.push(response.data.id);
+          console.log(this.excludedCategoryIds);
+        },
+        error: (errorResponse: any) =>
+          this._errorHandlerService.handleErrors(errorResponse),
+      });
   }
 
   onSubmit() {
@@ -74,5 +100,35 @@ export class CategoryEditComponent implements OnInit {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
+  }
+
+  getAllDescendantIds(category: any): string[] {
+    let ids: string[] = [];
+    if (category.children) {
+      for (let child of category.children) {
+        ids.push(child.id);
+        ids = ids.concat(this.getAllDescendantIds(child));
+      }
+    }
+    return ids;
+  }
+
+  onParentSelected(parentId: string | null) {
+    this.editCategoryForm.patchValue({ parentCategoryId: parentId });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.editCategoryForm.patchValue({ image: base64String });
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 }
