@@ -6,6 +6,7 @@
         <h4 class="mb-0">Create Product</h4>
       </div>
 
+      <!-- Upload Image -->
       <div class="form-group mb-3">
         <label for="image">Image</label>
         <input
@@ -24,55 +25,93 @@
         </div>
       </div>
 
-      <div class="form-group mb-4">
+      <!-- Tree View: Select Category (Only Leaf Allowed) -->
+      <div class="mt-4">
         <label class="form-label">Select Category</label>
+        <div
+          class="border rounded p-3 bg-light"
+          style="max-height: 400px; overflow-y: auto"
+        >
+          <ng-container *ngFor="let category of categoryTree">
+            <ng-template
+              [ngTemplateOutlet]="renderTree"
+              [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
+            ></ng-template>
+          </ng-container>
 
-        <ng-container *ngIf="categoryTree.length; else loadingTree">
-          <ul class="list-unstyled">
-            <ng-container
-              *ngTemplateOutlet="
-                renderTree;
-                context: { $implicit: categoryTree }
-              "
-            ></ng-container>
-          </ul>
-        </ng-container>
+          <!-- Recursive Tree Template -->
+          <ng-template #renderTree let-node let-level="level">
+            <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
+              <div class="d-flex align-items-center gap-2">
+                <!-- Expand/Collapse Icon -->
+                <span
+                  *ngIf="node.children?.length"
+                  class="cursor-pointer"
+                  (click)="toggleNode(node)"
+                  style="width: 16px"
+                >
+                  <i
+                    class="bi"
+                    [ngClass]="{
+                      'bi-caret-right': !isExpanded(node),
+                      'bi-caret-down': isExpanded(node)
+                    }"
+                  ></i>
+                </span>
+                <span *ngIf="!node.children?.length" style="width: 16px"></span>
 
-        <ng-template #loadingTree>
-          <div class="text-muted fst-italic">Loading category tree…</div>
-        </ng-template>
-
-        <!-- Recursive Tree Template -->
-        <ng-template #renderTree let-tree>
-          <li *ngFor="let node of tree">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                [id]="node.id"
-                [value]="node.id"
-                [checked]="selectedCategoryId === node.id"
-                (change)="onCategorySelected(node.id)"
-                name="categoryRadio"
-              />
-              <label class="form-check-label" [for]="node.id">{{
-                node.name
-              }}</label>
+                <!-- Radio (only for leaf) -->
+                <div class="form-check d-flex align-items-center gap-2">
+                  <input
+                    *ngIf="!node.children?.length"
+                    class="form-check-input mt-0"
+                    type="radio"
+                    name="category"
+                    [value]="node.id"
+                    (change)="onCategorySelected(node.id)"
+                    [checked]="node.id === selectedCategoryId"
+                    [id]="node.id"
+                  />
+                  <label
+                    class="form-check-label d-flex align-items-center gap-2"
+                    [for]="node.id"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="{
+                        'bi-folder2-open text-warning': node.children?.length,
+                        'bi-file-earmark text-secondary': !node.children?.length
+                      }"
+                    ></i>
+                    {{ node.name }}
+                    <span
+                      *ngIf="node.children?.length"
+                      class="text-muted small"
+                    >
+                      (parent category - cannot assign products)
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <!-- Recursive children -->
-            <ul class="ms-4 mt-1 list-unstyled" *ngIf="node.children?.length">
-              <ng-container
-                *ngTemplateOutlet="
-                  renderTree;
-                  context: { $implicit: node.children }
-                "
-              ></ng-container>
-            </ul>
-          </li>
-        </ng-template>
+            <!-- Recursive Children -->
+            <div *ngIf="isExpanded(node)">
+              <ng-container *ngFor="let child of node.children">
+                <ng-template
+                  [ngTemplateOutlet]="renderTree"
+                  [ngTemplateOutletContext]="{
+                    $implicit: child,
+                    level: level + 1
+                  }"
+                ></ng-template>
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
       </div>
 
+      <!-- Form Inputs -->
       <form [formGroup]="createProductForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <!-- Left Column -->
@@ -211,9 +250,9 @@
                 [disabled]="isGeneratingDesc"
               >
                 <i class="bi bi-robot me-1"></i>
-                <ng-container *ngIf="!isGeneratingDesc; else genLoading"
-                  >Generate with AI</ng-container
-                >
+                <ng-container *ngIf="!isGeneratingDesc; else genLoading">
+                  Generate with AI
+                </ng-container>
                 <ng-template #genLoading>
                   <span class="d-inline-flex align-items-center gap-2">
                     <span
@@ -229,6 +268,7 @@
           </div>
         </div>
 
+        <!-- Buttons -->
         <div class="d-flex justify-content-end mt-4 gap-2">
           <button
             class="btn btn-outline-secondary"

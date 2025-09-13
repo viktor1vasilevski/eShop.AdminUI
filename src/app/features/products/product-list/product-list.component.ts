@@ -132,7 +132,6 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
-    this.loadCategoriesDropdownList();
 
     this.filterChangeSubject
       .pipe(debounceTime(400), distinctUntilChanged())
@@ -164,19 +163,6 @@ export class ProductListComponent implements OnInit {
       error: (errorResponse: any) => {
         this._errorHandlerService.handleErrors(errorResponse);
       },
-    });
-  }
-
-  loadCategoriesDropdownList(): void {
-    this._categoryService.getCategoriesDropdownList().subscribe({
-      next: (response: any) => {
-        this.categoriesDropdownList = response.data.map((cat: any) => ({
-          id: cat.categoryId,
-          name: cat.name,
-        }));
-      },
-      error: (errorResponse: any) =>
-        this._errorHandlerService.handleErrors(errorResponse),
     });
   }
 

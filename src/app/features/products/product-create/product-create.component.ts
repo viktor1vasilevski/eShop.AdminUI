@@ -28,6 +28,8 @@ export class ProductCreateComponent implements OnInit {
   categoryTree: any[] = [];
   selectedCategoryId: string | null = null;
 
+  expandedNodes = new Set<number>();
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -39,9 +41,9 @@ export class ProductCreateComponent implements OnInit {
     this.createProductForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       categoryId: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0.01)]],
+      price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(2500)]],
-      quantity: [0, [Validators.required, Validators.min(1)]],
+      quantity: ['', [Validators.required, Validators.min(1)]],
       image: ['', Validators.required],
     });
   }
@@ -64,6 +66,18 @@ export class ProductCreateComponent implements OnInit {
     debugger;
     this.selectedCategoryId = id;
     this.createProductForm.get('categoryId')?.setValue(id);
+  }
+
+  toggleNode(node: any) {
+    if (this.expandedNodes.has(node.id)) {
+      this.expandedNodes.delete(node.id);
+    } else {
+      this.expandedNodes.add(node.id);
+    }
+  }
+
+  isExpanded(node: any): boolean {
+    return this.expandedNodes.has(node.id);
   }
 
   onSubmit() {
