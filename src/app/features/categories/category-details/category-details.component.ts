@@ -4,8 +4,6 @@ import { CategoryService } from '../../../core/services/category.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SubcategoryCardComponent } from '../../../core/components/category/subcategory-card/subcategory-card.component';
-import { SubcategoriesHeaderComponent } from '../../../core/components/category/subcategories-header/subcategories-header.component';
 
 @Component({
   selector: 'app-category-details',

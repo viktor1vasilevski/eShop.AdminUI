@@ -58,8 +58,7 @@ export class ProductListComponent implements OnInit {
     },
     columns: [
       { field: 'name', title: 'Name', width: '15%' },
-      { field: 'subcategory', title: 'Subcategory', width: '10%' },
-      { field: 'category', title: 'Categor', width: '10%' },
+      { field: 'category', title: 'Category', width: '10%' },
       {
         field: 'unitPrice',
         title: 'Unit Price',
