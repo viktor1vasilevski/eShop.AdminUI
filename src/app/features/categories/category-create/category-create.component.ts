@@ -42,6 +42,7 @@ export class CategoryCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    debugger;
     this.loadCategoriesTree();
   }
 
@@ -55,11 +56,13 @@ export class CategoryCreateComponent implements OnInit {
   }
 
   onParentSelected(id: string | null) {
+    debugger;
     this.selectedParentId = id;
     this.createCategoryForm.patchValue({ parentCategoryId: id });
   }
 
   onSubmit() {
+    debugger;
     if (!this.createCategoryForm.valid) {
       this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;

@@ -1,28 +1,27 @@
 <div class="main-content p-4">
   <div class="card shadow-sm">
     <div class="card-body p-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">Create Category</h4>
-        <div class="d-flex gap-2">
-          <button
-            class="btn btn-outline-secondary btn-sm"
-            type="button"
-            [routerLink]="['/categories']"
-          >
-            <i class="bi bi-x-lg me-1"></i> Cancel
-          </button>
-          <button
-            class="btn btn-primary btn-sm"
-            type="submit"
-            [disabled]="createCategoryForm.invalid || isSubmitting"
-            form="createCategoryForm"
-          >
-            <i class="bi bi-check-lg me-1"></i> Create
-          </button>
-        </div>
-      </div>
-
       <form [formGroup]="createCategoryForm" (ngSubmit)="onSubmit()">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">Create Category</h4>
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              type="button"
+              [routerLink]="['/categories']"
+            >
+              <i class="bi bi-x-lg me-1"></i> Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              type="submit"
+              [disabled]="createCategoryForm.invalid || isSubmitting"
+            >
+              <i class="bi bi-check-lg me-1"></i> Create
+            </button>
+          </div>
+        </div>
+
         <div class="row g-4">
           <!-- Image Upload -->
           <div class="col-md-6">
@@ -93,7 +92,6 @@
 
         <!-- Tree View: Parent Category Selection -->
         <div class="mt-4">
-          <!-- None / Top-Level Option -->
           <div class="form-check mb-2">
             <input
               class="form-check-input"
@@ -126,7 +124,6 @@
             <ng-template #renderTree let-node let-level="level">
               <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
                 <div class="d-flex align-items-center gap-2">
-                  <!-- Expand/Collapse Icon -->
                   <span
                     *ngIf="node.children?.length"
                     class="cursor-pointer"
@@ -146,7 +143,6 @@
                     style="width: 16px"
                   ></span>
 
-                  <!-- Radio Button -->
                   <div class="form-check d-flex align-items-center gap-2">
                     <input
                       class="form-check-input mt-0"
@@ -168,7 +164,6 @@
                 </div>
               </div>
 
-              <!-- Recursive Children -->
               <div *ngIf="isExpanded(node)">
                 <ng-container *ngFor="let child of node.children">
                   <ng-template
