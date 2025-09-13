@@ -3,6 +3,23 @@
     <div class="card-body p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Create Category</h4>
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            type="button"
+            [routerLink]="['/categories']"
+          >
+            <i class="bi bi-x-lg me-1"></i> Cancel
+          </button>
+          <button
+            class="btn btn-primary btn-sm"
+            type="submit"
+            [disabled]="createCategoryForm.invalid || isSubmitting"
+            form="createCategoryForm"
+          >
+            <i class="bi bi-check-lg me-1"></i> Create
+          </button>
+        </div>
       </div>
 
       <form [formGroup]="createCategoryForm" (ngSubmit)="onSubmit()">
@@ -165,24 +182,6 @@
               </div>
             </ng-template>
           </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="d-flex justify-content-end mt-4 gap-2">
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            [routerLink]="['/categories']"
-          >
-            <i class="bi bi-x-lg me-2"></i> Cancel
-          </button>
-          <button
-            class="btn btn-primary"
-            type="submit"
-            [disabled]="createCategoryForm.invalid || isSubmitting"
-          >
-            <i class="bi bi-check-lg me-2"></i> Create
-          </button>
         </div>
       </form>
     </div>
