@@ -15,7 +15,7 @@ import {
   TableSettings,
 } from '../../../shared/components/custom-table/custom-table.component';
 import { ApiResponse } from '../../../core/models/api-response';
-import { CategoryDTO } from '../models/category-dto.model';
+import { CategoryDto } from '../models/category-dto.model';
 import { CategoryRequest } from '../models/category-request.model';
 declare var bootstrap: any;
 
@@ -109,9 +109,9 @@ export class CategoryListComponent implements OnInit {
 
   loadCategories() {
     this._categoryService.getCategories(this.categoryRequest).subscribe({
-      next: (res: ApiResponse<CategoryDTO[]>) => {
+      next: (res: ApiResponse<CategoryDto[]>) => {
         const items = res.data ?? [];
-        this.data = items.map((cat: CategoryDTO) => ({
+        this.data = items.map((cat: CategoryDto) => ({
           ...cat,
           view: () => this.router.navigate(['categories', cat.id]),
           edit: () => this.router.navigate(['categories/edit', cat.id]),

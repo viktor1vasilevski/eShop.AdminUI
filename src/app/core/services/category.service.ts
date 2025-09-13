@@ -3,7 +3,7 @@ import { DataService } from './data.service';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { ApiResponse } from '../models/api-response';
-import { CategoryDTO } from '../../features/categories/models/category-dto.model';
+import { CategoryDto } from '../../features/categories/models/category-dto.model';
 import { CategoryRequest } from '../../features/categories/models/category-request.model';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class CategoryService {
 
   getCategories(
     request: CategoryRequest
-  ): Observable<ApiResponse<CategoryDTO[]>> {
+  ): Observable<ApiResponse<CategoryDto[]>> {
     let params = new HttpParams()
       .set('skip', request.skip.toString())
       .set('take', request.take.toString())
@@ -25,7 +25,7 @@ export class CategoryService {
       .set('name', request.name);
 
     const url = `${this.baseUrl}/category`;
-    return this._dataApiService.getAll<ApiResponse<CategoryDTO[]>>(url, params);
+    return this._dataApiService.getAll<ApiResponse<CategoryDto[]>>(url, params);
   }
 
   createCategory(request: any): Observable<any> {
