@@ -39,7 +39,7 @@ export class ProductCreateComponent implements OnInit {
     private _categoryService: CategoryService
   ) {
     this.createProductForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       categoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(2500)]],
@@ -56,7 +56,6 @@ export class ProductCreateComponent implements OnInit {
     this._categoryService.getCategoriesTree().subscribe({
       next: (res) => {
         this.categoryTree = res.data ?? [];
-        console.log(this.categoryTree);
       },
       error: (err) => this._errorHandlerService.handleErrors(err),
     });
@@ -80,6 +79,7 @@ export class ProductCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    debugger;
     if (!this.createProductForm.valid) {
       this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;
@@ -101,41 +101,35 @@ export class ProductCreateComponent implements OnInit {
     });
   }
 
-  generateDescription() {
-    // const name = this.createProductForm.value.name;
-    // if (!name) {
-    //   this._notificationService.notify(
-    //     ResponseStatus.Info,
-    //     'Please enter the product name to generate a proper description.'
-    //   );
-    //   return;
-    // }
-    // const subcategory = this.subcategoriesDropdownList.find(
-    //   (s: any) => s.subcategoryId === this.createProductForm.value.subcategoryId
-    // );
-    // if (!subcategory) {
-    //   this._notificationService.notify(
-    //     ResponseStatus.Info,
-    //     'Please select a subcategory to generate a proper description.'
-    //   );
-    //   return;
-    // }
-    // const match = subcategory.name.match(/^(.+)\s+\((.+)\)$/);
-    // if (!match) {
-    //   alert('Subcategory format is invalid.');
-    //   return;
-    // }
-    // const subcategoryName = match[1];
-    // const categoryName = match[2];
-    // this.isGeneratingDesc = true;
-    // this._productService
-    //   .generateDescription(name, categoryName, subcategoryName)
-    //   .pipe(finalize(() => (this.isGeneratingDesc = false)))
-    //   .subscribe({
-    //     next: (res) =>
-    //       this.createProductForm.patchValue({ description: res.data }),
-    //     error: (err) => this._errorHandlerService.handleErrors(err),
-    //   });
+  generateDescription(): void {
+    const name = this.createProductForm.get('name')?.value;
+    const categoryId = this.createProductForm.get('categoryId')?.value;
+
+    if (!name || !categoryId) {
+      this._notificationService.notify(
+        ResponseStatus.Info,
+        'Name and category are required to generate a description.'
+      );
+      return;
+    }
+
+    // Get category path like "Electronics > Laptops"
+    const categoryPath = this.getCategoryPathById(categoryId).join(' > ');
+
+    this.isGeneratingDesc = true;
+
+    this._productService.generateDescription(name, categoryPath).subscribe({
+      next: (res) => {
+        this.createProductForm.patchValue({
+          description: res.data,
+        });
+        this.isGeneratingDesc = false;
+      },
+      error: (err) => {
+        this._errorHandlerService.handleErrors(err);
+        this.isGeneratingDesc = false;
+      },
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -151,5 +145,30 @@ export class ProductCreateComponent implements OnInit {
 
       reader.readAsDataURL(file);
     }
+  }
+
+  private getCategoryPathById(id: string): string[] {
+    const path: string[] = [];
+
+    function traverse(node: any, currentPath: string[]): boolean {
+      if (node.id === id) {
+        path.push(...currentPath, node.name);
+        return true;
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          if (traverse(child, [...currentPath, node.name])) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    for (const rootNode of this.categoryTree) {
+      if (traverse(rootNode, [])) break;
+    }
+
+    return path;
   }
 }

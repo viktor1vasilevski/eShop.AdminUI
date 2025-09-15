@@ -52,20 +52,14 @@ export class ProductService {
 
   generateDescription(
     productName: string,
-    category: string,
-    subcategory: string,
-    additionalContext?: string
+    categories: string
   ): Observable<any> {
-    let params = new HttpParams()
-      .set('productName', productName)
-      .set('category', category)
-      .set('subcategory', subcategory);
-
-    if (additionalContext) {
-      params = params.set('additionalContext', additionalContext);
-    }
-
     const url = `${this.baseUrl}/product/generate`;
+
+    const params = new HttpParams()
+      .set('productName', productName)
+      .set('categories', categories);
+
     return this._dataApiService.getAll<any>(url, params);
   }
 }
