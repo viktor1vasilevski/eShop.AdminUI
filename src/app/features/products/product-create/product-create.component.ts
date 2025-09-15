@@ -63,7 +63,6 @@ export class ProductCreateComponent implements OnInit {
   }
 
   onCategorySelected(id: string) {
-    debugger;
     this.selectedCategoryId = id;
     this.createProductForm.get('categoryId')?.setValue(id);
   }

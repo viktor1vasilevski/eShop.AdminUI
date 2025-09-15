@@ -70,8 +70,6 @@ export class CategoryEditComponent implements OnInit {
             parentCategoryId: response.data?.parentCategoryId,
           });
           this.imagePreviewUrl = response.data?.image;
-          // exclude this category + its children
-          debugger;
           this.excludedCategoryIds = this.getAllDescendantIds(response.data);
           this.excludedCategoryIds.push(response.data.id);
           console.log(this.excludedCategoryIds);
