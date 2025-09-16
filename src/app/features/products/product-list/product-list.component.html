@@ -23,18 +23,6 @@
           (selectedChange)="onDropdownItemChange($event, 'category')"
         ></app-filter-dropdown>
       </div>
-
-      <!-- Subcategory Filter -->
-      <div class="col-md-4">
-        <app-filter-dropdown
-          label="Subcategory"
-          id="subcategoryFilter"
-          [options]="subcategoriesDropdownList"
-          [(selected)]="productRequest.subcategoryId"
-          defaultText="All Subcategories"
-          (selectedChange)="onDropdownItemChange($event, 'subcategory')"
-        ></app-filter-dropdown>
-      </div>
     </form>
   </app-filter-card>
 
