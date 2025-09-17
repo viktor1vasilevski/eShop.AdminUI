@@ -50,15 +50,12 @@ export class ProductService {
     return this._dataApiService.delete<any>(url);
   }
 
-  generateDescription(
-    productName: string,
-    categories: string
-  ): Observable<any> {
+  generateDescription(request: any): Observable<any> {
     const url = `${this.baseUrl}/product/generate`;
 
     const params = new HttpParams()
-      .set('productName', productName)
-      .set('categories', categories);
+      .set('productName', request.productName)
+      .set('categories', request.categories);
 
     return this._dataApiService.getAll<any>(url, params);
   }

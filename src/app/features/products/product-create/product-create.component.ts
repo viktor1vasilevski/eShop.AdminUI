@@ -118,7 +118,12 @@ export class ProductCreateComponent implements OnInit {
 
     this.isGeneratingDesc = true;
 
-    this._productService.generateDescription(name, categoryPath).subscribe({
+    const request = {
+      productName: name,
+      categories: categoryPath,
+    };
+
+    this._productService.generateDescription(request).subscribe({
       next: (res) => {
         this.createProductForm.patchValue({
           description: res.data,
