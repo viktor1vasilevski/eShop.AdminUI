@@ -22,7 +22,7 @@ export class CategoryEditComponent implements OnInit {
   isSubmitting = false;
   editCategoryForm: FormGroup;
   selectedCategoryId: string = '';
-  excludedCategoryIds: string[] = [];
+  validParentTree: any[] = [];
   imagePreviewUrl: string | null = null;
   categoryTree: any[] = [];
 
@@ -70,9 +70,7 @@ export class CategoryEditComponent implements OnInit {
             parentCategoryId: response.data?.parentCategoryId,
           });
           this.imagePreviewUrl = response.data?.image;
-          this.excludedCategoryIds = this.getAllDescendantIds(response.data);
-          this.excludedCategoryIds.push(response.data.id);
-          console.log(this.excludedCategoryIds);
+          this.validParentTree = response.data?.validParentTree;
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),

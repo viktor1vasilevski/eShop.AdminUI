@@ -66,6 +66,30 @@
         <!-- Parent Category Selection -->
         <div class="mt-4">
           <label class="form-label">Parent Category</label>
+
+          <!-- 👇 Info Section -->
+          <div class="alert alert-info small" role="alert">
+            <strong>Parent Category Rules:</strong>
+            <ul class="mb-0 ps-3">
+              <li>
+                This category cannot be assigned under itself or its own
+                descendants.
+              </li>
+              <li>
+                Categories that already contain <strong>products</strong> are
+                not shown as valid parent options.
+              </li>
+              <li>
+                Only categories that can safely act as a parent are listed
+                below.
+              </li>
+              <li>
+                Select <em>No Parent</em> to move this category to the top
+                level.
+              </li>
+            </ul>
+          </div>
+
           <div
             class="border rounded p-3 bg-light"
             style="max-height: 400px; overflow-y: auto"
@@ -88,7 +112,7 @@
             </div>
 
             <!-- Recursive Tree Rendering -->
-            <ng-container *ngFor="let category of categoryTree">
+            <ng-container *ngFor="let category of validParentTree">
               <ng-template
                 [ngTemplateOutlet]="renderTree"
                 [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
@@ -97,41 +121,38 @@
 
             <!-- Tree Template -->
             <ng-template #renderTree let-node let-level="level">
-              <ng-container *ngIf="!excludedCategoryIds.includes(node.id)">
-                <!-- Node -->
-                <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
-                  <div class="form-check d-flex align-items-center gap-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="parentCategory"
-                      [value]="node.id"
-                      (change)="onParentSelected(node.id)"
-                      [checked]="
-                        editCategoryForm.value.parentCategoryId === node.id
-                      "
-                      [id]="node.id"
-                    />
-                    <label class="form-check-label" [for]="node.id">
-                      <i class="bi bi-folder2-open text-warning"></i>
-                      {{ node.name }}
-                    </label>
-                  </div>
+              <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
+                <div class="form-check d-flex align-items-center gap-2">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="parentCategory"
+                    [value]="node.id"
+                    (change)="onParentSelected(node.id)"
+                    [checked]="
+                      editCategoryForm.value.parentCategoryId === node.id
+                    "
+                    [id]="node.id"
+                  />
+                  <label class="form-check-label" [for]="node.id">
+                    <i class="bi bi-folder2-open text-warning"></i>
+                    {{ node.name }}
+                  </label>
                 </div>
+              </div>
 
-                <!-- Children -->
-                <div *ngIf="node.children?.length">
-                  <ng-container *ngFor="let child of node.children">
-                    <ng-template
-                      [ngTemplateOutlet]="renderTree"
-                      [ngTemplateOutletContext]="{
-                        $implicit: child,
-                        level: level + 1
-                      }"
-                    ></ng-template>
-                  </ng-container>
-                </div>
-              </ng-container>
+              <!-- Children -->
+              <div *ngIf="node.children?.length">
+                <ng-container *ngFor="let child of node.children">
+                  <ng-template
+                    [ngTemplateOutlet]="renderTree"
+                    [ngTemplateOutletContext]="{
+                      $implicit: child,
+                      level: level + 1
+                    }"
+                  ></ng-template>
+                </ng-container>
+              </div>
             </ng-template>
           </div>
         </div>
