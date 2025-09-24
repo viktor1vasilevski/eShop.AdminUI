@@ -35,4 +35,6 @@ export class ProductDetailsComponent implements OnInit {
       error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
   }
+
+  onDelete(id: any) {}
 }

@@ -123,7 +123,6 @@ export class ProductListComponent implements OnInit {
   constructor(
     public router: Router,
     private _productService: ProductService,
-    private _categoryService: CategoryService,
     private _notificationService: NotificationService,
     private _errorHandlerService: ErrorHandlerService,
     private cd: ChangeDetectorRef
@@ -146,7 +145,7 @@ export class ProductListComponent implements OnInit {
         if (res?.data.length > 0) {
           this.data = res?.data.map((cat: any) => ({
             ...cat,
-            view: () => alert('View ' + cat.name),
+            view: () => this.router.navigate(['products', cat.id]),
             edit: () => this.router.navigate(['products/edit', cat.id]),
             delete: () => this.showDeleteProductModal(cat),
           }));
