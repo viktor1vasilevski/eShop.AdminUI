@@ -24,7 +24,9 @@ export class CategoryEditComponent implements OnInit {
   selectedCategoryId: string = '';
   validParentTree: any[] = [];
   imagePreviewUrl: string | null = null;
-  categoryTree: any[] = [];
+
+  expandedNodes = new Set<string>();
+  selectedParentName: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,21 +44,9 @@ export class CategoryEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCategoriesTree();
-
     this.route.params.subscribe((params) => {
       this.selectedCategoryId = params['id'];
       this.loadCategoryById();
-    });
-  }
-
-  loadCategoriesTree() {
-    this._categoryService.getCategoriesTree().subscribe({
-      next: (res: any) => {
-        this.categoryTree = res.data;
-        console.log(this.categoryTree);
-      },
-      error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
   }
 
@@ -70,16 +60,56 @@ export class CategoryEditComponent implements OnInit {
             parentCategoryId: response.data?.parentCategoryId,
           });
           this.imagePreviewUrl = response.data?.image;
-          this.validParentTree = response.data?.validParentTree;
+          this.validParentTree = response.data?.validParentTree || [];
+
+          // 👇 set selected parent name if exists
+          if (response.data?.parentCategoryId) {
+            const found = this.findCategoryById(
+              this.validParentTree,
+              response.data.parentCategoryId
+            );
+            this.selectedParentName = found ? found.name : null;
+          } else {
+            this.selectedParentName = 'No Parent (Top-Level)';
+          }
         },
         error: (errorResponse: any) =>
           this._errorHandlerService.handleErrors(errorResponse),
       });
   }
 
+  // recursive search
+  private findCategoryById(tree: any[], id: string): any | null {
+    for (let node of tree) {
+      if (node.id === id) return node;
+      if (node.children?.length) {
+        const found = this.findCategoryById(node.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  // expand/collapse helpers
+  isExpanded(node: any): boolean {
+    return this.expandedNodes.has(node.id);
+  }
+
+  toggleNode(node: any): void {
+    if (this.expandedNodes.has(node.id)) {
+      this.expandedNodes.delete(node.id);
+    } else {
+      this.expandedNodes.add(node.id);
+    }
+  }
+
+  onParentSelected(id: any | null) {
+    this.editCategoryForm.patchValue({ parentCategoryId: id });
+  }
+
   onSubmit() {
+    debugger;
     if (!this.editCategoryForm.valid) {
-      //this._notificationService.info('Invalid form');
       return;
     }
     this.isSubmitting = true;
@@ -96,21 +126,6 @@ export class CategoryEditComponent implements OnInit {
           this._errorHandlerService.handleErrors(errorResponse);
         },
       });
-  }
-
-  getAllDescendantIds(category: any): string[] {
-    let ids: string[] = [];
-    if (category.children) {
-      for (let child of category.children) {
-        ids.push(child.id);
-        ids = ids.concat(this.getAllDescendantIds(child));
-      }
-    }
-    return ids;
-  }
-
-  onParentSelected(parentId: string | null) {
-    this.editCategoryForm.patchValue({ parentCategoryId: parentId });
   }
 
   onFileSelected(event: Event): void {

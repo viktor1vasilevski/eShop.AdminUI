@@ -67,21 +67,21 @@
         <div class="mt-4">
           <label class="form-label">Parent Category</label>
 
-          <!-- 👇 Info Section -->
+          <!-- Info Section -->
           <div class="alert alert-info small" role="alert">
             <strong>Parent Category Rules:</strong>
             <ul class="mb-0 ps-3">
               <li>
-                This category cannot be assigned under itself or its own
+                This category cannot be assigned under itself or its
                 descendants.
               </li>
               <li>
-                Categories that already contain <strong>products</strong> are
-                not shown as valid parent options.
+                Categories that already contain <strong>products</strong> cannot
+                be selected.
               </li>
               <li>
-                Only categories that can safely act as a parent are listed
-                below.
+                Each category shows how many <strong>subcategories</strong> and
+                <strong>products</strong> it contains.
               </li>
               <li>
                 Select <em>No Parent</em> to move this category to the top
@@ -119,30 +119,61 @@
               ></ng-template>
             </ng-container>
 
-            <!-- Tree Template -->
+            <!-- Recursive Tree Template -->
             <ng-template #renderTree let-node let-level="level">
               <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
-                <div class="form-check d-flex align-items-center gap-2">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="parentCategory"
-                    [value]="node.id"
-                    (change)="onParentSelected(node.id)"
-                    [checked]="
-                      editCategoryForm.value.parentCategoryId === node.id
-                    "
-                    [id]="node.id"
-                  />
-                  <label class="form-check-label" [for]="node.id">
-                    <i class="bi bi-folder2-open text-warning"></i>
-                    {{ node.name }}
-                  </label>
+                <div class="d-flex align-items-center gap-2">
+                  <!-- Expand/Collapse caret -->
+                  <span
+                    *ngIf="node.children?.length"
+                    class="cursor-pointer"
+                    (click)="toggleNode(node)"
+                    style="width: 16px"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="{
+                        'bi-caret-right': !isExpanded(node),
+                        'bi-caret-down': isExpanded(node)
+                      }"
+                    ></i>
+                  </span>
+                  <span
+                    *ngIf="!node.children?.length"
+                    style="width: 16px"
+                  ></span>
+
+                  <!-- Radio + label -->
+                  <div class="form-check d-flex align-items-center gap-2">
+                    <input
+                      class="form-check-input mt-0"
+                      type="radio"
+                      name="parentCategory"
+                      [value]="node.id"
+                      (change)="onParentSelected(node.id)"
+                      [checked]="
+                        node.id === editCategoryForm.value.parentCategoryId
+                      "
+                      [id]="node.id"
+                      [disabled]="node.productCount > 0"
+                    />
+                    <label
+                      class="form-check-label d-flex align-items-center gap-2"
+                      [for]="node.id"
+                    >
+                      <i class="bi bi-folder2-open text-warning"></i>
+                      {{ node.name }}
+                      <small class="text-muted">
+                        ({{ node.subcategoryCount }} sub,
+                        {{ node.productCount }} prod)
+                      </small>
+                    </label>
+                  </div>
                 </div>
               </div>
 
               <!-- Children -->
-              <div *ngIf="node.children?.length">
+              <div *ngIf="isExpanded(node)">
                 <ng-container *ngFor="let child of node.children">
                   <ng-template
                     [ngTemplateOutlet]="renderTree"
