@@ -11,18 +11,6 @@
           (valueChange)="onFilterChange()"
         ></app-filter-input>
       </div>
-
-      <!-- Category Filter -->
-      <div class="col-md-4">
-        <app-filter-dropdown
-          label="Category"
-          id="categoryFilter"
-          [options]="categoriesDropdownList"
-          [(selected)]="productRequest.categoryId"
-          defaultText="All Categories"
-          (selectedChange)="onDropdownItemChange($event, 'category')"
-        ></app-filter-dropdown>
-      </div>
     </form>
   </app-filter-card>
 

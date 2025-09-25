@@ -36,7 +36,6 @@ export interface ProductRequest {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FilterDropdownComponent,
     FilterInputComponent,
     FilterCardComponent,
     CustomTableComponent,
