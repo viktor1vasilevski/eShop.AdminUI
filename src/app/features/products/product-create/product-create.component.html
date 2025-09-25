@@ -2,118 +2,145 @@
   <!-- Create Form -->
   <div class="card shadow-sm">
     <div class="card-body p-4">
+      <!-- Header with buttons -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">Create Product</h4>
-      </div>
-
-      <!-- Upload Image -->
-      <div class="form-group mb-3">
-        <label for="image">Image</label>
-        <input
-          type="file"
-          id="image"
-          (change)="onFileSelected($event)"
-          class="form-control"
-        />
-        <div *ngIf="imagePreviewUrl">
-          <img
-            [src]="imagePreviewUrl"
-            alt="Image Preview"
-            class="img-thumbnail mt-2"
-            style="max-height: 200px"
-          />
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            [routerLink]="['/products']"
+          >
+            <i class="bi bi-x-lg me-2"></i> Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            form="createProductForm"
+            [disabled]="createProductForm.invalid || isSubmitting"
+          >
+            <i class="bi bi-check-lg me-2"></i> Create
+          </button>
         </div>
       </div>
 
-      <!-- Tree View: Select Category (Only Leaf Allowed) -->
-      <div class="mt-4">
-        <label class="form-label">Select Category</label>
-        <div
-          class="border rounded p-3 bg-light"
-          style="max-height: 400px; overflow-y: auto"
-        >
-          <ng-container *ngFor="let category of categoryTree">
-            <ng-template
-              [ngTemplateOutlet]="renderTree"
-              [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
-            ></ng-template>
-          </ng-container>
+      <!-- Form -->
+      <form
+        [formGroup]="createProductForm"
+        (ngSubmit)="onSubmit()"
+        id="createProductForm"
+      >
+        <!-- Upload Image -->
+        <div class="form-group mb-3">
+          <label for="image">Image</label>
+          <input
+            type="file"
+            id="image"
+            (change)="onFileSelected($event)"
+            class="form-control"
+          />
+          <div *ngIf="imagePreviewUrl">
+            <img
+              [src]="imagePreviewUrl"
+              alt="Image Preview"
+              class="img-thumbnail mt-2"
+              style="max-height: 200px"
+            />
+          </div>
+        </div>
 
-          <!-- Recursive Tree Template -->
-          <ng-template #renderTree let-node let-level="level">
-            <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
-              <div class="d-flex align-items-center gap-2">
-                <!-- Expand/Collapse Icon -->
-                <span
-                  *ngIf="node.children?.length"
-                  class="cursor-pointer"
-                  (click)="toggleNode(node)"
-                  style="width: 16px"
-                >
-                  <i
-                    class="bi"
-                    [ngClass]="{
-                      'bi-caret-right': !isExpanded(node),
-                      'bi-caret-down': isExpanded(node)
-                    }"
-                  ></i>
-                </span>
-                <span *ngIf="!node.children?.length" style="width: 16px"></span>
+        <!-- Tree View: Select Category (Only Leaf Allowed) -->
+        <div class="mt-4">
+          <label class="form-label">Select Category</label>
+          <div
+            class="border rounded p-3 bg-light"
+            style="max-height: 400px; overflow-y: auto"
+          >
+            <ng-container *ngFor="let category of categoryTree">
+              <ng-template
+                [ngTemplateOutlet]="renderTree"
+                [ngTemplateOutletContext]="{ $implicit: category, level: 0 }"
+              ></ng-template>
+            </ng-container>
 
-                <!-- Radio (only for leaf) -->
-                <div class="form-check d-flex align-items-center gap-2">
-                  <input
-                    *ngIf="!node.children?.length"
-                    class="form-check-input mt-0"
-                    type="radio"
-                    name="category"
-                    [value]="node.id"
-                    (change)="onCategorySelected(node.id)"
-                    [checked]="node.id === selectedCategoryId"
-                    [id]="node.id"
-                  />
-                  <label
-                    class="form-check-label d-flex align-items-center gap-2"
-                    [for]="node.id"
+            <!-- Recursive Tree Template -->
+            <ng-template #renderTree let-node let-level="level">
+              <div [ngStyle]="{ 'margin-left.px': level * 20 }" class="mb-1">
+                <div class="d-flex align-items-center gap-2">
+                  <!-- Expand/Collapse Icon -->
+                  <span
+                    *ngIf="node.children?.length"
+                    class="cursor-pointer"
+                    (click)="toggleNode(node)"
+                    style="width: 16px"
                   >
                     <i
                       class="bi"
                       [ngClass]="{
-                        'bi-folder2-open text-warning': node.children?.length,
-                        'bi-file-earmark text-secondary': !node.children?.length
+                        'bi-caret-right': !isExpanded(node),
+                        'bi-caret-down': isExpanded(node)
                       }"
                     ></i>
-                    {{ node.name }}
-                    <span
-                      *ngIf="node.children?.length"
-                      class="text-muted small"
+                  </span>
+                  <span
+                    *ngIf="!node.children?.length"
+                    style="width: 16px"
+                  ></span>
+
+                  <!-- Radio (only for leaf) -->
+                  <div class="form-check d-flex align-items-center gap-2">
+                    <input
+                      *ngIf="!node.children?.length"
+                      class="form-check-input mt-0"
+                      type="radio"
+                      name="category"
+                      [value]="node.id"
+                      (change)="onCategorySelected(node.id)"
+                      [checked]="node.id === selectedCategoryId"
+                      [id]="node.id"
+                    />
+                    <label
+                      class="form-check-label d-flex align-items-center gap-2"
+                      [for]="node.id"
                     >
-                      (parent category - cannot assign products)
-                    </span>
-                  </label>
+                      <i
+                        class="bi"
+                        [ngClass]="{
+                          'bi-folder2-open text-warning': node.children?.length,
+                          'bi-file-earmark text-secondary':
+                            !node.children?.length
+                        }"
+                      ></i>
+                      {{ node.name }}
+                      <span
+                        *ngIf="node.children?.length"
+                        class="text-muted small"
+                      >
+                        (parent category - cannot assign products)
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Recursive Children -->
-            <div *ngIf="isExpanded(node)">
-              <ng-container *ngFor="let child of node.children">
-                <ng-template
-                  [ngTemplateOutlet]="renderTree"
-                  [ngTemplateOutletContext]="{
-                    $implicit: child,
-                    level: level + 1
-                  }"
-                ></ng-template>
-              </ng-container>
-            </div>
-          </ng-template>
+              <!-- Recursive Children -->
+              <div *ngIf="isExpanded(node)">
+                <ng-container *ngFor="let child of node.children">
+                  <ng-template
+                    [ngTemplateOutlet]="renderTree"
+                    [ngTemplateOutletContext]="{
+                      $implicit: child,
+                      level: level + 1
+                    }"
+                  ></ng-template>
+                </ng-container>
+              </div>
+            </ng-template>
+          </div>
         </div>
-      </div>
 
-      <!-- Form Inputs -->
-      <form [formGroup]="createProductForm" (ngSubmit)="onSubmit()">
-        <div class="row">
+        <!-- Form Inputs -->
+        <div class="row mt-4">
           <!-- Left Column -->
           <div class="col-md-6">
             <!-- Product Name -->
@@ -266,24 +293,6 @@
               </button>
             </div>
           </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="d-flex justify-content-end mt-4 gap-2">
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            [routerLink]="['/products']"
-          >
-            <i class="bi bi-x-lg me-2"></i> Cancel
-          </button>
-          <button
-            class="btn btn-primary"
-            type="submit"
-            [disabled]="createProductForm.invalid || isSubmitting"
-          >
-            <i class="bi bi-check-lg me-2"></i> Create Product
-          </button>
         </div>
       </form>
     </div>
