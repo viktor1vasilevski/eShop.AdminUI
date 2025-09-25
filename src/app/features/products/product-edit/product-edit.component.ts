@@ -40,12 +40,12 @@ export class ProductEditComponent implements OnInit {
     private _errorHandlerService: ErrorHandlerService
   ) {
     this.editProductForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       categoryId: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
+      description: ['', [Validators.required, Validators.maxLength(2500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
-      image: ['', [Validators.required]],
+      image: ['', []],
     });
   }
 
@@ -83,7 +83,6 @@ export class ProductEditComponent implements OnInit {
     this.editProductForm.patchValue({ categoryId: categoryId });
   }
 
-  // Optional: auto-expand tree to product’s category
   expandPathToCategory(categoryId: string) {
     const findParent = (nodes: any[], targetId: string): boolean => {
       for (let node of nodes) {
@@ -91,7 +90,7 @@ export class ProductEditComponent implements OnInit {
           return true;
         }
         if (node.children?.length && findParent(node.children, targetId)) {
-          this.expandedNodes.add(node.id); // expand parent
+          this.expandedNodes.add(node.id);
           return true;
         }
       }
@@ -111,18 +110,10 @@ export class ProductEditComponent implements OnInit {
             quantity: response.data?.unitQuantity,
             description: response.data?.description,
             categoryId: response.data?.categoryId,
-            image: response.data.image,
           });
 
           // Set image preview
           this.imagePreviewUrl = response.data.image;
-          if (response.data.image) {
-            this.editProductForm.get('image')?.setValue(response.data.image);
-
-            // image not required if already present
-            this.editProductForm.get('image')?.clearValidators();
-            this.editProductForm.get('image')?.updateValueAndValidity();
-          }
 
           // Set and expand category
           this.categoryId = response.data?.categoryId;
@@ -130,7 +121,19 @@ export class ProductEditComponent implements OnInit {
             this.expandPathToCategory(this.categoryId);
           }
 
-          console.log(this.editProductForm.value);
+          console.log('Form value:', this.editProductForm.value);
+          console.log('Form valid?', this.editProductForm.valid);
+          Object.keys(this.editProductForm.controls).forEach((key) => {
+            const control = this.editProductForm.get(key);
+            console.log(
+              `${key}:`,
+              control?.value,
+              'valid?',
+              control?.valid,
+              'errors:',
+              control?.errors
+            );
+          });
         },
         error: (errorResponse: any) => {
           this._errorHandlerService.handleErrors(errorResponse);
