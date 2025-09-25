@@ -82,4 +82,6 @@ export class CategoryDetailsComponent implements OnInit {
       ? totalFiltered
       : Math.min(totalFiltered, this.pageSize);
   }
+
+  onDelete(id: string) {}
 }
