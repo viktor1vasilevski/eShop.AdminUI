@@ -11,6 +11,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CategoryService } from '../../../core/services/category.service';
+import { ResponseStatus } from '../../../core/enums/response-status.enum';
 
 @Component({
   selector: 'app-product-edit',
@@ -44,7 +45,7 @@ export class ProductEditComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1)]],
-      image: ['', []],
+      image: ['', [Validators.required]],
     });
   }
 
@@ -128,6 +129,8 @@ export class ProductEditComponent implements OnInit {
           if (this.categoryId) {
             this.expandPathToCategory(this.categoryId);
           }
+
+          console.log(this.editProductForm.value);
         },
         error: (errorResponse: any) => {
           this._errorHandlerService.handleErrors(errorResponse);
@@ -137,7 +140,10 @@ export class ProductEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.editProductForm.valid) {
-      //this._notificationService.info('Invalid form');
+      this._notificationService.notify(
+        ResponseStatus.ServerError,
+        'Please correct the errors in the form.'
+      );
       return;
     }
     this.isSubmitting = true;
