@@ -108,7 +108,6 @@ export class CategoryEditComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger;
     if (!this.editCategoryForm.valid) {
       return;
     }

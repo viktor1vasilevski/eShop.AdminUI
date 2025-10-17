@@ -10,7 +10,7 @@ import { CategoryRequest } from '../../features/categories/models/category-reque
   providedIn: 'root',
 })
 export class CategoryService {
-  private baseUrl = 'https://localhost:44344/api';
+  private baseUrl = 'https://localhost:44352/api';
 
   constructor(private _dataApiService: DataService) {}
 

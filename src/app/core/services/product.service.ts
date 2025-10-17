@@ -1,13 +1,13 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = 'https://localhost:44344/api';
+  private baseUrl = 'https://localhost:44352/api';
 
   constructor(private _dataApiService: DataService) {}
 

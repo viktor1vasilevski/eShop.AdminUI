@@ -79,7 +79,6 @@ export class ProductCreateComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger;
     if (!this.createProductForm.valid) {
       this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
       return;
