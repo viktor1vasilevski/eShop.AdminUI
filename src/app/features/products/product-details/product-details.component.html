@@ -127,18 +127,38 @@
                 'pb-3 mb-3': c !== product.comments[product.comments.length - 1]
               }"
             >
-              <div class="d-flex justify-content-between">
-                <strong>{{ c.createdBy }}</strong>
+              <div
+                class="d-flex justify-content-between align-items-center mb-1"
+              >
+                <div class="d-flex align-items-center">
+                  <div class="comment-avatar me-2">
+                    {{ c.username[0] | uppercase }}
+                  </div>
+                  <strong>{{ c.username }}</strong>
+                </div>
                 <small class="text-muted">{{
                   c.created | date : "short"
                 }}</small>
               </div>
+
               <div class="text-muted small mb-1">
-                <i class="bi bi-star-fill text-warning"></i> {{ c.rating }}/5
+                <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                  <i
+                    class="bi"
+                    [ngClass]="
+                      star <= c.rating
+                        ? 'bi-star-fill text-warning'
+                        : 'bi-star text-muted'
+                    "
+                  ></i>
+                </ng-container>
+                {{ c.rating }}/5
               </div>
+
               <p class="mb-0">{{ c.commentText }}</p>
             </div>
           </ng-container>
+
           <ng-template #noComments>
             <div class="text-muted fst-italic text-center py-3">
               No comments yet.
