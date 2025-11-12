@@ -7,9 +7,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { CategoryService } from '../../../core/services/category.service';
 import { FilterInputComponent } from '../../../shared/components/filter-input/filter-input.component';
-import { FilterDropdownComponent } from '../../../shared/components/filter-dropdown/filter-dropdown.component';
 import { FilterCardComponent } from '../../../shared/components/filter-card/filter-card.component';
 import {
   CustomTableComponent,

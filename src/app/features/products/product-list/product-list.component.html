@@ -1,7 +1,6 @@
 <div class="main-content p-4">
   <app-filter-card title="Filters" [collapsed]="true" (clear)="clearFilters()">
     <form class="row g-3 align-items-end">
-      <!-- Name Filter -->
       <div class="col-md-4">
         <app-filter-input
           label="Name"
@@ -27,7 +26,6 @@
     (itemsPerPageChange)="onItemsPerPageChange($event)"
   ></app-custom-table>
 
-  <!-- Delete Confirmation Modal -->
   <div
     class="modal fade"
     id="deleteConfirmationModal"
@@ -69,115 +67,6 @@
             (click)="deleteProduct()"
           >
             Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="viewProductDetailsModal"
-    tabindex="-1"
-    aria-labelledby="viewProductDetailsModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="viewProductDetailsModalLabel">
-            Product Details
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-
-        <div class="modal-body">
-          <div class="container-fluid">
-            <!-- Product Image -->
-            <div class="row mb-4 text-center">
-              <div class="col">
-                <img
-                  *ngIf="productDetails?.image"
-                  [src]="productDetails.image"
-                  alt="Product Image"
-                  class="img-fluid rounded"
-                  style="max-height: 300px; object-fit: contain"
-                />
-                <div *ngIf="!productDetails?.image" class="text-muted">
-                  No image available.
-                </div>
-              </div>
-            </div>
-
-            <!-- Product Details -->
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Name:</div>
-              <div class="col-sm-8">{{ productDetails?.name || "-" }}</div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Description:</div>
-              <div class="col-sm-8">
-                {{ productDetails?.description || "-" }}
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Unit Price:</div>
-              <div class="col-sm-8">{{ productDetails?.unitPrice || "-" }}</div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Unit Quantity:</div>
-              <div class="col-sm-8">
-                {{ productDetails?.unitQuantity || "-" }}
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Subcategory:</div>
-              <div class="col-sm-8">
-                {{ productDetails?.subcategory || "-" }}
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Category:</div>
-              <div class="col-sm-8">{{ productDetails?.category || "-" }}</div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-sm-4 fw-bold">Created At:</div>
-              <div class="col-sm-8">
-                {{ productDetails?.created | date : "dd/MM/yyyy HH:mm" }}
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-sm-4 fw-bold">Last Modified:</div>
-              <div class="col-sm-8">
-                {{
-                  productDetails?.lastModified
-                    ? (productDetails?.lastModified | date : "dd/MM/yyyy HH:mm")
-                    : "-"
-                }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
           </button>
         </div>
       </div>
