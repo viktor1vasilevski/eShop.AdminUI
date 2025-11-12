@@ -19,7 +19,10 @@
               >
                 <i class="bi bi-pencil-square me-1"></i>Edit
               </button>
-              <button class="btn btn-sm btn-danger" (click)="onDelete(c.id)">
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="showDeleteCategoryModal(c)"
+              >
                 <i class="bi bi-trash me-1"></i>Delete
               </button>
             </div>
@@ -125,6 +128,52 @@
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="deleteConfirmationModal"
+    tabindex="-1"
+    aria-labelledby="deleteConfirmationModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel">
+            Confirm Delete
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to delete
+            <strong>{{ categoryToDelete?.name }}</strong
+            >?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteCategory()"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

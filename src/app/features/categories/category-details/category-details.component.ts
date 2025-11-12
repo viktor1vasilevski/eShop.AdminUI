@@ -4,10 +4,12 @@ import { CategoryService } from '../../../core/services/category.service';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from '../../../core/services/notification.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-category-details',
-  standalone: true, // ✅ important when importing standalone children
+  standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.css',
@@ -15,19 +17,18 @@ import { FormsModule } from '@angular/forms';
 export class CategoryDetailsComponent implements OnInit {
   categoryId: any;
   category: any = null;
-
-  // searches (bound to header component)
+  categoryToDelete: any = null;
   globalSearch = '';
   subcategorySearch = '';
 
-  // page size used in visible count helper (keep in sync with child default if needed)
   private readonly pageSize = 12;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router, // ✅ needed for onEditSubcategory
+    private router: Router,
     private _categoryService: CategoryService,
-    private _errorHandlerService: ErrorHandlerService
+    private _errorHandlerService: ErrorHandlerService,
+    private _notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -83,5 +84,37 @@ export class CategoryDetailsComponent implements OnInit {
       : Math.min(totalFiltered, this.pageSize);
   }
 
-  onDelete(id: string) {}
+  showDeleteCategoryModal(category: any) {
+    this.categoryToDelete = category;
+    const modal = document.getElementById('deleteConfirmationModal');
+    if (modal) {
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
+
+  deleteCategory() {
+    this._categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
+      next: (response: any) => {
+        this.router.navigate(['/categories']);
+        this._notificationService.notify(response.status, response.message);
+      },
+      error: (errorResponse: any) =>
+        this._errorHandlerService.handleErrors(errorResponse),
+    });
+    this.closeModal();
+  }
+
+  closeModal(): void {
+    const deleteModalElement = document.getElementById(
+      'deleteConfirmationModal'
+    );
+    if (deleteModalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+    this.categoryToDelete = null;
+  }
 }
