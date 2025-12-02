@@ -1,39 +1,60 @@
 <div class="d-flex min-vh-100">
   <!-- Sidebar -->
   <div
-    class="sidebar bg-dark text-white d-flex flex-column justify-content-between"
+    class="sidebar bg-dark text-white d-flex flex-column"
+    style="width: 250px; flex-shrink: 0"
   >
-    <div>
-      <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-graph-up icon"></i>
+    <div class="sidebar-links flex-grow-1 overflow-auto p-3">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="sidebar-link d-flex align-items-center mb-2"
+      >
+        <i class="bi bi-graph-up icon me-2"></i>
         <span class="text">Dashboard</span>
       </a>
       <a
         routerLink="/categories"
         routerLinkActive="active"
-        class="sidebar-link"
+        class="sidebar-link d-flex align-items-center mb-2"
       >
-        <i class="bi bi-folder icon"></i>
+        <i class="bi bi-folder icon me-2"></i>
         <span class="text">Categories</span>
       </a>
-      <a routerLink="/products" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-box-seam icon"></i>
+      <a
+        routerLink="/products"
+        routerLinkActive="active"
+        class="sidebar-link d-flex align-items-center mb-2"
+      >
+        <i class="bi bi-box-seam icon me-2"></i>
         <span class="text">Products</span>
       </a>
-      <a routerLink="/users" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-people icon"></i>
+      <a
+        routerLink="/users"
+        routerLinkActive="active"
+        class="sidebar-link d-flex align-items-center mb-2"
+      >
+        <i class="bi bi-people icon me-2"></i>
         <span class="text">Users</span>
       </a>
     </div>
 
-    <button class="sidebar-link btn-logout mt-auto" (click)="logout()">
-      <i class="bi bi-box-arrow-right icon"></i>
-      <span class="text">Logout</span>
-    </button>
+    <div class="p-3">
+      <button
+        class="btn btn-logout w-100 d-flex align-items-center justify-content-start"
+        (click)="logout()"
+      >
+        <i class="bi bi-box-arrow-right icon"></i>
+        Logout
+      </button>
+    </div>
   </div>
 
   <!-- Main content -->
-  <div class="main-content flex-grow-1 p-4 bg-light">
+  <div
+    class="main-content flex-grow-1 p-4 bg-light overflow-auto"
+    style="height: 100vh"
+  >
     <router-outlet></router-outlet>
   </div>
 </div>
