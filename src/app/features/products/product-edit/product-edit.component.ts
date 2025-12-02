@@ -21,14 +21,15 @@ import { ResponseStatus } from '../../../core/enums/response-status.enum';
 })
 export class ProductEditComponent implements OnInit {
   editProductForm: FormGroup;
-  subcategoriesDropdownList: any[] = [];
   isSubmitting = false;
   selectedProductId: string = '';
   imagePreviewUrl: string | null = null;
-  categoryTree: any[] = [];
 
+  categoryTree: any[] = [];
   expandedNodes: Set<string> = new Set();
   categoryId: string | null = null;
+
+  isGeneratingDesc = false;
 
   constructor(
     private fb: FormBuilder,
@@ -57,48 +58,75 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
+  /** LOAD CATEGORY TREE */
   loadCategoriesTree() {
     this._categoryService.getCategoriesTree().subscribe({
       next: (res: any) => {
-        this.categoryTree = res.data;
+        this.categoryTree = res.data ?? [];
       },
       error: (err: any) => this._errorHandlerService.handleErrors(err),
     });
   }
 
-  isExpanded(node: any): boolean {
-    return this.expandedNodes.has(node.id);
-  }
+  generateDescription(): void {
+    const name = this.editProductForm.get('name')?.value;
+    const categoryId = this.editProductForm.get('categoryId')?.value;
 
-  toggleNode(node: any) {
-    if (this.isExpanded(node)) {
-      this.expandedNodes.delete(node.id);
-    } else {
-      this.expandedNodes.add(node.id);
+    if (!name || !categoryId) {
+      this._notificationService.notify(
+        ResponseStatus.Info,
+        'Name and category are required to generate a description.'
+      );
+      return;
     }
+
+    const categoryPath = this.getCategoryPathById(categoryId).join(' > ');
+
+    this.isGeneratingDesc = true;
+
+    const request = {
+      productName: name,
+      categories: categoryPath,
+    };
+
+    this._productService.generateDescription(request).subscribe({
+      next: (res: any) => {
+        this.editProductForm.patchValue({ description: res.data });
+        this.isGeneratingDesc = false;
+      },
+      error: (err: any) => {
+        this._errorHandlerService.handleErrors(err);
+        this.isGeneratingDesc = false;
+      },
+    });
   }
 
-  onCategorySelected(categoryId: string) {
-    this.categoryId = categoryId;
-    this.editProductForm.patchValue({ categoryId: categoryId });
-  }
+  private getCategoryPathById(id: string): string[] {
+    const path: string[] = [];
 
-  expandPathToCategory(categoryId: string) {
-    const findParent = (nodes: any[], targetId: string): boolean => {
-      for (let node of nodes) {
-        if (node.id === targetId) {
-          return true;
-        }
-        if (node.children?.length && findParent(node.children, targetId)) {
-          this.expandedNodes.add(node.id);
-          return true;
+    function traverse(node: any, currentPath: string[]): boolean {
+      if (node.id === id) {
+        path.push(...currentPath, node.name);
+        return true;
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          if (traverse(child, [...currentPath, node.name])) {
+            return true;
+          }
         }
       }
       return false;
-    };
-    findParent(this.categoryTree, categoryId);
+    }
+
+    for (const rootNode of this.categoryTree) {
+      if (traverse(rootNode, [])) break;
+    }
+
+    return path;
   }
 
+  /** LOAD PRODUCT DATA FOR EDIT */
   loadProductForEdit(): void {
     this._productService
       .getProductForEditById(this.selectedProductId)
@@ -112,35 +140,85 @@ export class ProductEditComponent implements OnInit {
             categoryId: response.data?.categoryId,
           });
 
-          // Set image preview
-          this.imagePreviewUrl = response.data.image;
+          this.imagePreviewUrl = response.data?.image;
 
-          // Set and expand category
           this.categoryId = response.data?.categoryId;
           if (this.categoryId) {
             this.expandPathToCategory(this.categoryId);
           }
-
-          console.log('Form value:', this.editProductForm.value);
-          console.log('Form valid?', this.editProductForm.valid);
-          Object.keys(this.editProductForm.controls).forEach((key) => {
-            const control = this.editProductForm.get(key);
-            console.log(
-              `${key}:`,
-              control?.value,
-              'valid?',
-              control?.valid,
-              'errors:',
-              control?.errors
-            );
-          });
         },
-        error: (errorResponse: any) => {
-          this._errorHandlerService.handleErrors(errorResponse);
-        },
+        error: (err: any) => this._errorHandlerService.handleErrors(err),
       });
   }
 
+  /** TREE NODE FUNCTIONS */
+  isExpanded(node: any): boolean {
+    return this.expandedNodes.has(node.id);
+  }
+
+  toggleNode(node: any) {
+    if (this.isExpanded(node)) {
+      this.expandedNodes.delete(node.id);
+    } else {
+      this.expandedNodes.add(node.id);
+    }
+  }
+
+  expandAll() {
+    const traverse = (nodes: any[]) => {
+      for (let node of nodes) {
+        if (node.children?.length) {
+          this.expandedNodes.add(node.id);
+          traverse(node.children);
+        }
+      }
+    };
+    traverse(this.categoryTree);
+  }
+
+  collapseAll() {
+    this.expandedNodes.clear();
+  }
+
+  getIndent(level: number): number {
+    return Math.min(level * 3, 120);
+  }
+
+  onCategorySelected(categoryId: string) {
+    this.categoryId = categoryId;
+    this.editProductForm.patchValue({ categoryId: categoryId });
+  }
+
+  expandPathToCategory(categoryId: string) {
+    const findParent = (nodes: any[], targetId: string): boolean => {
+      for (let node of nodes) {
+        if (node.id === targetId) return true;
+        if (node.children?.length && findParent(node.children, targetId)) {
+          this.expandedNodes.add(node.id);
+          return true;
+        }
+      }
+      return false;
+    };
+    findParent(this.categoryTree, categoryId);
+  }
+
+  /** IMAGE UPLOAD */
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.imagePreviewUrl = base64String;
+        this.editProductForm.patchValue({ image: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  /** FORM SUBMISSION */
   onSubmit() {
     if (!this.editProductForm.valid) {
       this._notificationService.notify(
@@ -149,6 +227,7 @@ export class ProductEditComponent implements OnInit {
       );
       return;
     }
+
     this.isSubmitting = true;
     this._productService
       .editProduct(this.selectedProductId, this.editProductForm.value)
@@ -161,24 +240,10 @@ export class ProductEditComponent implements OnInit {
             response.message
           );
         },
-        error: (errorResponse: any) => {
+        error: (error: any) => {
           this.isSubmitting = false;
-          this._errorHandlerService.handleErrors(errorResponse);
+          this._errorHandlerService.handleErrors(error);
         },
       });
-  }
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        this.imagePreviewUrl = base64String;
-        this.editProductForm.patchValue({ image: base64String });
-      };
-
-      reader.readAsDataURL(file);
-    }
   }
 }

@@ -168,7 +168,7 @@ export class ProductCreateComponent implements OnInit {
   }
 
   getIndent(level: number): number {
-    return Math.min(level * 4, 120);
+    return Math.min(level * 3, 120);
   }
 
   private getCategoryPathById(id: string): string[] {
