@@ -28,7 +28,7 @@ export class ProductCreateComponent implements OnInit {
   categoryTree: any[] = [];
   selectedCategoryId: string | null = null;
 
-  expandedNodes = new Set<number>();
+  expandedNodes = new Set<string>(); // use string since category IDs are strings
 
   constructor(
     private fb: FormBuilder,
@@ -78,6 +78,23 @@ export class ProductCreateComponent implements OnInit {
     return this.expandedNodes.has(node.id);
   }
 
+  // ✅ New methods for expand/collapse all
+  expandAll() {
+    const collectIds = (nodes: any[]) => {
+      for (const node of nodes) {
+        if (node.children && node.children.length > 0) {
+          this.expandedNodes.add(node.id);
+          collectIds(node.children);
+        }
+      }
+    };
+    collectIds(this.categoryTree);
+  }
+
+  collapseAll() {
+    this.expandedNodes.clear();
+  }
+
   onSubmit() {
     if (!this.createProductForm.valid) {
       this._notificationService.notify(ResponseStatus.Info, 'Invalid form');
@@ -112,7 +129,6 @@ export class ProductCreateComponent implements OnInit {
       return;
     }
 
-    // Get category path like "Electronics > Laptops"
     const categoryPath = this.getCategoryPathById(categoryId).join(' > ');
 
     this.isGeneratingDesc = true;
@@ -149,6 +165,10 @@ export class ProductCreateComponent implements OnInit {
 
       reader.readAsDataURL(file);
     }
+  }
+
+  getIndent(level: number): number {
+    return Math.min(level * 4, 120);
   }
 
   private getCategoryPathById(id: string): string[] {

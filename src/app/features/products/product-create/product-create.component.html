@@ -205,7 +205,7 @@
                 class="border rounded p-3 bg-light"
                 style="max-height: 400px; overflow-y: auto"
               >
-                <!-- <div class="mb-2 d-flex justify-content-between">
+                <div class="mb-2 d-flex justify-content-between">
                   <button
                     type="button"
                     class="btn btn-sm btn-outline-secondary"
@@ -220,7 +220,7 @@
                   >
                     Expand All
                   </button>
-                </div> -->
+                </div>
                 <ng-container *ngFor="let category of categoryTree">
                   <ng-template
                     [ngTemplateOutlet]="renderTree"
@@ -234,7 +234,7 @@
                 <!-- Recursive Tree Template -->
                 <ng-template #renderTree let-node let-level="level">
                   <div
-                    [ngStyle]="{ 'margin-left.px': level * 20 }"
+                    [ngStyle]="{ 'margin-left.px': getIndent(level) }"
                     class="mb-1"
                   >
                     <div class="d-flex align-items-center gap-2">
