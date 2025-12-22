@@ -21,4 +21,8 @@ export class DashboardService {
   getTotalCustomers(): Observable<any> {
     return this._dataApiService.getAll<any>(`${this.baseUrl}/total-customers`);
   }
+
+  getOrdersPerDay(): Observable<any> {
+    return this._dataApiService.getAll<any>(`${this.baseUrl}/orders-per-day`);
+  }
 }
